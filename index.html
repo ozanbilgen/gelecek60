@@ -1,14 +1,5 @@
 <!DOCTYPE html>
-<!--
-Gelecek60 v4.2
-Düzeltmeler:
-[v4.2-1] Hesapla butonu çalışıyor
-[v4.2-2] TR/EN toggle form etiketleri dahil tüm metinleri değiştiriyor
-[v4.2-3] Finansal analiz ayrı sekme — bağımsız veya entegre çalışma
-[v4.2-4] QR kod api.qrserver.com ile güvenilir
-[v4.2-5] Tek container, tek header, 60 Ay etiketi
-[v4.2-6] Finansal sekme ayrı hesaplama butonu
--->
+<!--Gelecek60 v4.3 — Tam i18n + Reform/Erkek geliri düzeltme + 60ay finans + Yorum-->
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
@@ -20,6 +11,7 @@ Düzeltmeler:
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
+
 
 
 
@@ -449,6 +441,90 @@ input[type="checkbox"]{display:none;}
 .cur-btn{padding:5px 13px;background:transparent;border:none;color:var(--muted);cursor:pointer;font-family:"Barlow Condensed",sans-serif;font-size:.68rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all .2s;}
 .cur-btn.active{background:var(--gold);color:#fff;}
 .besi-panel{background:rgba(36,113,163,.04);border:1.5px solid rgba(36,113,163,.2);border-radius:10px;padding:14px;margin-top:10px;}
+/* ═══ FİNANS MODÜLÜ v4.1 ═══ */
+.fin-toggle{display:flex;align-items:center;gap:12px;padding:14px 18px;background:#fff;border:2px solid var(--border);border-radius:12px;cursor:pointer;margin-bottom:18px;transition:all .2s;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.fin-toggle:hover{border-color:var(--gold);}
+.fin-toggle input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold);cursor:pointer;flex-shrink:0;}
+.fin-toggle label{font-family:"Barlow Condensed",sans-serif;font-size:.85rem;font-weight:700;letter-spacing:1px;color:var(--text);cursor:pointer;}
+.fin-toggle .fin-desc{font-size:.72rem;color:var(--muted);margin-top:2px;}
+.fin-panel{background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:20px 22px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.04);}
+.fin-panel-title{font-family:"Barlow Condensed",sans-serif;font-size:.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid rgba(184,134,11,.15);display:flex;align-items:center;gap:8px;}
+.fin-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.fin-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+@media(max-width:640px){.fin-grid,.fin-grid-3{grid-template-columns:1fr;}}
+.fin-note-inline{font-size:.65rem;color:var(--muted);font-style:italic;margin-top:2px;}
+.besi-panel{background:rgba(36,113,163,.04);border:1.5px solid rgba(36,113,163,.2);border-radius:10px;padding:14px;margin-top:10px;}
+.milk-table{width:100%;border-collapse:collapse;font-size:.76rem;}
+.milk-table th{padding:7px 10px;background:#f5f0e8;font-family:"Barlow Condensed",sans-serif;font-size:.62rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);text-align:center;border:1px solid var(--border);}
+.milk-table td{padding:5px 6px;border:1px solid var(--border);text-align:center;}
+.milk-table input[type=number]{width:80px;padding:5px 6px;font-size:.76rem;border:1px solid var(--border);border-radius:5px;background:#fafaf6;text-align:center;color:var(--text);}
+.milk-table input[type=number]:focus{outline:none;border-color:var(--accent);}
+.dis-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+@media(max-width:640px){.dis-grid{grid-template-columns:1fr;}}
+.dis-row{display:flex;align-items:center;gap:8px;padding:8px 10px;background:#fafaf6;border:1px solid var(--border);border-radius:8px;}
+.dis-row label{flex:1;font-size:.73rem;color:var(--text);line-height:1.3;}
+.dis-row .dis-lit{font-size:.6rem;color:var(--muted);display:block;margin-top:1px;}
+.dis-row input{width:60px;padding:4px 7px;font-size:.76rem;background:#fff;border:1px solid var(--border);border-radius:5px;text-align:right;color:var(--text);}
+.dis-row .dis-unit{font-size:.65rem;color:var(--muted);white-space:nowrap;min-width:14px;}
+/* Finans Sonuç */
+.fin-res-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;}
+.fin-res-tabs{display:flex;gap:5px;flex-wrap:wrap;}
+.fin-rtab{background:transparent;border:1.5px solid var(--border);border-radius:7px;color:var(--muted);font-family:"Barlow Condensed",sans-serif;font-size:.67rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:6px 13px;cursor:pointer;transition:all .2s;}
+.fin-rtab.active{background:var(--gold);border-color:var(--gold);color:#fff;}
+.fin-kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;}
+@media(max-width:700px){.fin-kpi-grid{grid-template-columns:1fr 1fr;}}
+.fin-kpi{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.fin-kpi .kv{font-family:"Playfair Display",serif;font-size:1.4rem;font-weight:900;color:var(--accent);}
+.fin-kpi .kv.neg{color:var(--danger);}
+.fin-kpi .kv.gold{color:var(--gold);}
+.fin-kpi .kv.blue{color:var(--blue);}
+.fin-kpi .kl{font-size:.6rem;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-top:3px;}
+.fin-table{width:100%;border-collapse:collapse;font-size:.72rem;}
+.fin-table thead tr{background:#f5f0e8;}
+.fin-table th{padding:8px 10px;font-family:"Barlow Condensed",sans-serif;font-size:.6rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);text-align:right;border-bottom:2px solid var(--border);white-space:nowrap;}
+.fin-table th:first-child,.fin-table th:nth-child(2){text-align:left;}
+.fin-table td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--text);text-align:right;background:#fff;white-space:nowrap;}
+.fin-table td:first-child,.fin-table td:nth-child(2){text-align:left;}
+.fin-table tr.subtotal td{background:#fafaf6;font-weight:600;}
+.fin-table tr.total-row td{background:#f5f0e8;font-weight:700;border-top:2px solid var(--border);}
+.fin-table tr.neg td{color:var(--danger);}
+.fin-table tr.pos td{color:var(--accent);}
+.fin-table tr.bb-row td{background:rgba(36,113,163,.06);font-weight:700;color:var(--blue);}
+/* Nakit akışı grafik */
+.cashflow-chart{display:flex;align-items:flex-end;gap:2px;height:120px;margin:10px 0;overflow-x:auto;padding-bottom:4px;}
+.cf-bar{flex-shrink:0;width:14px;border-radius:3px 3px 0 0;position:relative;cursor:default;transition:opacity .2s;}
+.cf-bar:hover{opacity:.8;}
+.cf-bar.pos{background:var(--accent);}
+.cf-bar.neg{background:var(--danger);border-radius:0 0 3px 3px;align-self:flex-start;}
+/* Duyarlılık */
+.sens-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:700px){.sens-grid{grid-template-columns:1fr;}}
+.sens-card{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.sens-card h4{font-family:"Barlow Condensed",sans-serif;font-size:.67rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
+.sens-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(0,0,0,.05);font-size:.74rem;}
+.sens-row .sl{color:var(--muted);}
+.sens-row .sv{font-weight:700;}
+.sens-row .sv.pos{color:var(--accent);}
+.sens-row .sv.neg{color:var(--danger);}
+/* ROI/Başabaş */
+.roi-section{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,.05);margin-bottom:16px;}
+.roi-section h4{font-family:"Barlow Condensed",sans-serif;font-size:.67rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
+.roi-timeline{display:flex;gap:2px;height:8px;border-radius:4px;overflow:hidden;margin:10px 0;}
+.roi-seg{height:100%;}
+.roi-seg.loss{background:rgba(192,57,43,.3);}
+.roi-seg.gain{background:rgba(45,122,58,.4);}
+.roi-seg.payback{background:var(--gold);}
+
+.main-tabs{display:flex;gap:0;margin-bottom:0;border-bottom:2px solid var(--border);}
+.main-tab{background:transparent;border:none;border-bottom:3px solid transparent;padding:10px 22px;font-family:"Barlow Condensed",sans-serif;font-size:.8rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);cursor:pointer;transition:all .2s;margin-bottom:-2px;}
+.main-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.main-tab.fin-tab.active{color:var(--gold);border-bottom-color:var(--gold);}
+.tab-content{display:none;padding-top:16px;}
+.tab-content.active{display:block !important;}
+.cur-btn{padding:5px 13px;background:transparent;border:none;color:var(--muted);cursor:pointer;font-family:"Barlow Condensed",sans-serif;font-size:.68rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all .2s;}
+.cur-btn.active{background:var(--gold);color:#fff;}
+.besi-panel{background:rgba(36,113,163,.04);border:1.5px solid rgba(36,113,163,.2);border-radius:10px;padding:14px;margin-top:10px;}
+.fin-note-inline{font-size:.65rem;color:var(--muted);font-style:italic;margin-top:2px;}
 </style>
 </head>
 <body>
@@ -462,14 +538,20 @@ input[type="checkbox"]{display:none;}
         <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
       </div>
     </div>
-    <div class="auth-sub" id="authSubtitle">Hesabınıza giriş yapın</div>
+    <div id="authSubtitle" style="font-size:.76rem;color:var(--muted);margin-bottom:24px;">Hesabınıza giriş yapın</div>
     <div class="auth-err" id="authErr"></div>
-    <div class="auth-field"><label data-t="username">Kullanıcı Adı</label>
-      <input type="text" id="authUser" placeholder="kullanici_adi" autocomplete="username" onkeydown="if(event.key==='Enter')authAction()"></div>
-    <div class="auth-field"><label data-t="password">Şifre</label>
-      <input type="password" id="authPass" placeholder="••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')authAction()"></div>
-    <div class="auth-field" id="authPassCF" style="display:none;"><label data-t="passwordAgain">Şifre Tekrar</label>
-      <input type="password" id="authPassC"></div>
+    <div class="auth-field">
+      <label id="authLblUser">Kullanıcı Adı</label>
+      <input type="text" id="authUser" placeholder="kullanici_adi" autocomplete="username" onkeydown="if(event.key==='Enter')authAction()">
+    </div>
+    <div class="auth-field">
+      <label id="authLblPass">Şifre</label>
+      <input type="password" id="authPass" placeholder="••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')authAction()">
+    </div>
+    <div class="auth-field" id="authPassCF" style="display:none;">
+      <label id="authLblPassC">Şifre Tekrar</label>
+      <input type="password" id="authPassC">
+    </div>
     <button class="btn-auth" id="authBtn" onclick="authAction()">Giriş Yap</button>
     <div class="auth-toggle" id="authToggle" onclick="toggleAuthMode()">Hesabınız yok mu? <span>Kayıt olun</span></div>
   </div>
@@ -498,14 +580,13 @@ input[type="checkbox"]{display:none;}
 
 <div class="modal-overlay" id="qrModal">
   <div class="modal-box" style="width:360px;text-align:center;padding:24px;">
-    <h3 style="font-family:'Playfair Display',serif;margin-bottom:6px;">&#128248; Program QR Kodu</h3>
-    <p style="font-size:.74rem;color:var(--muted);margin-bottom:14px;">QR kodu okutarak programa ulaşın</p>
-    <div id="qrContainer" style="background:#fff;padding:12px;border:2px solid var(--border);border-radius:12px;display:inline-block;margin-bottom:10px;">
-      <img id="qrImg" src="" width="200" height="200" alt="QR Kod" style="display:block;">
-    </div>
+    <h3 id="qrTitleEl" style="font-family:'Playfair Display',serif;margin-bottom:6px;">&#128248; Program QR Kodu</h3>
+    <p id="qrDescEl" style="font-size:.74rem;color:var(--muted);margin-bottom:14px;">QR kodu okutarak programa ulaşın</p>
+    <div style="background:#fff;padding:12px;border:2px solid var(--border);border-radius:12px;display:inline-block;margin-bottom:10px;">
+      <img id="qrImg" src="" width="200" height="200" alt="QR Kod" style="display:block;"></div>
     <div style="font-size:.7rem;color:var(--muted);background:#f5f0e8;padding:8px;border-radius:8px;margin-bottom:10px;word-break:break-all;" id="qrUrl"></div>
     <div style="display:flex;gap:8px;justify-content:center;">
-      <button class="btn-modal g" onclick="downloadQR()">&#11015; İndir</button>
+      <button class="btn-modal g" id="qrDownloadBtn" onclick="downloadQR()">&#11015; İndir</button>
       <button class="btn-modal" onclick="document.getElementById('qrModal').classList.remove('open')">Kapat</button>
     </div>
   </div>
@@ -513,23 +594,27 @@ input[type="checkbox"]{display:none;}
 
 <div class="admin-overlay" id="adminOverlay">
   <div class="admin-hdr">
-    <h2>&#9881; Admin Paneli</h2>
+    <h2>&#9881; <span id="adminTitleEl">Admin Paneli</span></h2>
     <div class="admin-tabs">
-      <button class="atab active" onclick="adminTab('ozet')">Özet</button>
-      <button class="atab" onclick="adminTab('users')">Kullanıcılar</button>
-      <button class="atab" onclick="adminTab('benchmark')">Benchmark</button>
-      <button class="atab" onclick="adminTab('trend')">Trend</button>
-      <button class="atab" onclick="adminTab('stats')">İstatistik</button>
+      <button class="atab active" onclick="adminTab('ozet')" id="atab0">Özet</button>
+      <button class="atab" onclick="adminTab('users')" id="atab1">Kullanıcılar</button>
+      <button class="atab" onclick="adminTab('benchmark')" id="atab2">Benchmark</button>
+      <button class="atab" onclick="adminTab('trend')" id="atab3">Trend</button>
+      <button class="atab" onclick="adminTab('stats')" id="atab4">İstatistik</button>
     </div>
     <button class="btn-ac" onclick="closeAdmin()">&#10005; Kapat</button>
   </div>
   <div class="admin-body">
     <div class="admin-pwd" id="adminPwdPanel">
-      <h3>&#128274; Admin Girişi</h3>
-      <div class="auth-field" style="width:260px;"><label>Kullanıcı Adı</label>
-        <input type="text" id="adminUserInput" onkeydown="if(event.key==='Enter')checkAdminPwd()"></div>
-      <div class="auth-field" style="width:260px;"><label>Şifre</label>
-        <input type="password" id="adminPwdInput" onkeydown="if(event.key==='Enter')checkAdminPwd()"></div>
+      <h3 id="adminLoginTitleEl">&#128274; Admin Girişi</h3>
+      <div class="auth-field" style="width:260px;">
+        <label id="adminLblUser">Kullanıcı Adı</label>
+        <input type="text" id="adminUserInput" onkeydown="if(event.key==='Enter')checkAdminPwd()">
+      </div>
+      <div class="auth-field" style="width:260px;">
+        <label id="adminLblPass">Şifre</label>
+        <input type="password" id="adminPwdInput" onkeydown="if(event.key==='Enter')checkAdminPwd()">
+      </div>
       <button class="btn-auth" style="width:260px;" onclick="checkAdminPwd()">Giriş Yap</button>
       <div style="font-size:.73rem;color:var(--danger);display:none;" id="adminPwdErr">Hatalı bilgi.</div>
     </div>
@@ -539,10 +624,8 @@ input[type="checkbox"]{display:none;}
 
 <div class="toast" id="toast"></div>
 
-<!-- ════ ANA UYGULAMA ════ -->
 <div id="mainApp" style="display:none;">
 <div class="container">
-
 <header>
   <div class="header-inner">
     <div class="logo-area">
@@ -561,8 +644,8 @@ input[type="checkbox"]{display:none;}
         <button class="cur-btn active" id="curTL" onclick="setCurrency('TL')">&#8378; TL</button>
         <button class="cur-btn" id="curUSD" onclick="setCurrency('USD')">$ USD</button>
       </div>
-      <button class="btn-ub" onclick="showQR()" style="padding:5px 10px;" title="QR Kod">&#128248;</button>
-      <div class="badge">v4.2</div>
+      <button class="btn-ub" onclick="showQR()" style="padding:5px 10px;" title="QR">&#128248;</button>
+      <div class="badge">v4.3</div>
     </div>
   </div>
 </header>
@@ -582,13 +665,11 @@ input[type="checkbox"]{display:none;}
   <button class="scenario-btn" onclick="switchScenario('startup')"><span class="dot"></span><span id="lblStartup">Sıfırdan Kuruluş</span></button>
 </div>
 
-<!-- ANA SEKMELER -->
 <div class="main-tabs">
   <button class="main-tab active" data-tab="simulasyon" onclick="switchMainTab('simulasyon')" id="tabBtnSim">&#128290; Sürü Simülasyonu</button>
-  <button class="main-tab fin-tab" data-tab="finans" onclick="switchMainTab('finans')" id="tabBtnFin">💰 Finansal Analiz</button>
+  <button class="main-tab fin-tab" data-tab="finans" onclick="switchMainTab('finans')" id="tabBtnFin">&#128200; Finansal Analiz</button>
 </div>
 
-<!-- SİMÜLASYON SEKMESİ -->
 <div class="tab-content active" id="tab_simulasyon">
 <div class="main-grid">
 <div class="panel">
@@ -602,68 +683,68 @@ input[type="checkbox"]{display:none;}
     <!-- MEVCUT ISLETME -->
     <div class="scenario-panel active" id="panel-mevcut">
       <div class="form-section">
-        <div class="section-label">Mevcut Sürü Yapısı (Baş)</div>
+        <div class="section-label" data-i18n="secMevcutSuru">Mevcut Sürü Yapısı (Baş)</div>
         <div class="field-row">
-          <div class="field"><label>İnek (Laktasyon)</label><input type="number" id="laktasyon" value="100" min="0" data-default="100"></div>
-          <div class="field"><label>İnek (Kuru)</label><input type="number" id="kuru" value="18" min="0" data-default="18"></div>
+          <div class="field"><label data-i18n="lblLaktasyon">İnek (Laktasyon)</label><input type="number" id="laktasyon" value="100" min="0" data-default="100"></div>
+          <div class="field"><label data-i18n="lblKuru">İnek (Kuru)</label><input type="number" id="kuru" value="18" min="0" data-default="18"></div>
         </div>
         <div class="field-row">
-          <div class="field"><label>Düve (15-24 ay)</label><input type="number" id="duveB" value="35" min="0" data-default="35"></div>
-          <div class="field"><label>Boğa</label><input type="number" id="boga" value="0" min="0" data-default="0"></div>
+          <div class="field"><label data-i18n="lblDuve">Düve (15-24 ay)</label><input type="number" id="duveB" value="35" min="0" data-default="35"></div>
+          <div class="field"><label data-i18n="lblBoga">Boğa</label><input type="number" id="boga" value="0" min="0" data-default="0"></div>
         </div>
         <div class="field-row">
-          <div class="field"><label>Dişi Buzağı (0-2 ay)</label><input type="number" id="buz02" value="11" min="0" data-default="11"></div>
-          <div class="field"><label>Dişi Buzağı (3-6 ay)</label><input type="number" id="buz36" value="14" min="0" data-default="14"></div>
+          <div class="field"><label data-i18n="lblBuz02">Dişi Buzağı (0-2 ay)</label><input type="number" id="buz02" value="11" min="0" data-default="11"></div>
+          <div class="field"><label data-i18n="lblBuz36">Dişi Buzağı (3-6 ay)</label><input type="number" id="buz36" value="14" min="0" data-default="14"></div>
         </div>
         <div class="field-row">
-          <div class="field"><label>Dişi Dana (7-14 ay)</label><input type="number" id="dana714" value="28" min="0" data-default="28"></div>
-          <div class="field"><label>Erkek Dana (0-6 ay)</label><input type="number" id="erkekDana" value="0" min="0" data-default="0"></div>
-        </div>
-      </div>
-      <div class="form-section">
-        <div class="section-label">Gebelik Durumu — İnekler</div>
-        <div class="field-row">
-          <div class="field"><label>Gebe İnek (Laktasyonda)</label><input type="number" id="gebeInek" value="75" min="0" data-default="75"></div>
-          <div class="field"><label>Ort. Gebelik Günü (Lak.)</label><div class="input-unit"><input type="number" id="gebeInekGun" value="142" min="1" max="283" data-default="142"><span class="unit">gün</span></div></div>
-        </div>
-        <div class="field-row">
-          <div class="field"><label>Ort. Kuru Gebelik Günü</label><div class="input-unit"><input type="number" id="gebeInekKuruGun" value="230" min="1" max="283" data-default="230"><span class="unit">gün</span></div></div>
-          <div class="field"><label>Açık Gün Ortalaması</label><div class="input-unit"><input type="number" id="acikGunInek" value="110" min="0" max="365" data-default="110"><span class="unit">gün</span></div></div>
-        </div>
-        <div class="field-row">
-          <div class="field"><label>Gönüllü Bekleme (VWP)</label><div class="input-unit"><input type="number" id="vwpInek" value="50" min="0" max="120" data-default="50"><span class="unit">gün</span></div></div>
-          <div class="field"><label>CR — İnek</label><div class="input-unit"><input type="number" id="crInek" value="60" min="10" max="80" step="0.5" data-default="60"><span class="unit">%</span></div></div>
-        </div>
-        <div class="field-row">
-          <div class="field"><label>Ort. Laktasyon Sayısı</label><div class="input-unit"><input type="number" id="ortLaktasyonGiris" value="2.8" min="1" max="5" step="0.1" data-default="2.8"><span class="unit">lak.</span></div></div>
+          <div class="field"><label data-i18n="lblDana714">Dişi Dana (7-14 ay)</label><input type="number" id="dana714" value="28" min="0" data-default="28"></div>
+          <div class="field"><label data-i18n="lblErkekDana">Erkek Dana (0-6 ay)</label><input type="number" id="erkekDana" value="0" min="0" data-default="0"></div>
         </div>
       </div>
       <div class="form-section">
-        <div class="section-label">Gebelik Durumu — Düveler</div>
+        <div class="section-label" data-i18n="secGebeDurum">Gebelik Durumu — İnekler</div>
         <div class="field-row">
-          <div class="field"><label>Gebe Düve Sayısı</label><input type="number" id="gebeDuve" value="32" min="0" data-default="32"></div>
-          <div class="field"><label>Ort. Gebelik Günü</label><div class="input-unit"><input type="number" id="gebeDuveGun" value="135" min="1" max="283" data-default="135"><span class="unit">gün</span></div></div>
+          <div class="field"><label data-i18n="lblGebeInekL">Gebe İnek (Laktasyonda)</label><input type="number" id="gebeInek" value="75" min="0" data-default="75"></div>
+          <div class="field"><label data-i18n="lblGebeInekGunL">Ort. Gebelik Günü (Lak.)</label><div class="input-unit"><input type="number" id="gebeInekGun" value="142" min="1" max="283" data-default="142"><span class="unit">gün</span></div></div>
         </div>
         <div class="field-row">
-          <div class="field"><label>İlk Tohumlama Yaşı</label><div class="input-unit"><input type="number" id="ilkTohum" value="15" min="10" max="24" data-default="15"><span class="unit">ay</span></div></div>
-          <div class="field"><label>CR — Düve</label><div class="input-unit"><input type="number" id="crDuve" value="65" min="10" max="85" step="0.5" data-default="65"><span class="unit">%</span></div></div>
+          <div class="field"><label data-i18n="lblGebeInekKuruL">Ort. Kuru Gebelik Günü</label><div class="input-unit"><input type="number" id="gebeInekKuruGun" value="230" min="1" max="283" data-default="230"><span class="unit">gün</span></div></div>
+          <div class="field"><label data-i18n="lblAcikGunOrt">Açık Gün Ortalaması</label><div class="input-unit"><input type="number" id="acikGunInek" value="110" min="0" max="365" data-default="110"><span class="unit">gün</span></div></div>
         </div>
         <div class="field-row">
-          <div class="field"><label>Maks. tohumlama (düve)</label><div class="input-unit"><input type="number" id="maksTohum" value="5" min="2" max="10" data-default="5"><span class="unit">kez</span></div></div>
+          <div class="field"><label data-i18n="lblVwpL">Gönüllü Bekleme (VWP)</label><div class="input-unit"><input type="number" id="vwpInek" value="50" min="0" max="120" data-default="50"><span class="unit">gün</span></div></div>
+          <div class="field"><label data-i18n="lblCrInekS">CR — İnek</label><div class="input-unit"><input type="number" id="crInek" value="60" min="10" max="80" step="0.5" data-default="60"><span class="unit">%</span></div></div>
         </div>
-      </div>
-      <div class="form-section">
-        <div class="section-label">Sperma — İnekler</div>
         <div class="field-row">
-          <div class="field"><label>Konv. doz/gebelik</label><div class="input-unit"><input type="number" id="spermaInek" value="2.2" min="1" max="10" step="0.1" data-default="2.2"><span class="unit">doz</span></div></div>
-          <div class="field"><label>Dişi doğum oranı</label><div class="input-unit"><input type="number" id="disiOranInek" value="50" min="30" max="70" step="0.5" data-default="50"><span class="unit">%</span></div></div>
+          <div class="field"><label data-i18n="lblOrtLakS">Ort. Laktasyon Sayısı</label><div class="input-unit"><input type="number" id="ortLaktasyonGiris" value="2.8" min="1" max="5" step="0.1" data-default="2.8"><span class="unit">lak.</span></div></div>
         </div>
       </div>
       <div class="form-section">
-        <div class="section-label">Sperma — Düveler</div>
+        <div class="section-label" data-i18n="secGebeDurum">Gebelik Durumu — Düveler</div>
         <div class="field-row">
-          <div class="field"><label>Konv. doz/gebelik</label><div class="input-unit"><input type="number" id="spermaDuve" value="1.8" min="1" max="10" step="0.1" data-default="1.8"><span class="unit">doz</span></div></div>
-          <div class="field"><label>Dişi doğum oranı</label><div class="input-unit"><input type="number" id="disiOranDuve" value="50" min="30" max="70" step="0.5" data-default="50"><span class="unit">%</span></div></div>
+          <div class="field"><label data-i18n="lblGebeDuveS">Gebe Düve Sayısı</label><input type="number" id="gebeDuve" value="32" min="0" data-default="32"></div>
+          <div class="field"><label data-i18n="lblGebeGunS">Ort. Gebelik Günü</label><div class="input-unit"><input type="number" id="gebeDuveGun" value="135" min="1" max="283" data-default="135"><span class="unit">gün</span></div></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label data-i18n="lblIlkTohumS">İlk Tohumlama Yaşı</label><div class="input-unit"><input type="number" id="ilkTohum" value="15" min="10" max="24" data-default="15"><span class="unit">ay</span></div></div>
+          <div class="field"><label data-i18n="lblCrDuveS">CR — Düve</label><div class="input-unit"><input type="number" id="crDuve" value="65" min="10" max="85" step="0.5" data-default="65"><span class="unit">%</span></div></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label data-i18n="lblMaksTohumDuveS">Maks. tohumlama (düve)</label><div class="input-unit"><input type="number" id="maksTohum" value="5" min="2" max="10" data-default="5"><span class="unit">kez</span></div></div>
+        </div>
+      </div>
+      <div class="form-section">
+        <div class="section-label" data-i18n="secSpermaInek">Sperma — İnekler</div>
+        <div class="field-row">
+          <div class="field"><label data-i18n="lblKonvDozS">Konv. doz/gebelik</label><div class="input-unit"><input type="number" id="spermaInek" value="2.2" min="1" max="10" step="0.1" data-default="2.2"><span class="unit">doz</span></div></div>
+          <div class="field"><label data-i18n="lblDisiOranS">Dişi doğum oranı</label><div class="input-unit"><input type="number" id="disiOranInek" value="50" min="30" max="70" step="0.5" data-default="50"><span class="unit">%</span></div></div>
+        </div>
+      </div>
+      <div class="form-section">
+        <div class="section-label" data-i18n="secSpermaDuve">Sperma — Düveler</div>
+        <div class="field-row">
+          <div class="field"><label data-i18n="lblKonvDozS">Konv. doz/gebelik</label><div class="input-unit"><input type="number" id="spermaDuve" value="1.8" min="1" max="10" step="0.1" data-default="1.8"><span class="unit">doz</span></div></div>
+          <div class="field"><label data-i18n="lblDisiOranS">Dişi doğum oranı</label><div class="input-unit"><input type="number" id="disiOranDuve" value="50" min="30" max="70" step="0.5" data-default="50"><span class="unit">%</span></div></div>
         </div>
       </div>
       <div class="sexed-section">
@@ -675,12 +756,12 @@ input[type="checkbox"]{display:none;}
           </div>
           <div id="sexedBodyInek_mevcut" style="display:none;">
             <div class="field-row">
-              <div class="field"><label>Sexed CR — İnek</label><div class="input-unit"><input type="number" id="sexedCrInek" value="35" min="5" max="60" step="0.5" data-default="35"><span class="unit">%</span></div></div>
-              <div class="field"><label>Sexed doz/gebelik</label><div class="input-unit"><input type="number" id="sexedDozInek" value="3.0" min="1" max="12" step="0.1" data-default="3.0"><span class="unit">doz</span></div></div>
+              <div class="field"><label data-i18n="lblSexedCrInekS">Sexed CR — İnek</label><div class="input-unit"><input type="number" id="sexedCrInek" value="35" min="5" max="60" step="0.5" data-default="35"><span class="unit">%</span></div></div>
+              <div class="field"><label data-i18n="lblSexedDozS">Sexed doz/gebelik</label><div class="input-unit"><input type="number" id="sexedDozInek" value="3.0" min="1" max="12" step="0.1" data-default="3.0"><span class="unit">doz</span></div></div>
             </div>
             <div class="field-row">
-              <div class="field"><label>Sexed uygulama oranı</label><div class="input-unit"><input type="number" id="sexedOranInek" value="50" min="0" max="100" step="5" data-default="50"><span class="unit">%</span></div></div>
-              <div class="field"><label>Geb. öncesi sexed doz</label><div class="input-unit"><input type="number" id="sexedOnceInek" value="2" min="0" max="8" data-default="2"><span class="unit">doz</span></div></div>
+              <div class="field"><label data-i18n="lblSexedOranS">Sexed uygulama oranı</label><div class="input-unit"><input type="number" id="sexedOranInek" value="50" min="0" max="100" step="5" data-default="50"><span class="unit">%</span></div></div>
+              <div class="field"><label data-i18n="lblSexedOnceS">Geb. öncesi sexed doz</label><div class="input-unit"><input type="number" id="sexedOnceInek" value="2" min="0" max="8" data-default="2"><span class="unit">doz</span></div></div>
             </div>
           </div>
           <div style="display:flex;align-items:center;justify-content:space-between;margin-top:9px;margin-bottom:5px;">
@@ -689,44 +770,44 @@ input[type="checkbox"]{display:none;}
           </div>
           <div id="sexedBodyDuve_mevcut" style="display:none;">
             <div class="field-row">
-              <div class="field"><label>Sexed CR — Düve</label><div class="input-unit"><input type="number" id="sexedCrDuve" value="45" min="5" max="75" step="0.5" data-default="45"><span class="unit">%</span></div></div>
-              <div class="field"><label>Sexed doz/gebelik</label><div class="input-unit"><input type="number" id="sexedDozDuve" value="2.5" min="1" max="12" step="0.1" data-default="2.5"><span class="unit">doz</span></div></div>
+              <div class="field"><label data-i18n="lblSexedCrDuveS">Sexed CR — Düve</label><div class="input-unit"><input type="number" id="sexedCrDuve" value="45" min="5" max="75" step="0.5" data-default="45"><span class="unit">%</span></div></div>
+              <div class="field"><label data-i18n="lblSexedDozS">Sexed doz/gebelik</label><div class="input-unit"><input type="number" id="sexedDozDuve" value="2.5" min="1" max="12" step="0.1" data-default="2.5"><span class="unit">doz</span></div></div>
             </div>
             <div class="field-row">
-              <div class="field"><label>Sexed uygulama oranı</label><div class="input-unit"><input type="number" id="sexedOranDuve" value="80" min="0" max="100" step="5" data-default="80"><span class="unit">%</span></div></div>
-              <div class="field"><label>Geb. öncesi sexed doz</label><div class="input-unit"><input type="number" id="sexedOnceDuve" value="1" min="0" max="8" data-default="1"><span class="unit">doz</span></div></div>
+              <div class="field"><label data-i18n="lblSexedOranS">Sexed uygulama oranı</label><div class="input-unit"><input type="number" id="sexedOranDuve" value="80" min="0" max="100" step="5" data-default="80"><span class="unit">%</span></div></div>
+              <div class="field"><label data-i18n="lblSexedOnceS">Geb. öncesi sexed doz</label><div class="input-unit"><input type="number" id="sexedOnceDuve" value="1" min="0" max="8" data-default="1"><span class="unit">doz</span></div></div>
             </div>
           </div>
           <div style="font-size:.7rem;color:var(--muted);margin-top:7px;line-height:1.5;">Sexed sperma ile dişi dogum oranı <strong style="color:var(--accent2)">%85-92</strong> civarına yükselir.</div>
         </div>
       </div>
       <div class="form-section">
-        <div class="section-label">Doğum ve Ölüm Oranları</div>
+        <div class="section-label" data-i18n="secOlum">Doğum ve Ölüm Oranları</div>
         <div class="field-row">
-          <div class="field"><label>İkiz doğum oranı</label><div class="input-unit"><input type="number" id="ikizOran" value="3" min="0" max="15" data-default="3"><span class="unit">%</span></div></div>
-          <div class="field"><label>Buzağı ölüm (0-6 ay)</label><div class="input-unit"><input type="number" id="olumBuz" value="5" min="0" max="40" data-default="5"><span class="unit">%</span></div></div>
+          <div class="field"><label data-i18n="lblIkizS">İkiz doğum oranı</label><div class="input-unit"><input type="number" id="ikizOran" value="3" min="0" max="15" data-default="3"><span class="unit">%</span></div></div>
+          <div class="field"><label data-i18n="lblOlumBuzS">Buzağı ölüm (0-6 ay)</label><div class="input-unit"><input type="number" id="olumBuz" value="5" min="0" max="40" data-default="5"><span class="unit">%</span></div></div>
         </div>
         <div class="field-row">
-          <div class="field"><label>Genç hayvan ölüm</label><div class="input-unit"><input type="number" id="olumGen" value="2" min="0" max="20" data-default="2"><span class="unit">%</span></div></div>
-          <div class="field"><label>Erişkin inek ölüm</label><div class="input-unit"><input type="number" id="olumInek" value="3" min="0" max="20" data-default="3"><span class="unit">%</span></div></div>
+          <div class="field"><label data-i18n="lblOlumGenP">Genç hayvan ölüm</label><div class="input-unit"><input type="number" id="olumGen" value="2" min="0" max="20" data-default="2"><span class="unit">%</span></div></div>
+          <div class="field"><label data-i18n="lblOlumInekS">Erişkin inek ölüm</label><div class="input-unit"><input type="number" id="olumInek" value="3" min="0" max="20" data-default="3"><span class="unit">%</span></div></div>
         </div>
       </div>
       <div class="form-section">
-        <div class="section-label">Reform ve Yönetim</div>
+        <div class="section-label" data-i18n="secReform">Reform ve Yönetim</div>
         <div class="field-row">
-          <div class="field"><label>Reform (iskarta)</label><div class="input-unit"><input type="number" id="reform" value="15" min="0" max="50" data-default="15"><span class="unit">%</span></div></div>
-          <div class="field"><label>Maks. Laktasyon (inek)</label><div class="input-unit"><input type="number" id="maksLaktasyonInek" value="5" min="2" max="10" data-default="5"><span class="unit">lak.</span></div></div>
+          <div class="field"><label data-i18n="lblReformS">Reform (iskarta)</label><div class="input-unit"><input type="number" id="reform" value="15" min="0" max="50" data-default="15"><span class="unit">%</span></div></div>
+          <div class="field"><label data-i18n="lblMaksLakS">Maks. Laktasyon (inek)</label><div class="input-unit"><input type="number" id="maksLaktasyonInek" value="5" min="2" max="10" data-default="5"><span class="unit">lak.</span></div></div>
         </div>
         <div class="field-row">
-          <div class="field"><label>Maks. Tohumlama (inek)</label><div class="input-unit"><input type="number" id="maksTohumInek" value="5" min="2" max="15" data-default="5"><span class="unit">kez</span></div></div>
-          <div class="field"><label>Kuru dönem</label><div class="input-unit"><input type="number" id="kuruGun" value="60" min="30" max="120" data-default="60"><span class="unit">gün</span></div></div>
+          <div class="field"><label data-i18n="lblMaksTohumInekS">Maks. Tohumlama (inek)</label><div class="input-unit"><input type="number" id="maksTohumInek" value="5" min="2" max="15" data-default="5"><span class="unit">kez</span></div></div>
+          <div class="field"><label data-i18n="lblKurudonem">Kuru dönem</label><div class="input-unit"><input type="number" id="kuruGun" value="60" min="30" max="120" data-default="60"><span class="unit">gün</span></div></div>
         </div>
         <div class="field-row">
-          <div class="field"><label>Satılan düve (yıllık)</label><input type="number" id="satDuve" value="0" min="0" data-default="0"></div>
-          <div class="field"><label>Dışarıdan alınan inek</label><input type="number" id="alinan" value="0" min="0" data-default="0"></div>
+          <div class="field"><label data-i18n="lblSatDuveP">Satılan düve (yıllık)</label><input type="number" id="satDuve" value="0" min="0" data-default="0"></div>
+          <div class="field"><label data-i18n="lblAlinanS">Dışarıdan alınan inek</label><input type="number" id="alinan" value="0" min="0" data-default="0"></div>
         </div>
         <div class="field">
-          <label>Satılan erkek dana (yıllık)</label>
+          <label data-i18n="lblSatErkekP">Satılan erkek dana (yıllık)</label>
           <input type="number" id="satErkek" value="0" min="0" data-default="0">
           <div class="check-row" id="checkErkek" onclick="toggleCheck('checkErkek','cbErkek')" style="margin-top:5px;">
             <input type="checkbox" id="cbErkek"><div class="custom-check"></div><span class="check-label">Tamamı satılsın</span>
@@ -739,39 +820,39 @@ input[type="checkbox"]{display:none;}
     <div class="scenario-panel" id="panel-startup">
       <div class="startup-info"><strong>🏗 Sıfırdan Kuruluş</strong><br>Yalnızca gebe düvelerle kurulan işletme senaryosu.</div>
       <div class="form-section">
-        <div class="section-label">Başlangıç Hayvan Varlığı</div>
+        <div class="section-label" data-i18n="secMevcutSuru">Başlangıç Hayvan Varlığı</div>
         <div class="field-row">
-          <div class="field"><label>Toplam Gebe Düve</label><input type="number" id="s_gebeDuve" value="50" min="1" data-default="50"></div>
-          <div class="field"><label>Ort. Gebelik Günü</label><div class="input-unit"><input type="number" id="s_gebeDuveGun" value="150" min="1" max="283" data-default="150"><span class="unit">gün</span></div></div>
+          <div class="field"><label data-i18n="lblTopGebeDuve">Toplam Gebe Düve</label><input type="number" id="s_gebeDuve" value="50" min="1" data-default="50"></div>
+          <div class="field"><label data-i18n="lblGebeGunS">Ort. Gebelik Günü</label><div class="input-unit"><input type="number" id="s_gebeDuveGun" value="150" min="1" max="283" data-default="150"><span class="unit">gün</span></div></div>
         </div>
         <div class="field-row">
-          <div class="field"><label>İlave Boğa</label><input type="number" id="s_boga" value="2" min="0" data-default="2"></div>
-          <div class="field"><label>İlk Tohumlama Yaşı</label><div class="input-unit"><input type="number" id="s_ilkTohum" value="15" min="10" max="24" data-default="15"><span class="unit">ay</span></div></div>
+          <div class="field"><label data-i18n="lblIlaveBoga">İlave Boğa</label><input type="number" id="s_boga" value="2" min="0" data-default="2"></div>
+          <div class="field"><label data-i18n="lblIlkTohumS">İlk Tohumlama Yaşı</label><div class="input-unit"><input type="number" id="s_ilkTohum" value="15" min="10" max="24" data-default="15"><span class="unit">ay</span></div></div>
         </div>
         <div class="field-row">
-          <div class="field"><label>Maks. tohumlama (düve)</label><div class="input-unit"><input type="number" id="s_maksTohum" value="5" min="2" max="10" data-default="5"><span class="unit">kez</span></div></div>
+          <div class="field"><label data-i18n="lblMaksTohumDuveS">Maks. tohumlama (düve)</label><div class="input-unit"><input type="number" id="s_maksTohum" value="5" min="2" max="10" data-default="5"><span class="unit">kez</span></div></div>
         </div>
       </div>
       <div class="form-section">
-        <div class="section-label">Üreme Parametreleri</div>
+        <div class="section-label" data-i18n="secTohum">Üreme Parametreleri</div>
         <div class="field-row">
-          <div class="field"><label>CR (İnek)</label><div class="input-unit"><input type="number" id="s_crInek" value="50" min="10" max="80" step="0.5" data-default="50"><span class="unit">%</span></div></div>
-          <div class="field"><label>CR (Düve)</label><div class="input-unit"><input type="number" id="s_crDuve" value="62" min="10" max="85" step="0.5" data-default="62"><span class="unit">%</span></div></div>
+          <div class="field"><label data-i18n="lblCrInekP">CR (İnek)</label><div class="input-unit"><input type="number" id="s_crInek" value="50" min="10" max="80" step="0.5" data-default="50"><span class="unit">%</span></div></div>
+          <div class="field"><label data-i18n="lblCrDuveP">CR (Düve)</label><div class="input-unit"><input type="number" id="s_crDuve" value="62" min="10" max="85" step="0.5" data-default="62"><span class="unit">%</span></div></div>
         </div>
         <div class="field-row">
-          <div class="field"><label>Dişi doğum — İnek</label><div class="input-unit"><input type="number" id="s_disiOranInek" value="50" min="30" max="70" step="0.5" data-default="50"><span class="unit">%</span></div></div>
-          <div class="field"><label>Dişi doğum — Düve</label><div class="input-unit"><input type="number" id="s_disiOranDuve" value="50" min="30" max="70" step="0.5" data-default="50"><span class="unit">%</span></div></div>
+          <div class="field"><label data-i18n="lblDisiInekP">Dişi doğum — İnek</label><div class="input-unit"><input type="number" id="s_disiOranInek" value="50" min="30" max="70" step="0.5" data-default="50"><span class="unit">%</span></div></div>
+          <div class="field"><label data-i18n="lblDisiDuveP">Dişi doğum — Düve</label><div class="input-unit"><input type="number" id="s_disiOranDuve" value="50" min="30" max="70" step="0.5" data-default="50"><span class="unit">%</span></div></div>
         </div>
         <div class="field-row">
-          <div class="field"><label>İkiz doğum oranı</label><div class="input-unit"><input type="number" id="s_ikiz" value="3" min="0" max="15" data-default="3"><span class="unit">%</span></div></div>
-          <div class="field"><label>Açık Gün Ort.</label><div class="input-unit"><input type="number" id="s_acikGun" value="110" min="0" max="365" data-default="110"><span class="unit">gün</span></div></div>
+          <div class="field"><label data-i18n="lblIkizS">İkiz doğum oranı</label><div class="input-unit"><input type="number" id="s_ikiz" value="3" min="0" max="15" data-default="3"><span class="unit">%</span></div></div>
+          <div class="field"><label data-i18n="lblAcikGunP">Açık Gün Ort.</label><div class="input-unit"><input type="number" id="s_acikGun" value="110" min="0" max="365" data-default="110"><span class="unit">gün</span></div></div>
         </div>
         <div class="field-row">
-          <div class="field"><label>VWP</label><div class="input-unit"><input type="number" id="s_vwpInek" value="50" min="0" max="120" data-default="50"><span class="unit">gün</span></div></div>
-          <div class="field"><label>Konv. Sperma — İnek</label><div class="input-unit"><input type="number" id="s_spermaInek" value="2.2" min="1" max="10" step="0.1" data-default="2.2"><span class="unit">doz</span></div></div>
+          <div class="field"><label data-i18n="lblVwpP">VWP</label><div class="input-unit"><input type="number" id="s_vwpInek" value="50" min="0" max="120" data-default="50"><span class="unit">gün</span></div></div>
+          <div class="field"><label data-i18n="lblKonvInekP">Konv. Sperma — İnek</label><div class="input-unit"><input type="number" id="s_spermaInek" value="2.2" min="1" max="10" step="0.1" data-default="2.2"><span class="unit">doz</span></div></div>
         </div>
         <div class="field-row">
-          <div class="field"><label>Konv. Sperma — Düve</label><div class="input-unit"><input type="number" id="s_spermaDuve" value="1.8" min="1" max="10" step="0.1" data-default="1.8"><span class="unit">doz</span></div></div>
+          <div class="field"><label data-i18n="lblKonvDuveP">Konv. Sperma — Düve</label><div class="input-unit"><input type="number" id="s_spermaDuve" value="1.8" min="1" max="10" step="0.1" data-default="1.8"><span class="unit">doz</span></div></div>
         </div>
       </div>
       <div class="sexed-section">
@@ -783,12 +864,12 @@ input[type="checkbox"]{display:none;}
           </div>
           <div id="sexedBodyInek_startup" style="display:none;">
             <div class="field-row">
-              <div class="field"><label>Sexed CR — İnek</label><div class="input-unit"><input type="number" id="s_sexedCrInek" value="35" data-default="35"><span class="unit">%</span></div></div>
-              <div class="field"><label>Sexed doz/gebelik</label><div class="input-unit"><input type="number" id="s_sexedDozInek" value="3.0" step="0.1" data-default="3.0"><span class="unit">doz</span></div></div>
+              <div class="field"><label data-i18n="lblSexedCrInekS">Sexed CR — İnek</label><div class="input-unit"><input type="number" id="s_sexedCrInek" value="35" data-default="35"><span class="unit">%</span></div></div>
+              <div class="field"><label data-i18n="lblSexedDozS">Sexed doz/gebelik</label><div class="input-unit"><input type="number" id="s_sexedDozInek" value="3.0" step="0.1" data-default="3.0"><span class="unit">doz</span></div></div>
             </div>
             <div class="field-row">
-              <div class="field"><label>Sexed uygulama oranı</label><div class="input-unit"><input type="number" id="s_sexedOranInek" value="50" step="5" data-default="50"><span class="unit">%</span></div></div>
-              <div class="field"><label>Geb. öncesi sexed doz</label><div class="input-unit"><input type="number" id="s_sexedOnceInek" value="2" data-default="2"><span class="unit">doz</span></div></div>
+              <div class="field"><label data-i18n="lblSexedOranS">Sexed uygulama oranı</label><div class="input-unit"><input type="number" id="s_sexedOranInek" value="50" step="5" data-default="50"><span class="unit">%</span></div></div>
+              <div class="field"><label data-i18n="lblSexedOnceS">Geb. öncesi sexed doz</label><div class="input-unit"><input type="number" id="s_sexedOnceInek" value="2" data-default="2"><span class="unit">doz</span></div></div>
             </div>
           </div>
           <div style="display:flex;align-items:center;justify-content:space-between;margin-top:9px;margin-bottom:5px;">
@@ -797,12 +878,12 @@ input[type="checkbox"]{display:none;}
           </div>
           <div id="sexedBodyDuve_startup" style="display:none;">
             <div class="field-row">
-              <div class="field"><label>Sexed CR — Düve</label><div class="input-unit"><input type="number" id="s_sexedCrDuve" value="45" data-default="45"><span class="unit">%</span></div></div>
-              <div class="field"><label>Sexed doz/gebelik</label><div class="input-unit"><input type="number" id="s_sexedDozDuve" value="2.5" step="0.1" data-default="2.5"><span class="unit">doz</span></div></div>
+              <div class="field"><label data-i18n="lblSexedCrDuveS">Sexed CR — Düve</label><div class="input-unit"><input type="number" id="s_sexedCrDuve" value="45" data-default="45"><span class="unit">%</span></div></div>
+              <div class="field"><label data-i18n="lblSexedDozS">Sexed doz/gebelik</label><div class="input-unit"><input type="number" id="s_sexedDozDuve" value="2.5" step="0.1" data-default="2.5"><span class="unit">doz</span></div></div>
             </div>
             <div class="field-row">
-              <div class="field"><label>Sexed uygulama oranı</label><div class="input-unit"><input type="number" id="s_sexedOranDuve" value="80" step="5" data-default="80"><span class="unit">%</span></div></div>
-              <div class="field"><label>Geb. öncesi sexed doz</label><div class="input-unit"><input type="number" id="s_sexedOnceDuve" value="1" data-default="1"><span class="unit">doz</span></div></div>
+              <div class="field"><label data-i18n="lblSexedOranS">Sexed uygulama oranı</label><div class="input-unit"><input type="number" id="s_sexedOranDuve" value="80" step="5" data-default="80"><span class="unit">%</span></div></div>
+              <div class="field"><label data-i18n="lblSexedOnceS">Geb. öncesi sexed doz</label><div class="input-unit"><input type="number" id="s_sexedOnceDuve" value="1" data-default="1"><span class="unit">doz</span></div></div>
             </div>
           </div>
           <div style="font-size:.7rem;color:var(--muted);margin-top:7px;">Sexed sperma ile dişi dogum oranı <strong style="color:var(--accent2)">%85-92</strong> olur.</div>
@@ -811,23 +892,23 @@ input[type="checkbox"]{display:none;}
       <div class="form-section">
         <div class="section-label">Ölüm ve Yönetim</div>
         <div class="field-row">
-          <div class="field"><label>Buzağı ölüm</label><div class="input-unit"><input type="number" id="s_olumBuz" value="5" data-default="5"><span class="unit">%</span></div></div>
-          <div class="field"><label>Genç hayvan ölüm</label><div class="input-unit"><input type="number" id="s_olumGen" value="2" data-default="2"><span class="unit">%</span></div></div>
+          <div class="field"><label data-i18n="lblOlumBuzP">Buzağı ölüm</label><div class="input-unit"><input type="number" id="s_olumBuz" value="5" data-default="5"><span class="unit">%</span></div></div>
+          <div class="field"><label data-i18n="lblOlumGenP">Genç hayvan ölüm</label><div class="input-unit"><input type="number" id="s_olumGen" value="2" data-default="2"><span class="unit">%</span></div></div>
         </div>
         <div class="field-row">
-          <div class="field"><label>İnek ölüm</label><div class="input-unit"><input type="number" id="s_olumInek" value="3" data-default="3"><span class="unit">%</span></div></div>
-          <div class="field"><label>Reform</label><div class="input-unit"><input type="number" id="s_reform" value="20" data-default="20"><span class="unit">%</span></div></div>
+          <div class="field"><label data-i18n="lblOlumInekP">İnek ölüm</label><div class="input-unit"><input type="number" id="s_olumInek" value="3" data-default="3"><span class="unit">%</span></div></div>
+          <div class="field"><label data-i18n="lblReformP">Reform</label><div class="input-unit"><input type="number" id="s_reform" value="20" data-default="20"><span class="unit">%</span></div></div>
         </div>
         <div class="field-row">
-          <div class="field"><label>Maks. Laktasyon</label><div class="input-unit"><input type="number" id="s_maksLaktasyonInek" value="5" data-default="5"><span class="unit">lak.</span></div></div>
-          <div class="field"><label>Maks. Tohumlama</label><div class="input-unit"><input type="number" id="s_maksTohumInek" value="5" data-default="5"><span class="unit">kez</span></div></div>
+          <div class="field"><label data-i18n="lblMaksLakP">Maks. Laktasyon</label><div class="input-unit"><input type="number" id="s_maksLaktasyonInek" value="5" data-default="5"><span class="unit">lak.</span></div></div>
+          <div class="field"><label data-i18n="lblMaksTohumP">Maks. Tohumlama</label><div class="input-unit"><input type="number" id="s_maksTohumInek" value="5" data-default="5"><span class="unit">kez</span></div></div>
         </div>
         <div class="field-row">
-          <div class="field"><label>Kuru dönem</label><div class="input-unit"><input type="number" id="s_kuruGun" value="60" data-default="60"><span class="unit">gün</span></div></div>
-          <div class="field"><label>Satılan düve (yıllık)</label><input type="number" id="s_satDuve" value="0" data-default="0"></div>
+          <div class="field"><label data-i18n="lblKurudonem">Kuru dönem</label><div class="input-unit"><input type="number" id="s_kuruGun" value="60" data-default="60"><span class="unit">gün</span></div></div>
+          <div class="field"><label data-i18n="lblSatDuveP">Satılan düve (yıllık)</label><input type="number" id="s_satDuve" value="0" data-default="0"></div>
         </div>
         <div class="field">
-          <label>Satılan erkek dana (yıllık)</label>
+          <label data-i18n="lblSatErkekP">Satılan erkek dana (yıllık)</label>
           <input type="number" id="s_satErkek" value="0" data-default="0">
           <div class="check-row" id="s_checkErkek" onclick="toggleCheck('s_checkErkek','s_cbErkek')" style="margin-top:5px;">
             <input type="checkbox" id="s_cbErkek"><div class="custom-check"></div><span class="check-label">Tamamı satılsın</span>
@@ -836,7 +917,186 @@ input[type="checkbox"]{display:none;}
       </div>
     </div>
 
-    <button class="btn-calc" onclick="hesapla()">&#128290; 60 Ay Projeksiyonu Hesapla</button>
+    <!-- ═══ FİNANSAL ANALİZ PANELİ ═══ -->
+<div class="fin-toggle" onclick="document.getElementById('finansCheck').click()">
+  <input type="checkbox" id="finansCheck" onclick="event.stopPropagation();toggleFinans(this.checked)">
+  <label id="finToggleLabel" for="finansCheck" style="cursor:pointer;">💰 Finansal Analiz Modülü</label>
+</div>
+<div id="finansPanel" style="display:none;">
+
+  <!-- Para Birimi & Yatırım -->
+  <div class="fin-panel">
+    <div class="fin-panel-title" id="finCurrencyTitle">💱 Para Birimi & Yatırım Parametreleri</div>
+    <div class="fin-grid">
+      <div class="input-group">
+        <label data-i18n="finCurrencyTitle">Para Birimi</label>
+        <div style="display:flex;gap:0;margin-top:4px;border:1.5px solid var(--border);border-radius:8px;overflow:hidden;width:fit-content;">
+          <button class="cur-btn active" id="curTL2" onclick="setCurrency('TL')">₺ TL</button>
+          <button class="cur-btn" id="curUSD2" onclick="setCurrency('USD')">$ USD</button>
+        </div>
+      </div>
+      <div class="input-group">
+        <label data-i18n="finUsdRate">USD/TL Kur</label>
+        <input type="number" id="finUSDrate" placeholder="35" min="1" step="0.5">
+      </div>
+      <div class="input-group">
+        <label data-i18n="finYatirim">Toplam Yatırım (<span class="cur-sym">₺</span>)</label>
+        <input type="number" id="finToplYatirim" placeholder="0" min="0">
+      </div>
+      <div class="input-group">
+        <label data-i18n="finTaksit">Aylık Kredi Taksiti (<span class="cur-sym">₺</span>)</label>
+        <input type="number" id="finAylikTaksit" placeholder="0" min="0">
+      </div>
+    </div>
+  </div>
+
+  <!-- Süt Geliri -->
+  <div class="fin-panel">
+    <div class="fin-panel-title" id="finMilkTitle">🥛 Süt Geliri — 6 Aylık Fiyat Döngüsü</div>
+    <div style="font-size:.72rem;color:var(--muted);margin-bottom:10px;" id="finMilkDesc">
+      Devlet desteği ve kalite primi dahil toplam alım fiyatını girin.
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="milk-table">
+        <thead><tr>
+          <th class="milk-th">Ay</th>
+          <th class="milk-th">Süt (L/baş/gün)</th>
+          <th class="milk-th">Fiyat (<span class="cur-sym">₺</span>/L)</th>
+        </tr></thead>
+        <tbody id="milkRows"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Hayvan Gelirleri -->
+  <div class="fin-panel">
+    <div class="fin-panel-title" id="finHayvanTitle">🐄 Hayvan Gelirleri</div>
+    <div class="fin-grid">
+      <div class="input-group">
+        <label data-i18n="finKarkas">Karkas Et Fiyatı (<span class="cur-sym">₺</span>/kg)</label>
+        <input type="number" id="finKarkasKg" placeholder="500" min="0">
+        <div class="fin-note-inline" id="finKarkasNote">Reform ineği: ort. 550 kg × %52 randıman × fiyat</div>
+      </div>
+      <div class="input-group">
+        <label>Düve Satış Fiyatı (<span class="cur-sym">₺</span>/baş) <span style="color:var(--muted);font-size:.65rem;">(boş=0)</span></label>
+        <input type="number" id="finDuveFiyat" placeholder="Opsiyonel" min="0">
+      </div>
+    </div>
+    <!-- Erkek Buzağı -->
+    <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <input type="checkbox" id="besiCheck" onchange="toggleBesi(this.checked)" style="width:18px;height:18px;accent-color:var(--blue);">
+        <label for="besiCheck" id="finErkekCheckLabel" style="font-size:.78rem;color:var(--text);cursor:pointer;">Erkek buzağıları besi için ayır</label>
+      </div>
+      <div id="direktSatisPanel" class="fin-grid">
+        <div class="input-group">
+          <label data-i18n="finErkekFiyat">Erkek Buzağı Satış Fiyatı (<span class="cur-sym">₺</span>/baş)</label>
+          <input type="number" id="finErkekFiyat" placeholder="8000" min="0">
+        </div>
+      </div>
+      <div class="besi-panel" id="besiPanel" style="display:none;">
+        <div class="fin-grid-3">
+          <div class="input-group">
+            <label data-i18n="finBesiSure">Besi Süresi (ay)</label>
+            <input type="number" id="besiSure" value="12" min="1" max="24">
+          </div>
+          <div class="input-group">
+            <label data-i18n="finBesiMaliyet">Aylık Besi Maliyeti (<span class="cur-sym">₺</span>/baş)</label>
+            <input type="number" id="besiAylikMaliyet" placeholder="3000" min="0">
+          </div>
+          <div class="input-group">
+            <label data-i18n="finBesiAgirlik">Besi Sonu Canlı Ağırlık (kg)</label>
+            <input type="number" id="besiAgirlik" value="550" min="200">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Giderler -->
+  <div class="fin-panel">
+    <div class="fin-panel-title" id="finGiderTitle">📊 Giderler</div>
+    <div style="font-size:.72rem;color:var(--muted);margin-bottom:12px;" id="finGiderDesc">
+      Boş bırakılan kalemler Türkiye çiftlik verisi katsayılarıyla hesaplanır
+    </div>
+    <div class="fin-grid">
+      <div class="input-group">
+        <label data-i18n="finBesleme">Besleme (<span class="cur-sym">₺</span>/baş/gün)</label>
+        <input type="number" id="finBesleme" placeholder="Opsiyonel" min="0">
+        <div class="fin-note-inline" id="finBeslemeNote">boş = Türkiye verisi: gelirin %67'si</div>
+      </div>
+      <div class="input-group">
+        <label data-i18n="finIscilik">İşçilik (<span class="cur-sym">₺</span>/baş/ay)</label>
+        <input type="number" id="finIscilik" placeholder="Opsiyonel" min="0">
+        <div class="fin-note-inline" id="finIscNote">boş = Türkiye verisi: %23.5</div>
+      </div>
+      <div class="input-group">
+        <label data-i18n="finDiger">Enerji+Bakım+İşletme (<span class="cur-sym">₺</span>/baş/ay)</label>
+        <input type="number" id="finDiger" placeholder="Opsiyonel" min="0">
+        <div class="fin-note-inline" id="finDigerNote">boş = Türkiye verisi: %9.4</div>
+      </div>
+      <div class="input-group">
+        <label data-i18n="finAmort">Ekipman Amortismanı (<span class="cur-sym">₺</span>/baş/ay)</label>
+        <input type="number" id="finAmort" placeholder="Opsiyonel" min="0">
+        <div class="fin-note-inline" id="finAmortNote">boş = Türkiye verisi: %1.5</div>
+      </div>
+      <div class="input-group">
+        <label data-i18n="finKonvSperma">Konvansiyonel Sperma (<span class="cur-sym">₺</span>/doz)</label>
+        <input type="number" id="finKonvSperma" value="300" min="0">
+      </div>
+      <div class="input-group">
+        <label data-i18n="finSexedSperma">Sexed Sperma (<span class="cur-sym">₺</span>/doz)</label>
+        <input type="number" id="finSexedSperma" value="1200" min="0">
+      </div>
+    </div>
+  </div>
+
+  <!-- Veteriner -->
+  <div class="fin-panel">
+    <div class="fin-panel-title" id="finVetTitle">🏥 Veteriner & Hastalık Giderleri</div>
+    <div style="font-size:.72rem;color:var(--muted);margin-bottom:12px;" id="finVetDesc">
+      Prevalans (%) girin → maliyet otomatik hesaplanır (tedavi + verim kaybı).
+    </div>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase;margin-bottom:8px;" id="finCowDisTitle">İnek Hastalıkları</div>
+    <div class="dis-grid">
+      <div class="dis-row"><label>Klinik Ketozis</label><input type="number" id="dKet" placeholder="5" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
+      <div class="dis-row"><label>Retensio Secundinarum</label><input type="number" id="dRet" placeholder="8" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
+      <div class="dis-row"><label>Klinik Hipokalsemi</label><input type="number" id="dHipo" placeholder="5" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
+      <div class="dis-row"><label>Sol Abomazum Deplasmanı</label><input type="number" id="dLDA" placeholder="3" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
+      <div class="dis-row"><label>Sağ Abomazum Deplasmanı</label><input type="number" id="dRDA" placeholder="0.5" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
+      <div class="dis-row"><label>Klinik Topallık</label><input type="number" id="dTop" placeholder="15" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
+      <div class="dis-row"><label>Klinik Metritis</label><input type="number" id="dMet" placeholder="20" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
+      <div class="dis-row"><label>Ovaryum Kistleri</label><input type="number" id="dOvk" placeholder="10" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
+    </div>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase;margin:12px 0 8px;" id="finCalfDisTitle">Buzağı Hastalıkları (0–2 ay)</div>
+    <div class="dis-grid">
+      <div class="dis-row"><label>Buzağı İshali</label><input type="number" id="dBuzI" placeholder="25" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
+      <div class="dis-row"><label>Buzağı Pnömonisi</label><input type="number" id="dBuzP" placeholder="15" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
+    </div>
+    <div style="font-size:.68rem;color:var(--muted);margin-top:10px;font-style:italic;" id="finVetNoteEl">
+      Maliyet = tedavi gideri + verim kaybı (Türkiye verisi ile uyumlu uluslararası literatür)
+    </div>
+  </div>
+
+  <!-- Hesapla Butonları -->
+  <div style="display:flex;gap:10px;margin:16px 0;flex-wrap:wrap;">
+    <button class="btn-calc" id="finHesaplaBtn" onclick="hesaplaFinans()" style="background:linear-gradient(135deg,var(--gold),#8b6509);">
+      💰 Finansal Analiz Hesapla
+    </button>
+    <button class="btn-calc" id="finSimHesaplaBtn" onclick="hesaplaSimVeFinans()" style="background:linear-gradient(135deg,var(--accent),#1a5c26);font-size:.75rem;">
+      🔗 Simülasyon + Finansal Birlikte Hesapla
+    </button>
+  </div>
+  <div style="font-size:.72rem;color:var(--muted);margin-bottom:16px;line-height:1.8;">
+    <div id="finNote1">ⓘ <strong>Finansal Analiz Hesapla:</strong> Sadece finansal sonuçları günceller.</div>
+    <div id="finNote2">ⓘ <strong>Simülasyon + Finansal:</strong> Önce sürü simülasyonu çalışır, ardından finansal analiz eklenir.</div>
+  </div>
+
+</div>
+<!-- Finansal Sonuçlar -->
+<div id="finansResults"></div>
+
+<button class="btn-calc" onclick="hesapla()">&#128290; <span id="calcBtnTxt">60 Ay Projeksiyonu Hesapla</span></button>
     <button class="btn-reset" onclick="sifirla()">↺ Sıfırla</button>
   </div>
 </div>
@@ -856,192 +1116,17 @@ input[type="checkbox"]{display:none;}
 </div>
 </div>
 
-<!-- FİNANS SEKMESİ -->
-<div class="tab-content" id="tab_finans">
-<!-- ═══════════════════════════════════════
-     FİNANSAL ANALİZ PANELİ — Ayrı Sekme
-═══════════════════════════════════════ -->
-<div id="finansTabPanel" style="margin-top:16px;">
-
-  <!-- Finansal Parametre Formu -->
-  <div id="finansFormArea">
-
-    <!-- Para Birimi & Yatırım -->
-    <div class="fin-panel">
-      <div class="fin-panel-title">💱 Para Birimi &amp; Yatırım Parametreleri</div>
-      <div class="fin-grid">
-        <div class="input-group">
-          <label>Para Birimi</label>
-          <div style="display:flex;gap:0;margin-top:4px;border:1.5px solid var(--border);border-radius:8px;overflow:hidden;width:fit-content;">
-            <button class="cur-btn active" id="curTL2" onclick="setCurrency('TL')">₺ TL</button>
-            <button class="cur-btn" id="curUSD2" onclick="setCurrency('USD')">$ USD</button>
-          </div>
-        </div>
-        <div class="input-group">
-          <label>USD/TL Kur <span style="color:var(--muted);font-size:.65rem;">(boş=35)</span></label>
-          <input type="number" id="finUSDrate" placeholder="35" min="1" step="0.5">
-        </div>
-        <div class="input-group">
-          <label>Toplam Yatırım (<span class="cur-sym">₺</span>) <span style="color:var(--muted);font-size:.65rem;">(ROI için)</span></label>
-          <input type="number" id="finToplYatirim" placeholder="0" min="0">
-        </div>
-        <div class="input-group">
-          <label>Aylık Kredi Taksiti (<span class="cur-sym">₺</span>) <span style="color:var(--muted);font-size:.65rem;">(başabaş için)</span></label>
-          <input type="number" id="finAylikTaksit" placeholder="0" min="0">
-        </div>
-      </div>
-    </div>
-
-    <!-- Süt Geliri -->
-    <div class="fin-panel">
-      <div class="fin-panel-title">🥛 Süt Geliri — 6 Aylık Fiyat Döngüsü</div>
-      <div style="font-size:.72rem;color:var(--muted);margin-bottom:10px;">
-        Devlet desteği ve kalite primi <strong>dahil</strong> toplam alım fiyatını girin.
-      </div>
-      <div style="overflow-x:auto;">
-        <table class="milk-table">
-          <thead><tr>
-            <th>Ay</th>
-            <th>Süt (L/baş/gün)</th>
-            <th>Fiyat (<span class="cur-sym">₺</span>/L)</th>
-          </tr></thead>
-          <tbody id="milkRows"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- Hayvan Gelirleri -->
-    <div class="fin-panel">
-      <div class="fin-panel-title">🐄 Hayvan Gelirleri</div>
-      <div class="fin-grid">
-        <div class="input-group">
-          <label>Karkas Et Fiyatı (<span class="cur-sym">₺</span>/kg)</label>
-          <input type="number" id="finKarkasKg" placeholder="500" min="0">
-          <div class="fin-note-inline">Reform ineği: ort. 550 kg × %52 randıman × fiyat</div>
-        </div>
-        <div class="input-group">
-          <label>Düve Satış Fiyatı (<span class="cur-sym">₺</span>/baş)</label>
-          <input type="number" id="finDuveFiyat" placeholder="25000" min="0">
-        </div>
-      </div>
-      <!-- Erkek Buzağı -->
-      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:1.5px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;">Erkek Buzağı</div>
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-          <input type="checkbox" id="besiCheck" onchange="toggleBesi(this.checked)" style="width:18px;height:18px;accent-color:var(--blue);">
-          <label for="besiCheck" style="font-size:.78rem;color:var(--text);cursor:pointer;">Erkek buzağıları besi için ayır</label>
-        </div>
-        <div id="direktSatisPanel" class="fin-grid">
-          <div class="input-group">
-            <label>Erkek Buzağı Satış Fiyatı (<span class="cur-sym">₺</span>/baş)</label>
-            <input type="number" id="finErkekFiyat" placeholder="8000" min="0">
-          </div>
-        </div>
-        <div class="besi-panel" id="besiPanel" style="display:none;">
-          <div class="fin-grid-3">
-            <div class="input-group">
-              <label>Besi Süresi (ay)</label>
-              <input type="number" id="besiSure" value="12" min="1" max="24">
-            </div>
-            <div class="input-group">
-              <label>Aylık Besi Maliyeti (<span class="cur-sym">₺</span>/baş) <span style="color:var(--muted);font-size:.65rem;">(boş=oto)</span></label>
-              <input type="number" id="besiAylikMaliyet" placeholder="3000" min="0">
-            </div>
-            <div class="input-group">
-              <label>Besi Sonu Canlı Ağırlık (kg)</label>
-              <input type="number" id="besiAgirlik" value="550" min="200">
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Giderler -->
-    <div class="fin-panel">
-      <div class="fin-panel-title">📊 Giderler <span style="font-size:.62rem;color:var(--muted);font-weight:400;letter-spacing:0;">— boş = Türkiye çiftlik verisi katsayıları (KBEY/AKS 2025-26)</span></div>
-      <div class="fin-grid">
-        <div class="input-group">
-          <label>Besleme (<span class="cur-sym">₺</span>/baş/gün) <span style="color:var(--muted);font-size:.65rem;">(boş=%67)</span></label>
-          <input type="number" id="finBesleme" placeholder="Opsiyonel" min="0">
-        </div>
-        <div class="input-group">
-          <label>İşçilik (<span class="cur-sym">₺</span>/baş/ay) <span style="color:var(--muted);font-size:.65rem;">(boş=%23.5)</span></label>
-          <input type="number" id="finIscilik" placeholder="Opsiyonel" min="0">
-        </div>
-        <div class="input-group">
-          <label>Enerji+Bakım+İşletme (<span class="cur-sym">₺</span>/baş/ay) <span style="color:var(--muted);font-size:.65rem;">(boş=%9.4)</span></label>
-          <input type="number" id="finDiger" placeholder="Opsiyonel" min="0">
-        </div>
-        <div class="input-group">
-          <label>Ekipman Amortismanı (<span class="cur-sym">₺</span>/baş/ay) <span style="color:var(--muted);font-size:.65rem;">(boş=%1.5)</span></label>
-          <input type="number" id="finAmort" placeholder="Opsiyonel" min="0">
-        </div>
-        <div class="input-group">
-          <label>Konvansiyonel Sperma (<span class="cur-sym">₺</span>/doz)</label>
-          <input type="number" id="finKonvSperma" value="300" min="0">
-        </div>
-        <div class="input-group">
-          <label>Sexed Sperma (<span class="cur-sym">₺</span>/doz)</label>
-          <input type="number" id="finSexedSperma" value="1200" min="0">
-        </div>
-      </div>
-    </div>
-
-    <!-- Veteriner & Hastalık -->
-    <div class="fin-panel">
-      <div class="fin-panel-title">🏥 Veteriner &amp; Hastalık Giderleri</div>
-      <div style="font-size:.72rem;color:var(--muted);margin-bottom:12px;">
-        Prevalans (%) girin → maliyet litaratür bazlı otomatik hesaplanır (tedavi + verim kaybı).
-      </div>
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase;margin-bottom:8px;">İnek Hastalıkları</div>
-      <div class="dis-grid">
-        <div class="dis-row"><label>Klinik Ketozis<span class="dis-lit">$289/vaka — McArt 2015</span></label><input type="number" id="dKet" placeholder="5" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
-        <div class="dis-row"><label>Retensio Secundinarum<span class="dis-lit">$389/vaka — Gohary 2018</span></label><input type="number" id="dRet" placeholder="8" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
-        <div class="dis-row"><label>Klinik Hipokalsemi<span class="dis-lit">$334/vaka — Oetzel 2013</span></label><input type="number" id="dHipo" placeholder="5" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
-        <div class="dis-row"><label>Sol Abomazum Deplasmanı<span class="dis-lit">$432/vaka — Liang 2017</span></label><input type="number" id="dLDA" placeholder="3" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
-        <div class="dis-row"><label>Sağ Abomazum Deplasmanı<span class="dis-lit">$640/vaka — Liang 2017</span></label><input type="number" id="dRDA" placeholder="0.5" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
-        <div class="dis-row"><label>Klinik Topallık<span class="dis-lit">$333/vaka — Dolecheck 2018</span></label><input type="number" id="dTop" placeholder="15" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
-        <div class="dis-row"><label>Klinik Metritis<span class="dis-lit">$386/vaka — Overton 2008</span></label><input type="number" id="dMet" placeholder="20" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
-        <div class="dis-row"><label>Ovaryum Kistleri<span class="dis-lit">$179/vaka — Gröhn 1990</span></label><input type="number" id="dOvk" placeholder="10" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
-      </div>
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase;margin:12px 0 8px;">Buzağı Hastalıkları (0–2 ay)</div>
-      <div class="dis-grid">
-        <div class="dis-row"><label>Buzağı İshali<span class="dis-lit">$42/vaka — USDA 2019</span></label><input type="number" id="dBuzI" placeholder="25" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
-        <div class="dis-row"><label>Buzağı Pnömonisi<span class="dis-lit">$65/vaka — Dubrovsky 2019</span></label><input type="number" id="dBuzP" placeholder="15" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
-      </div>
-    </div>
-
-    <!-- Finansal Hesapla Butonu -->
-    <div style="display:flex;gap:10px;margin:16px 0;flex-wrap:wrap;">
-      <button class="btn-calc" onclick="hesaplaFinans()" style="background:linear-gradient(135deg,var(--gold),#8b6509);">
-        💰 Finansal Analiz Hesapla
-      </button>
-      <button class="btn-calc" onclick="hesaplaSimVeFinans()" style="background:linear-gradient(135deg,var(--accent),#1a5c26);font-size:.75rem;">
-        🔗 Simülasyon + Finansal Birlikte Hesapla
-      </button>
-    </div>
-    <div style="font-size:.72rem;color:var(--muted);margin-bottom:16px;">
-      ⓘ <strong>Finansal Analiz Hesapla:</strong> Sadece finansal sonuçları günceller (önceki simülasyon verisi kullanılır).<br>
-      ⓘ <strong>Simülasyon + Finansal:</strong> Önce sürü simülasyonu çalışır, ardından finansal analiz otomatik eklenir.
-    </div>
-
-  </div>
-
-  <!-- Finansal Sonuçlar -->
-  <div id="finansResults"></div>
-
-</div>
-
+<div class="tab-content" id="tab_finans" style="display:none;">
 </div>
 
 <div style="text-align:center;padding:6px 0 2px;">
   <span onclick="openAdminOverlay()" style="font-size:.5rem;color:rgba(0,0,0,.06);cursor:pointer;user-select:none;">&#9881;</span>
 </div>
-
 </div>
 </div>
 
 <script>
+
 
 
 
@@ -1649,8 +1734,47 @@ document.addEventListener("DOMContentLoaded",function(){
 
 
 
+
 </script>
 <script>
+
+function buildYorumAlani(rows, totGelir, totGider, totKar, totSut, totErkek, totReform, marj, erkekKatki, finObj) {
+  var html = "";
+  html += "<div style=\"background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:20px;margin-top:16px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.05);\">";
+  html += "<div style=\"font-family:'Barlow Condensed',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);border-bottom:2px solid rgba(184,134,11,.15);padding-bottom:7px;margin-bottom:14px;\">"+i("finYorumTitle")+"</div>";
+  var yorumlar = [];
+  // 1. Karlılık
+  if(marj > 15) yorumlar.push({tip:"pos", ikon:"checkmark", aciklama: currentLang==="en"?"Net margin of "+marj.toFixed(1)+"% over 60 months indicates a financially healthy operation. This profitability provides resilience against feed price increases.":"60 aylık net marj %"+marj.toFixed(1)+" ile işletme finansal açıdan sağlıklı görünmektedir. Bu karlılık, yem fiyatı artışlarına karşı dayanıklılık sağlar."});
+  else if(marj > 5) yorumlar.push({tip:"uyari", ikon:"warning", aciklama: currentLang==="en"?"Net margin of "+marj.toFixed(1)+"% is acceptable but leaves limited buffer. Focus on feed efficiency and reproduction to improve margins.":"Net marj %"+marj.toFixed(1)+" kabul edilebilir düzeyde ancak tampon alan kısıtlıdır. Yem verimliliği ve reprodüksiyona odaklanılması önerilir."});
+  else if(marj > -5) yorumlar.push({tip:"uyari", ikon:"triangle", aciklama: currentLang==="en"?"The operation is near break-even. Any unexpected cost or price change could push it into loss. Immediate review of feed contracts is recommended.":"İşletme başabaş noktasına yakın çalışmaktadır. Beklenmedik maliyet veya fiyat değişimi zarar bölgesine geçişe yol açabilir."});
+  else yorumlar.push({tip:"neg", ikon:"cross", aciklama: currentLang==="en"?"Persistent losses (margin "+marj.toFixed(1)+"%). Structural review needed: feed costs, reproduction, and revenue diversification must be addressed urgently.":"Kalıcı zarar (marj %"+marj.toFixed(1)+"). Yapısal değerlendirme zorunlu: yem maliyetleri, reprodüksiyon ve gelir çeşitlendirmesi acil ele alınmalıdır."});
+  // 2. Erkek bağımlılık
+  if(erkekKatki > 20) yorumlar.push({tip:"uyari", ikon:"warning", aciklama: currentLang==="en"?""+erkekKatki.toFixed(1)+"% of revenue from male calves creates vulnerability. Male calf price drops directly threaten profitability. Consider sexed semen or feedlot integration.":"Gelirin %"+erkekKatki.toFixed(1)+"'i erkek hayvandan gelmektedir. Erkek buzağı fiyat düşüşü karlılığı doğrudan tehdit eder. Sexed sperma veya besi entegrasyonu değerlendirilebilir."});
+  // 3. Zararlı ay
+  var zararliAy=0; for(var zi=0;zi<rows.length;zi++) if(rows[zi].netKar<0) zararliAy++;
+  if(zararliAy > 12) yorumlar.push({tip:"neg", ikon:"warning", aciklama: currentLang==="en"?zararliAy+" of 60 months show losses. Maintain at least 3 months operating expenses as working capital buffer.":zararliAy+" zararlı ay görülmektedir. En az 3 aylık işletme gideri karşılığı çalışma sermayesi tamponu bulundurulmalıdır."});
+  else if(zararliAy > 0) yorumlar.push({tip:"bilgi", ikon:"info", aciklama: currentLang==="en"?zararliAy+" seasonal loss months. Align loan repayments with profitable periods.":zararliAy+" mevsimsel zararlı ay. Kredi ödemeleri karlı aylara denk getirilmeli."});
+  // 4. ROI
+  if(finObj && finObj.yatirim > 0) {
+    var roi2 = totKar/finObj.yatirim*100;
+    var gdA = finObj.geriDonumAy;
+    if(gdA>0&&gdA<=36) yorumlar.push({tip:"pos", ikon:"checkmark", aciklama: currentLang==="en"?"Payback in "+gdA+" months ("+Math.floor(gdA/12)+"y "+gdA%12+"m), ROI "+roi2.toFixed(1)+"% — strong investment performance above industry average.":"Yatırım "+gdA+" ayda geri dönüyor ("+Math.floor(gdA/12)+" yıl "+gdA%12+" ay), ROI %"+roi2.toFixed(1)+" — sektör ortalamasının üzerinde güçlü yatırım performansı."});
+    else if(gdA>36) yorumlar.push({tip:"uyari", ikon:"warning", aciklama: currentLang==="en"?"Payback period exceeds 3 years. Review financing structure and consider operational efficiency improvements.":"Geri dönüş süresi 3 yılı aşmaktadır. Finansman yapısı ve operasyonel verimlilik iyileştirmeleri gözden geçirilmelidir."});
+    else yorumlar.push({tip:"neg", ikon:"cross", aciklama: currentLang==="en"?"Investment not recovered within 60 months. Fundamental operational changes are required.":"Yatırım 60 ay içinde geri dönmemektedir. Temel operasyonel değişiklikler gereklidir."});
+  }
+  // Render
+  var tipColors = {pos:["rgba(45,122,58,.06)","rgba(45,122,58,.25)","var(--accent)"], neg:["rgba(192,57,43,.06)","rgba(192,57,43,.25)","var(--danger)"], uyari:["rgba(184,134,11,.06)","rgba(184,134,11,.25)","var(--gold)"], bilgi:["rgba(36,113,163,.06)","rgba(36,113,163,.25)","var(--blue)"]};
+  var tipIkonlar = {pos:"✅", neg:"❌", uyari:"⚠️", bilgi:"ℹ️"};
+  for(var yi=0;yi<yorumlar.length;yi++){
+    var y=yorumlar[yi], c=tipColors[y.tip]||tipColors.bilgi;
+    html += "<div style=\"background:"+c[0]+";border:1.5px solid "+c[1]+";border-radius:10px;padding:13px 16px;margin-bottom:10px;\">"
+      +"<div style=\"font-size:.77rem;color:"+c[2]+";line-height:1.7;\">"+(tipIkonlar[y.tip]||"•")+" "+y.aciklama+"</div></div>";
+  }
+  html += "</div>";
+  return html;
+}
+
+
 
 // ═══════════════════════════════════════════════════════
 // GELECEK60 v4.1 — Finansal Analiz Modülü
@@ -1794,15 +1918,15 @@ function calcFinans(snaps, params){
 
     // ── GELİRLER ──
     var sutGelir     = lak*milkL*30*milkP;
-    var reformGelir  = (snap.yeniReformInek||0)*reformKarkasGelir;
-    var duveGelir    = (snap.yeniSatDuve||0)*duveFiyat;
+    var reformGelir  = (snap.reformInek||0)*reformKarkasGelir;
+    var duveGelir    = (snap.satDuveAct||0)*duveFiyat;
 
     var erkekGelir=0, besiGelir=0, besiMaliyeti=0;
     if(!besiAktif){
-      erkekGelir = (snap.yeniErkekDana||0)*erkekFiy;
+      erkekGelir = (snap.erkekBuzagi||0)*erkekFiy;
     } else {
       // Besi: bu ay doğan erkekler besiSure ay sonra satılır
-      var yeniErkek = snap.yeniErkekDana||0;
+      var yeniErkek = snap.erkekBuzagi||0;
       if(yeniErkek>0) besineBekleyen.push({bitisAy: ay+besiSure, sayi:yeniErkek});
       // Bu ay biten besiler
       for(var b=besineBekleyen.length-1;b>=0;b--){
@@ -1990,7 +2114,7 @@ function renderFinansResults(finObj){
   // Gelir pasta alternatifi — yatay bar
   html+="<div style=\"background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:16px;\">";
   html+="<div style=\"font-size:.68rem;font-weight:700;color:var(--text);margin-bottom:10px;\">Gelir Dağılımı</div>";
-  var gelirKalemler=[["Süt",totSut,"var(--accent)"],["Reform",totReform,"var(--gold)"],["Erkek/Besi",totErkek,"var(--blue)"],["Düve",totDuve,"var(--purple)"]];
+  var gelirKalemler=[[i("finSutGelir"),totSut,"var(--accent)"],[i("finReformGelir"),totReform,"var(--gold)"],[i("finErkekGelir"),totErkek,"var(--blue)"],["Düve",totDuve,"var(--purple)"]];
   gelirKalemler.forEach(function(g){
     var pct=totGelir>0?g[1]/totGelir*100:0;
     html+="<div style=\"margin-bottom:8px;\"><div style=\"display:flex;justify-content:space-between;font-size:.72rem;margin-bottom:3px;\"><span>"+g[0]+"</span><span>%"+pct.toFixed(1)+" · "+fmtM(g[1])+"</span></div>"
@@ -2000,7 +2124,7 @@ function renderFinansResults(finObj){
   // Gider dağılımı
   html+="<div style=\"background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:16px;\">";
   html+="<div style=\"font-size:.68rem;font-weight:700;color:var(--text);margin-bottom:10px;\">Gider Dağılımı</div>";
-  var giderKalemler=[["Besleme",totBesleme],["İşçilik",totIsc],["Sağmal Amort.",totSag],["Diğer Op.",totDig],["Sperma",totSper],["Veteriner/İlaç",totVet]];
+  var giderKalemler=[[i("finGiderBesleme"),totBesleme],[i("finGiderIsc"),totIsc],[i("finGiderSagAmort"),totSag],[i("finGiderDig"),totDig],[i("finGiderSperma"),totSper],[i("finGiderVet"),totVet]];
   giderKalemler.forEach(function(g){
     var pct=totGider>0?g[1]/totGider*100:0;
     html+="<div style=\"margin-bottom:8px;\"><div style=\"display:flex;justify-content:space-between;font-size:.72rem;margin-bottom:3px;\"><span>"+g[0]+"</span><span>%"+pct.toFixed(1)+"</span></div>"
@@ -2009,7 +2133,8 @@ function renderFinansResults(finObj){
   html+="</div></div>";
 
   // ── DUYARLILIK ANALİZİ ──
-  html+="<div style=\"font-family:'Barlow Condensed',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);border-bottom:2px solid rgba(184,134,11,.15);padding-bottom:7px;margin-bottom:12px;\">🔍 Duyarlılık Analizi (60 Ay Net Kâr Etkisi)</div>";
+  html+="<div style=\"font-family:'Barlow Condensed',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);border-bottom:2px solid rgba(184,134,11,.15);padding-bottom:7px;margin-bottom:12px;\">🔍 "+i("finDuyarTitle")+"</div>";
+  html+="<div style=\"font-size:.75rem;color:var(--muted);margin-bottom:14px;line-height:1.7;background:#f5f0e8;padding:12px 16px;border-radius:8px;border-left:3px solid var(--gold);\">"+i("finDuyarDesc")+"</div>";
   html+="<div class=\"sens-grid\">";
 
   function sensDelta(degisken, delta_pct){
@@ -2127,10 +2252,9 @@ function renderFinansResults(finObj){
   html+="</tbody></table></div>";
 
   html+="</div>"; // sekmeler
+  html += buildYorumAlani(rows, totGelir, totGider, totKar, totSut, totErkek, totReform, marj, erkekKatki, finObj);
   html+="<div style=\"font-size:.67rem;color:var(--muted);margin-top:10px;line-height:1.7;font-style:italic;\">"
-    +"* Besleme katsayısı: %67 (KBEY/AKS P&L 2025-2026) &nbsp;|&nbsp; İşçilik: %23.5 &nbsp;|&nbsp; Sağmal amortisman: simülasyon parametrelerinden otomatik<br>"
-    +"* Hastalık maliyetleri: tedavi + verim kaybı literatür bazlı (McArt 2015, Liang 2017, Gohary 2018, Dolecheck 2018, Overton 2008)<br>"
-    +"* Erkek hayvan katkısı uyarısı: Türkiye gerçek verisi ile kıyaslanmaktadır (Ocak 2026 VÖK erkek hariç: %-15.7)"
+    +"* "+i("finLitNote")
     +"</div>";
   html+="</div>";
 
@@ -2148,168 +2272,663 @@ function finTab(tab,btn){
 }
 
 
+
 </script>
 <script>
-// ═══ FORM ETİKETLERİ İ18N ═══
-// Tüm form input etiketlerini, butonları, tablo başlıklarını TR/EN çevirir
+// ═══════════════════════════════════════════════
+// GELECEK60 v4.3 — TAM İ18N SİSTEMİ
+// Tüm metinler buradan yönetilir — TR/EN
+// ═══════════════════════════════════════════════
 
-var FORM_I18N = {
+var I18N = {
   tr: {
-    // Senaryo panelleri
-    'MEVCUT İŞLETME VERİLERİ': 'MEVCUT İŞLETME VERİLERİ',
-    'MEVCUT SÜRÜ YAPISI (BAŞ)': 'MEVCUT SÜRÜ YAPISI (BAŞ)',
-    'İnek (Laktasyon)': 'İnek (Laktasyon)',
-    'İnek (Kuru)': 'İnek (Kuru)',
-    'Düve (15-24 ay)': 'Düve (15-24 ay)',
-    'Boğa': 'Boğa',
-    'Dişi Buzağı (0-2 ay)': 'Dişi Buzağı (0-2 ay)',
-    'Dişi Buzağı (3-6 ay)': 'Dişi Buzağı (3-6 ay)',
-    'Dişi Dana (7-14 ay)': 'Dişi Dana (7-14 ay)',
-    'Erkek Dana (0-6 ay)': 'Erkek Dana (0-6 ay)',
-    'Ortalama Laktasyon No': 'Ortalama Laktasyon No',
-    'GEBELİK DURUMU': 'GEBELİK DURUMU',
-    'Gebe İnek (Laktasyon)': 'Gebe İnek (Laktasyon)',
-    'Gebe İnek - Gebelik Günü': 'Gebe İnek - Gebelik Günü',
-    'Gebe İnek - Kuruya Kalan Gün': 'Gebe İnek - Kuruya Kalan Gün',
-    'Gebe Düve': 'Gebe Düve',
-    'Gebe Düve - Gebelik Günü': 'Gebe Düve - Gebelik Günü',
-    'TOHUMLAMA & REPRODÜKSİYON': 'TOHUMLAMA & REPRODÜKSİYON',
-    'Gebelik Oranı - İnek (CR%)': 'Gebelik Oranı - İnek (CR%)',
-    'Gebelik Oranı - Düve (CR%)': 'Gebelik Oranı - Düve (CR%)',
-    'Açık Gün (Ort.)': 'Açık Gün (Ort.)',
-    'Kuru Gün': 'Kuru Gün',
-    'VWP (Gönüllü Bekleme Süresi)': 'VWP (Gönüllü Bekleme Süresi)',
-    'İlk Tohumlama Yaşı (Düve, ay)': 'İlk Tohumlama Yaşı (Düve, ay)',
-    'Maks. Tohumlama - İnek': 'Maks. Tohumlama - İnek',
-    'Sperma/Gebelik - İnek': 'Sperma/Gebelik - İnek',
-    'Sperma/Gebelik - Düve': 'Sperma/Gebelik - Düve',
-    'Dişi Oran - İnek (%)': 'Dişi Oran - İnek (%)',
-    'Dişi Oran - Düve (%)': 'Dişi Oran - Düve (%)',
-    'İkiz Doğum Oranı (%)': 'İkiz Doğum Oranı (%)',
-    'ÖLÜM ORANLARI': 'ÖLÜM ORANLARI',
-    'Buzağı Ölüm Oranı (%)': 'Buzağı Ölüm Oranı (%)',
-    'Genç Hayvan Ölüm Oranı (%)': 'Genç Hayvan Ölüm Oranı (%)',
-    'İnek Ölüm Oranı (%)': 'İnek Ölüm Oranı (%)',
-    'REFORM & YÖNETİM': 'REFORM & YÖNETİM',
-    'Yıllık Reform Oranı (%)': 'Yıllık Reform Oranı (%)',
-    'Maks. Laktasyon No': 'Maks. Laktasyon No',
-    'HAYVAN HAREKETLERİ': 'HAYVAN HAREKETLERİ',
-    'Aylık Düve Satışı (baş)': 'Aylık Düve Satışı (baş)',
-    'Aylık Erkek Satışı (baş)': 'Aylık Erkek Satışı (baş)',
-    'Aylık Dışarıdan Alınan (baş)': 'Aylık Dışarıdan Alınan (baş)',
-    '60 Ay Projeksiyonu Hesapla': '60 Ay Projeksiyonu Hesapla',
-    'Sıfırla': 'Sıfırla',
+    // Auth
+    loginTitle: "Hesabınıza giriş yapın",
+    registerTitle: "Yeni hesap oluşturun",
+    username: "Kullanıcı Adı",
+    password: "Şifre",
+    passwordAgain: "Şifre Tekrar",
+    loginBtn: "Giriş Yap",
+    registerBtn: "Kayıt Ol",
+    noAccount: "Hesabınız yok mu?",
+    haveAccount: "Zaten hesabınız var mı?",
+    signUp: "Kayıt olun",
+    signIn: "Giriş yapın",
+    // App
+    appSubtitle: "60 Aylık Sürü Projeksiyonu · Hayvan Varlığı & Finansal Analiz",
+    mevcut: "Mevcut İşletme",
+    startup: "Sıfırdan Kuruluş",
+    tabSim: "Sürü Simülasyonu",
+    tabFin: "Finansal Analiz",
+    calcBtn: "60 Ay Projeksiyonu Hesapla",
+    resetBtn: "Sıfırla",
+    mySims: "Simülasyonlarım",
+    save: "Kaydet",
+    logout: "Çıkış",
+    close: "Kapat",
+    compare: "Karşılaştır",
+    load: "Yükle",
+    // Userbar
+    // Simülasyon form bölümleri
+    secMevcutVeri: "MEVCUT İŞLETME VERİLERİ",
+    secMevcutSuru: "MEVCUT SÜRÜ YAPISI (BAŞ)",
+    secGebeDurum: "GEBELİK DURUMU",
+    secTohum: "TOHUMLAMA & REPRODÜKSİYON",
+    secSpermaInek: "SPERMA — İNEK",
+    secSpermaDuve: "SPERMA — DÜVE",
+    secOlum: "ÖLÜM ORANLARI",
+    secReform: "REFORM VE YÖNETİM",
+    secHareket: "HAYVAN HAREKETLERİ",
+    // Form etiketleri — Mevcut
+    lblLaktasyon: "İnek (Laktasyon)",
+    lblKuru: "İnek (Kuru)",
+    lblDuve: "Düve (15-24 ay)",
+    lblBoga: "Boğa",
+    lblBuz02: "Dişi Buzağı (0-2 ay)",
+    lblBuz36: "Dişi Buzağı (3-6 ay)",
+    lblDana714: "Dişi Dana (7-14 ay)",
+    lblErkekDana: "Erkek Dana (0-6 ay)",
+    lblOrtLak: "Ortalama Laktasyon No",
+    lblGebeInek: "Gebe İnek (Laktasyon)",
+    lblGebeInekGun: "Gebe İnek - Gebelik Günü",
+    lblGebeInekKuru: "Gebe İnek - Kuruya Kalan Gün",
+    lblGebeDuve: "Gebe Düve",
+    lblGebeDuveGun: "Gebe Düve - Gebelik Günü",
+    lblCrInek: "Gebelik Oranı - İnek (CR%)",
+    lblCrDuve: "Gebelik Oranı - Düve (CR%)",
+    lblAcikGun: "Açık Gün (Ort.)",
+    lblKuruGun: "Kuru Gün",
+    lblVwp: "VWP (Gönüllü Bekleme Süresi)",
+    lblIlkTohum: "İlk Tohumlama Yaşı (Düve, ay)",
+    lblMaksTohum: "Maks. Tohumlama - İnek",
+    lblSpermaInek: "Sperma/Gebelik - İnek",
+    lblSpermaDuve: "Sperma/Gebelik - Düve",
+    lblDisiOranInek: "Dişi Oran - İnek (%)",
+    lblDisiOranDuve: "Dişi Oran - Düve (%)",
+    lblIkiz: "İkiz Doğum Oranı (%)",
+    lblOlumBuz: "Buzağı Ölüm Oranı (%)",
+    lblOlumGen: "Genç Hayvan Ölüm Oranı (%)",
+    lblOlumInek: "İnek Ölüm Oranı (%)",
+    lblReform: "Reform (İskarta) Oranı (%)",
+    lblMaksLak: "Maks. Laktasyon No",
+    lblMaksTohInek: "Maks. Tohumlama - İnek",
+    lblSatDuve: "Aylık Düve Satışı (baş)",
+    lblSatErkek: "Aylık Erkek Satışı (baş)",
+    lblAlinan: "Aylık Dışarıdan Alınan (baş)",
+    lblKurudonem: "Kuru dönem",
+    // Finansal panel
+    finTitle: "Finansal Analiz Modülü",
+    finCurrencyTitle: "Para Birimi & Yatırım Parametreleri",
+    finUsdRate: "USD/TL Kur",
+    finYatirim: "Toplam Yatırım",
+    finTaksit: "Aylık Kredi Taksiti",
+    finMilkTitle: "Süt Geliri — 6 Aylık Fiyat Döngüsü",
+    finMilkDesc: "Devlet desteği ve kalite primi dahil toplam alım fiyatını girin.",
+    finMilkMonth: "Ay",
+    finMilkLitre: "Süt (L/baş/gün)",
+    finMilkPrice: "Fiyat/L",
+    finHayvanTitle: "Hayvan Gelirleri",
+    finKarkas: "Karkas Et Fiyatı (₺/kg)",
+    finKarkasNote: "Reform ineği: ort. 550 kg × %52 randıman × fiyat",
+    finErkekCheck: "Erkek buzağıları besi için ayır",
+    finErkekFiyat: "Erkek Buzağı Satış Fiyatı",
+    finBesiSure: "Besi Süresi (ay)",
+    finBesiMaliyet: "Aylık Besi Maliyeti",
+    finBesiAgirlik: "Besi Sonu Canlı Ağırlık (kg)",
+    finGiderTitle: "Giderler",
+    finGiderDesc: "Boş bırakılan kalemler Türkiye çiftlik verisi katsayılarıyla hesaplanır",
+    finBesleme: "Besleme (baş/gün)",
+    finBeslemeNote: "boş = Türkiye verisi: gelirin %67'si",
+    finIscilik: "İşçilik (baş/ay)",
+    finIscNote: "boş = Türkiye verisi: %23.5",
+    finDiger: "Enerji+Bakım+İşletme (baş/ay)",
+    finDigerNote: "boş = Türkiye verisi: %9.4",
+    finAmort: "Ekipman Amortismanı (baş/ay)",
+    finAmortNote: "boş = Türkiye verisi: %1.5",
+    finKonvSperma: "Konvansiyonel Sperma (doz fiyatı)",
+    finSexedSperma: "Sexed Sperma (doz fiyatı)",
+    finVetTitle: "Veteriner & Hastalık Giderleri",
+    finVetDesc: "Prevalans (%) girin → maliyet literatür bazlı otomatik hesaplanır (tedavi + verim kaybı).",
+    finCowDis: "İnek Hastalıkları",
+    finCalfDis: "Buzağı Hastalıkları (0–2 ay)",
+    finVetNote: "Maliyet = tedavi gideri + verim kaybı (Türkiye verisi ile uyumlu uluslararası literatür)",
+    finHesapla: "Finansal Analiz Hesapla",
+    finSimHesapla: "Simülasyon + Finansal Birlikte Hesapla",
+    finHesaplaNote1: "Finansal Analiz Hesapla: Sadece finansal sonuçları günceller (önceki simülasyon verisi kullanılır).",
+    finHesaplaNote2: "Simülasyon + Finansal: Önce sürü simülasyonu çalışır, ardından finansal analiz otomatik eklenir.",
+    // Finansal sonuç
+    finKpiTitle: "60 Aylık Finansal Özet",
+    finTopGelir: "Toplam Gelir",
+    finTopGider: "Toplam Gider",
+    finNetKar: "Net Kâr/Zarar",
+    finNetMarj: "Net Marj",
+    finAylikOrt: "Aylık Ort. K/Z",
+    finErkekKatki: "Erkek Hayvan Katkısı",
+    finKarliAy: "Karlı Ay",
+    finZararliAy: "Zararlı Ay",
+    finRoiTitle: "Başabaş & Yatırım Geri Dönüşü",
+    finTopYatirim: "Toplam Yatırım",
+    finGeriDonus: "Geri Dönüş Süresi",
+    finRoi: "ROI (60 ay)",
+    finNakitTitle: "Aylık Nakit Akışı",
+    finNakitNote: "Yeşil=karlı ay, Kırmızı=zararlı ay",
+    finGelirDagTitle: "Gelir & Gider Dağılımı (60 Ay Toplam)",
+    finGelirDag: "Gelir Dağılımı",
+    finGiderDag: "Gider Dağılımı",
+    finSutGelir: "Süt",
+    finReformGelir: "Reform İneği",
+    finErkekGelir: "Erkek/Besi",
+    finDuyarTitle: "Duyarlılık Analizi",
+    finDuyarDesc: "Duyarlılık analizi, bir parametredeki değişimin (örn. süt fiyatı %10 artarsa) toplam 60 aylık net kâra etkisini gösterir. İşletmenin hangi parametreye ne kadar duyarlı olduğunu anlayarak risk yönetimi yapmanıza yardımcı olur.",
+    finDuyarSutFiyat: "Süt Fiyatı Değişimi",
+    finDuyarYem: "Yem Maliyeti Değişimi",
+    finDuyarErkek: "Erkek Hayvan Fiyatı",
+    finDuyarKarkas: "Karkas Fiyatı",
+    finDuyarEtki: "60 Ay Net Kâra Etkisi",
+    finYorumTitle: "Finansal Değerlendirme & Yönlendirme",
+    finDetayTitle: "Aylık Detay",
+    finDonemTitle: "Dönemsel Özet",
+    finGelirDetay: "Gelir Detayı",
+    finGiderDetay: "Gider Detayı",
+    finTabAy: "Ay",
+    finTabLak: "Lak.İnek",
+    finTabSutGelir: "Süt Geliri",
+    finTabReform: "Reform",
+    finTabErkek: "Erkek/Besi",
+    finTabTopGelir: "Top.Gelir",
+    finTabBesleme: "Besleme",
+    finTabIscilik: "İşçilik",
+    finTabSagAmort: "Sğ.Amort",
+    finTabSperma: "Sperma",
+    finTabVet: "Veteriner",
+    finTabDiger: "Diğer",
+    finTabTopGider: "Top.Gider",
+    finTabNetKZ: "Net K/Z",
+    finTabKumKZ: "Küm.K/Z",
+    finTabDonem: "Dönem",
+    finTabTopGelirD: "Toplam Gelir",
+    finTabTopGiderD: "Toplam Gider",
+    finTabNetKZD: "Net K/Z",
+    finTabMarj: "Marj",
+    finTabOrtLak: "Ort.Lak.",
+    finTabErkekKatki: "Erkek Katkı%",
+    finLitNote: "Besleme ve işçilik katsayıları Türkiye verisi bazlıdır. Hastalık maliyetleri: tedavi + verim kaybı (uluslararası literatür).",
+    finKritikBulgu: "Kritik Bulgu",
+    finKritikAciklama: "Toplam gelirin {pct}% erkek hayvandan geliyor. Erkek hayvan hariç net marj: {marj}%. Gerçek Türkiye çiftlik verileriyle örtüşmektedir.",
+    finYilDonus: "yıl",
+    finAyDonus: "ay",
+    finAyIcinde: "60 ay içinde yeterli değil",
+    finBBNakitAy: "Nakit başabaş",
+    finBBNakitYok: "60 ay içinde yok",
+    finAylikTaksit: "Aylık taksit",
+    finKayipTimeline: "Kırmızı=zarar dönemi | Yeşil=kar dönemi | Altın=geri dönüş noktası",
+    finErkekHaric: "Erkek hayvan hariç net marj",
+    finSutGelirLabel: "Süt Geliri",
+    finGiderBesleme: "Besleme",
+    finGiderIsc: "İşçilik",
+    finGiderSagAmort: "Sağmal Amort.",
+    finGiderDig: "Diğer Op.",
+    finGiderSperma: "Sperma",
+    finGiderVet: "Veteriner/İlaç",
+    // Admin
+    adminPanel: "Admin Paneli",
+    adminLogin: "Admin Girişi",
+    adminWrong: "Hatalı kullanıcı adı veya şifre.",
+    tabOzet: "Özet",
+    tabKullanici: "Kullanıcılar",
+    tabBenchmark: "Benchmark",
+    tabTrend: "Trend",
+    tabStats: "İstatistik",
+    exportExcel: "Excel İndir",
+    freeze: "Dondur",
+    unfreeze: "Aktifleştir",
+    deleteUser: "Sil",
+    frozenMsg: "Hesabınız dondurulmuştur. Yönetici ile iletişime geçin.",
+    // Toast
+    savedOk: "Simülasyon kaydedildi!",
+    saveFirst: "Önce hesaplama yapın.",
+    loadedOk: "Kayıt yüklendi. Hesapla butonuna basın.",
+    deleteConfirm: "Bu simülasyonu silmek istediğinizden emin misiniz?",
+    deletedOk: "Silindi.",
+    noSaves: "Henüz kayıt yok.",
+    loading: "Yükleniyor...",
+    errRequired: "Kullanıcı adı ve şifre gereklidir.",
+    errMismatch: "Şifreler eşleşmiyor.",
+    errShort: "Şifre en az 6 karakter olmalı.",
+    errNotFound: "Bu kullanıcı adı kayıtlı değil.",
+    errWrongPass: "Şifre yanlış.",
+    errInUse: "Bu kullanıcı adı zaten alınmış.",
+    errNetwork: "İnternet bağlantısı sorunu.",
+    errGeneral: "Giriş başarısız. Tekrar deneyin.",
+    finHesaplaOnce: "Önce simülasyon hesaplaması yapın.",
+    finTamam: "Finansal analiz tamamlandı!",
+    finSimTamam: "Simülasyon + finansal analiz tamamlandı!",
+    qrTitle: "Program QR Kodu",
+    qrDesc: "QR kodu okutarak programa ulaşın",
+    qrDownload: "QR İndir",
+    compareTitle: "Simülasyon Karşılaştırma",
+    compareSelect: "Karşılaştırmak için 2 simülasyon seçin",
+    lblGebeInekL: "Gebe İnek (Laktasyonda)",
+    lblGebeInekGunL: "Ort. Gebelik Günü (Lak.)",
+    lblGebeInekKuruL: "Ort. Kuru Gebelik Günü",
+    lblAcikGunOrt: "Açık Gün Ortalaması",
+    lblVwpL: "Gönüllü Bekleme (VWP)",
+    lblCrInekS: "CR — İnek",
+    lblOrtLakS: "Ort. Laktasyon Sayısı",
+    lblGebeDuveS: "Gebe Düve Sayısı",
+    lblGebeGunS: "Ort. Gebelik Günü",
+    lblIlkTohumS: "İlk Tohumlama Yaşı",
+    lblCrDuveS: "CR — Düve",
+    lblMaksTohumDuveS: "Maks. tohumlama (düve)",
+    lblKonvDozS: "Konv. doz/gebelik",
+    lblDisiOranS: "Dişi doğum oranı",
+    lblSexedCrInekS: "Sexed CR — İnek",
+    lblSexedDozS: "Sexed doz/gebelik",
+    lblSexedOranS: "Sexed uygulama oranı",
+    lblSexedOnceS: "Geb. öncesi sexed doz",
+    lblSexedCrDuveS: "Sexed CR — Düve",
+    lblIkizS: "İkiz doğum oranı",
+    lblOlumBuzS: "Buzağı ölüm (0-6 ay)",
+    lblOlumGenP: "Genç hayvan ölüm",
+    lblOlumInekS: "Erişkin inek ölüm",
+    lblReformS: "Reform (iskarta)",
+    lblMaksLakS: "Maks. Laktasyon (inek)",
+    lblMaksTohumInekS: "Maks. Tohumlama (inek)",
+    lblSatDuveP: "Satılan düve (yıllık)",
+    lblAlinanS: "Dışarıdan alınan inek",
+    lblSatErkekP: "Satılan erkek dana (yıllık)",
+    lblTopGebeDuve: "Toplam Gebe Düve",
+    lblIlaveBoga: "İlave Boğa",
+    lblCrInekP: "CR (İnek)",
+    lblCrDuveP: "CR (Düve)",
+    lblDisiInekP: "Dişi doğum — İnek",
+    lblDisiDuveP: "Dişi doğum — Düve",
+    lblAcikGunP: "Açık Gün Ort.",
+    lblVwpP: "VWP",
+    lblKonvInekP: "Konv. Sperma — İnek",
+    lblKonvDuveP: "Konv. Sperma — Düve",
+    lblOlumBuzP: "Buzağı ölüm",
+    lblOlumInekP: "İnek ölüm",
+    lblReformP: "Reform",
+    lblMaksLakP: "Maks. Laktasyon",
+    lblMaksTohumP: "Maks. Tohumlama",
   },
   en: {
-    'MEVCUT İŞLETME VERİLERİ': 'CURRENT FARM DATA',
-    'MEVCUT SÜRÜ YAPISI (BAŞ)': 'CURRENT HERD STRUCTURE (HEAD)',
-    'İnek (Laktasyon)': 'Cow (Lactating)',
-    'İnek (Kuru)': 'Cow (Dry)',
-    'Düve (15-24 ay)': 'Heifer (15-24 mo)',
-    'Boğa': 'Bull',
-    'Dişi Buzağı (0-2 ay)': 'Female Calf (0-2 mo)',
-    'Dişi Buzağı (3-6 ay)': 'Female Calf (3-6 mo)',
-    'Dişi Dana (7-14 ay)': 'Female Yearling (7-14 mo)',
-    'Erkek Dana (0-6 ay)': 'Male Calf (0-6 mo)',
-    'Ortalama Laktasyon No': 'Avg. Lactation No.',
-    'GEBELİK DURUMU': 'PREGNANCY STATUS',
-    'Gebe İnek (Laktasyon)': 'Pregnant Cow (Lact.)',
-    'Gebe İnek - Gebelik Günü': 'Preg. Cow - Days Pregnant',
-    'Gebe İnek - Kuruya Kalan Gün': 'Preg. Cow - Days to Dry',
-    'Gebe Düve': 'Pregnant Heifer',
-    'Gebe Düve - Gebelik Günü': 'Preg. Heifer - Days Pregnant',
-    'TOHUMLAMA & REPRODÜKSİYON': 'INSEMINATION & REPRODUCTION',
-    'Gebelik Oranı - İnek (CR%)': 'Conception Rate - Cow (CR%)',
-    'Gebelik Oranı - Düve (CR%)': 'Conception Rate - Heifer (CR%)',
-    'Açık Gün (Ort.)': 'Days Open (Avg.)',
-    'Kuru Gün': 'Dry Days',
-    'VWP (Gönüllü Bekleme Süresi)': 'VWP (Voluntary Waiting Period)',
-    'İlk Tohumlama Yaşı (Düve, ay)': 'First Service Age (Heifer, mo)',
-    'Maks. Tohumlama - İnek': 'Max. Services - Cow',
-    'Sperma/Gebelik - İnek': 'Doses/Pregnancy - Cow',
-    'Sperma/Gebelik - Düve': 'Doses/Pregnancy - Heifer',
-    'Dişi Oran - İnek (%)': 'Female Ratio - Cow (%)',
-    'Dişi Oran - Düve (%)': 'Female Ratio - Heifer (%)',
-    'İkiz Doğum Oranı (%)': 'Twin Birth Rate (%)',
-    'ÖLÜM ORANLARI': 'MORTALITY RATES',
-    'Buzağı Ölüm Oranı (%)': 'Calf Mortality (%)',
-    'Genç Hayvan Ölüm Oranı (%)': 'Young Stock Mortality (%)',
-    'İnek Ölüm Oranı (%)': 'Cow Mortality (%)',
-    'REFORM & YÖNETİM': 'CULLING & MANAGEMENT',
-    'Yıllık Reform Oranı (%)': 'Annual Culling Rate (%)',
-    'Maks. Laktasyon No': 'Max. Lactation No.',
-    'HAYVAN HAREKETLERİ': 'ANIMAL MOVEMENTS',
-    'Aylık Düve Satışı (baş)': 'Monthly Heifer Sales (head)',
-    'Aylık Erkek Satışı (baş)': 'Monthly Male Sales (head)',
-    'Aylık Dışarıdan Alınan (baş)': 'Monthly Purchased (head)',
-    '60 Ay Projeksiyonu Hesapla': 'Calculate 60-Month Projection',
-    'Sıfırla': 'Reset',
-    // Section labels in startup scenario
-    'SIFIRDAN KURULUŞ VERİLERİ': 'GREENFIELD STARTUP DATA',
-    'BAŞLANGIÇ SÜRÜSÜ': 'INITIAL HERD',
-    'KURULUŞ TOHUMLAMA PARAMETRELERİ': 'STARTUP INSEMINATION PARAMETERS',
+    // Auth
+    loginTitle: "Sign in to your account",
+    registerTitle: "Create a new account",
+    username: "Username",
+    password: "Password",
+    passwordAgain: "Confirm Password",
+    loginBtn: "Login",
+    registerBtn: "Register",
+    noAccount: "Don't have an account?",
+    haveAccount: "Already have an account?",
+    signUp: "Sign up",
+    signIn: "Sign in",
+    // App
+    appSubtitle: "60-Month Herd Projection · Animal Inventory & Financial Analysis",
+    mevcut: "Existing Farm",
+    startup: "Greenfield Startup",
+    tabSim: "Herd Simulation",
+    tabFin: "Financial Analysis",
+    calcBtn: "Calculate 60-Month Projection",
+    resetBtn: "Reset",
+    mySims: "My Simulations",
+    save: "Save",
+    logout: "Logout",
+    close: "Close",
+    compare: "Compare",
+    load: "Load",
+    // Simülasyon form bölümleri
+    secMevcutVeri: "CURRENT FARM DATA",
+    secMevcutSuru: "CURRENT HERD STRUCTURE (HEAD)",
+    secGebeDurum: "PREGNANCY STATUS",
+    secTohum: "INSEMINATION & REPRODUCTION",
+    secSpermaInek: "SEMEN — COW",
+    secSpermaDuve: "SEMEN — HEIFER",
+    secOlum: "MORTALITY RATES",
+    secReform: "CULLING & MANAGEMENT",
+    secHareket: "ANIMAL MOVEMENTS",
+    // Form etiketleri
+    lblLaktasyon: "Cow (Lactating)",
+    lblKuru: "Cow (Dry)",
+    lblDuve: "Heifer (15-24 mo)",
+    lblBoga: "Bull",
+    lblBuz02: "Female Calf (0-2 mo)",
+    lblBuz36: "Female Calf (3-6 mo)",
+    lblDana714: "Female Yearling (7-14 mo)",
+    lblErkekDana: "Male Calf (0-6 mo)",
+    lblOrtLak: "Avg. Lactation No.",
+    lblGebeInek: "Pregnant Cow (Lact.)",
+    lblGebeInekGun: "Preg. Cow - Days Pregnant",
+    lblGebeInekKuru: "Preg. Cow - Days to Dry",
+    lblGebeDuve: "Pregnant Heifer",
+    lblGebeDuveGun: "Preg. Heifer - Days Pregnant",
+    lblCrInek: "Conception Rate - Cow (CR%)",
+    lblCrDuve: "Conception Rate - Heifer (CR%)",
+    lblAcikGun: "Days Open (Avg.)",
+    lblKuruGun: "Dry Days",
+    lblVwp: "VWP (Voluntary Waiting Period)",
+    lblIlkTohum: "First Service Age (Heifer, mo)",
+    lblMaksTohum: "Max. Services - Cow",
+    lblSpermaInek: "Doses/Pregnancy - Cow",
+    lblSpermaDuve: "Doses/Pregnancy - Heifer",
+    lblDisiOranInek: "Female Ratio - Cow (%)",
+    lblDisiOranDuve: "Female Ratio - Heifer (%)",
+    lblIkiz: "Twin Birth Rate (%)",
+    lblOlumBuz: "Calf Mortality (%)",
+    lblOlumGen: "Young Stock Mortality (%)",
+    lblOlumInek: "Cow Mortality (%)",
+    lblReform: "Annual Culling Rate (%)",
+    lblMaksLak: "Max. Lactation No.",
+    lblMaksTohInek: "Max. Services - Cow",
+    lblSatDuve: "Monthly Heifer Sales (head)",
+    lblSatErkek: "Monthly Male Sales (head)",
+    lblAlinan: "Monthly Purchased (head)",
+    lblKurudonem: "Dry period",
+    // Finansal panel
+    finTitle: "Financial Analysis Module",
+    finCurrencyTitle: "Currency & Investment Parameters",
+    finUsdRate: "USD/TRY Rate",
+    finYatirim: "Total Investment",
+    finTaksit: "Monthly Loan Payment",
+    finMilkTitle: "Milk Revenue — 6-Month Price Cycle",
+    finMilkDesc: "Enter the total purchase price including government support and quality premium.",
+    finMilkMonth: "Month",
+    finMilkLitre: "Milk (L/cow/day)",
+    finMilkPrice: "Price/L",
+    finHayvanTitle: "Animal Revenue",
+    finKarkas: "Carcass Price (₺/kg)",
+    finKarkasNote: "Culled cow: avg 550 kg × 52% dressing × price",
+    finErkekCheck: "Fatten male calves (feedlot)",
+    finErkekFiyat: "Male Calf Sale Price",
+    finBesiSure: "Feedlot Duration (months)",
+    finBesiMaliyet: "Monthly Feedlot Cost",
+    finBesiAgirlik: "Slaughter Weight (kg)",
+    finGiderTitle: "Expenses",
+    finGiderDesc: "Empty fields use Turkey farm data coefficients",
+    finBesleme: "Feed (head/day)",
+    finBeslemeNote: "empty = Turkey data: 67% of revenue",
+    finIscilik: "Labor (head/month)",
+    finIscNote: "empty = Turkey data: 23.5%",
+    finDiger: "Energy+Maintenance+Operations (head/month)",
+    finDigerNote: "empty = Turkey data: 9.4%",
+    finAmort: "Equipment Depreciation (head/month)",
+    finAmortNote: "empty = Turkey data: 1.5%",
+    finKonvSperma: "Conventional Semen (per dose)",
+    finSexedSperma: "Sexed Semen (per dose)",
+    finVetTitle: "Veterinary & Disease Costs",
+    finVetDesc: "Enter prevalence (%) → cost auto-calculated from literature (treatment + production loss).",
+    finCowDis: "Cow Diseases",
+    finCalfDis: "Calf Diseases (0–2 mo)",
+    finVetNote: "Cost = treatment cost + production loss (international literature aligned with Turkey data)",
+    finHesapla: "Calculate Financial Analysis",
+    finSimHesapla: "Simulate + Financial Analysis",
+    finHesaplaNote1: "Financial Analysis: Updates financial results only (uses previous simulation data).",
+    finHesaplaNote2: "Simulate + Financial: Runs herd simulation first, then automatically adds financial analysis.",
+    // Finansal sonuç
+    finKpiTitle: "60-Month Financial Summary",
+    finTopGelir: "Total Revenue",
+    finTopGider: "Total Expenses",
+    finNetKar: "Net Profit/Loss",
+    finNetMarj: "Net Margin",
+    finAylikOrt: "Monthly Avg P/L",
+    finErkekKatki: "Male Animal Contribution",
+    finKarliAy: "Profitable Months",
+    finZararliAy: "Loss Months",
+    finRoiTitle: "Break-Even & ROI",
+    finTopYatirim: "Total Investment",
+    finGeriDonus: "Payback Period",
+    finRoi: "ROI (60 months)",
+    finNakitTitle: "Monthly Cash Flow",
+    finNakitNote: "Green=profitable month, Red=loss month",
+    finGelirDagTitle: "Revenue & Expense Breakdown (60 Months Total)",
+    finGelirDag: "Revenue Breakdown",
+    finGiderDag: "Expense Breakdown",
+    finSutGelir: "Milk",
+    finReformGelir: "Culled Cow",
+    finErkekGelir: "Male/Feedlot",
+    finDuyarTitle: "Sensitivity Analysis",
+    finDuyarDesc: "Sensitivity analysis shows how a change in one parameter (e.g. milk price +10%) affects total 60-month net profit. This helps you understand which parameters your operation is most sensitive to, enabling better risk management.",
+    finDuyarSutFiyat: "Milk Price Change",
+    finDuyarYem: "Feed Cost Change",
+    finDuyarErkek: "Male Animal Price",
+    finDuyarKarkas: "Carcass Price",
+    finDuyarEtki: "Impact on 60-Month Net Profit",
+    finYorumTitle: "Financial Assessment & Guidance",
+    finDetayTitle: "Monthly Detail",
+    finDonemTitle: "Period Summary",
+    finGelirDetay: "Revenue Detail",
+    finGiderDetay: "Expense Detail",
+    finTabAy: "Month",
+    finTabLak: "Lact.Cows",
+    finTabSutGelir: "Milk Rev.",
+    finTabReform: "Culled",
+    finTabErkek: "Male/Feed",
+    finTabTopGelir: "Tot.Rev.",
+    finTabBesleme: "Feed",
+    finTabIscilik: "Labor",
+    finTabSagAmort: "Bio.Dep.",
+    finTabSperma: "Semen",
+    finTabVet: "Vet.",
+    finTabDiger: "Other",
+    finTabTopGider: "Tot.Exp.",
+    finTabNetKZ: "Net P/L",
+    finTabKumKZ: "Cum.P/L",
+    finTabDonem: "Period",
+    finTabTopGelirD: "Total Revenue",
+    finTabTopGiderD: "Total Expenses",
+    finTabNetKZD: "Net P/L",
+    finTabMarj: "Margin",
+    finTabOrtLak: "Avg.Lact.",
+    finTabErkekKatki: "Male Contrib%",
+    finLitNote: "Feed and labor coefficients based on Turkey farm data. Disease costs: treatment + production loss (international literature).",
+    finKritikBulgu: "Critical Finding",
+    finKritikAciklama: "{pct}% of total revenue comes from male animals. Net margin excl. males: {marj}%. Consistent with real Turkey farm data.",
+    finYilDonus: "year",
+    finAyDonus: "month",
+    finAyIcinde: "Not achieved within 60 months",
+    finBBNakitAy: "Cash break-even",
+    finBBNakitYok: "Not within 60 months",
+    finAylikTaksit: "Monthly payment",
+    finKayipTimeline: "Red=loss period | Green=profit period | Gold=payback point",
+    finErkekHaric: "Net margin excl. males",
+    finSutGelirLabel: "Milk Revenue",
+    finGiderBesleme: "Feed",
+    finGiderIsc: "Labor",
+    finGiderSagAmort: "Bio.Depreciation",
+    finGiderDig: "Other Ops.",
+    finGiderSperma: "Semen",
+    finGiderVet: "Vet/Pharma",
+    // Admin
+    adminPanel: "Admin Panel",
+    adminLogin: "Admin Login",
+    adminWrong: "Wrong username or password.",
+    tabOzet: "Summary",
+    tabKullanici: "Users",
+    tabBenchmark: "Benchmark",
+    tabTrend: "Trend",
+    tabStats: "Statistics",
+    exportExcel: "Export Excel",
+    freeze: "Freeze",
+    unfreeze: "Activate",
+    deleteUser: "Delete",
+    frozenMsg: "Your account is frozen. Please contact the administrator.",
+    // Toast
+    savedOk: "Simulation saved!",
+    saveFirst: "Please run a calculation first.",
+    loadedOk: "Loaded. Press Calculate.",
+    deleteConfirm: "Delete this simulation?",
+    deletedOk: "Deleted.",
+    noSaves: "No saved simulations yet.",
+    loading: "Loading...",
+    errRequired: "Username and password are required.",
+    errMismatch: "Passwords do not match.",
+    errShort: "Password must be at least 6 characters.",
+    errNotFound: "This username is not registered.",
+    errWrongPass: "Wrong password.",
+    errInUse: "This username is already taken.",
+    errNetwork: "Network connection error.",
+    errGeneral: "Login failed. Please try again.",
+    finHesaplaOnce: "Please run a simulation first.",
+    finTamam: "Financial analysis complete!",
+    finSimTamam: "Simulation + financial analysis complete!",
+    qrTitle: "Program QR Code",
+    qrDesc: "Scan to access the program",
+    qrDownload: "Download QR",
+    compareTitle: "Simulation Comparison",
+    compareSelect: "Select 2 simulations to compare",
+    lblGebeInekL: "Pregnant Cow (Lact.)",
+    lblGebeInekGunL: "Avg. Days Pregnant (Lact.)",
+    lblGebeInekKuruL: "Avg. Days to Dry",
+    lblAcikGunOrt: "Avg. Days Open",
+    lblVwpL: "Voluntary Waiting Period",
+    lblCrInekS: "CR — Cow",
+    lblOrtLakS: "Avg. Lactation No.",
+    lblGebeDuveS: "Pregnant Heifers",
+    lblGebeGunS: "Avg. Days Pregnant",
+    lblIlkTohumS: "First Service Age (mo)",
+    lblCrDuveS: "CR — Heifer",
+    lblMaksTohumDuveS: "Max. Services (Heifer)",
+    lblKonvDozS: "Conv. doses/pregnancy",
+    lblDisiOranS: "Female birth ratio",
+    lblSexedCrInekS: "Sexed CR — Cow",
+    lblSexedDozS: "Sexed doses/pregnancy",
+    lblSexedOranS: "Sexed application ratio",
+    lblSexedOnceS: "Sexed doses pre-preg.",
+    lblSexedCrDuveS: "Sexed CR — Heifer",
+    lblIkizS: "Twin birth rate",
+    lblOlumBuzS: "Calf mortality (0-6 mo)",
+    lblOlumGenP: "Young stock mortality",
+    lblOlumInekS: "Adult cow mortality",
+    lblReformS: "Culling rate",
+    lblMaksLakS: "Max. Lactation (cow)",
+    lblMaksTohumInekS: "Max. Services (cow)",
+    lblSatDuveP: "Heifers sold (annual)",
+    lblAlinanS: "Purchased cows",
+    lblSatErkekP: "Male calves sold (annual)",
+    lblTopGebeDuve: "Total Pregnant Heifers",
+    lblIlaveBoga: "Additional Bull",
+    lblCrInekP: "CR (Cow)",
+    lblCrDuveP: "CR (Heifer)",
+    lblDisiInekP: "Female birth — Cow",
+    lblDisiDuveP: "Female birth — Heifer",
+    lblAcikGunP: "Avg. Days Open",
+    lblVwpP: "VWP",
+    lblKonvInekP: "Conv. Semen — Cow",
+    lblKonvDuveP: "Conv. Semen — Heifer",
+    lblOlumBuzP: "Calf mortality",
+    lblOlumInekP: "Cow mortality",
+    lblReformP: "Culling",
+    lblMaksLakP: "Max. Lactation",
+    lblMaksTohumP: "Max. Services",
   }
 };
 
-function applyFormLang(lang) {
-  // Tüm label elementlerini tara
-  document.querySelectorAll('label, .section-title, .panel-title, .input-group label, .fix-badge, .badge').forEach(function(el) {
-    var txt = el.textContent.trim();
-    var tr_map = FORM_I18N.tr;
-    var tgt_map = FORM_I18N[lang];
-    // Hedef dilde karşılığı var mı?
-    if (tgt_map[txt]) {
-      el.textContent = tgt_map[txt];
+function i(key) {
+  var lang = typeof currentLang !== "undefined" ? currentLang : "tr";
+  return (I18N[lang] && I18N[lang][key]) ? I18N[lang][key] : (I18N.tr[key] || key);
+}
+
+function applyAllLang(lang) {
+  // Auth overlay
+  var sub = document.getElementById("authSubtitle");
+  var authMode2 = typeof authMode !== "undefined" ? authMode : "login";
+  if(sub) sub.textContent = authMode2==="register" ? i("registerTitle") : i("loginTitle");
+  
+  var authBtn = document.getElementById("authBtn");
+  if(authBtn) authBtn.textContent = authMode2==="register" ? i("registerBtn") : i("loginBtn");
+  
+  var authToggle = document.getElementById("authToggle");
+  if(authToggle) {
+    if(authMode2==="register") {
+      authToggle.innerHTML = i("haveAccount") + " <span>" + i("signIn") + "</span>";
     } else {
-      // Tersten bak: EN'den TR'ye
-      for (var k in tr_map) {
-        if (tgt_map[k] === txt) { el.textContent = lang==='tr' ? k : tgt_map[k]; break; }
-      }
+      authToggle.innerHTML = i("noAccount") + " <span>" + i("signUp") + "</span>";
     }
-  });
-  // Buton metinleri
-  var calcBtn = document.querySelector('.btn-calc');
-  if (calcBtn) calcBtn.innerHTML = '&#128290; ' + (lang==='en'?'Calculate 60-Month Projection':'60 Ay Projeksiyonu Hesapla');
-  var resetBtn = document.querySelector('.btn-reset');
-  if (resetBtn) resetBtn.textContent = lang==='en'?'Reset':'Sıfırla';
-  // Kullanıcı bar
-  var ub = document.getElementById('userBar');
-  if (ub) {
-    var btns = ub.querySelectorAll('.btn-ub');
-    if (btns[0]) btns[0].innerHTML = '&#128194; ' + (lang==='en'?'My Simulations':'Simülasyonlarım');
-    if (btns[1]) btns[1].innerHTML = '&#128190; ' + (lang==='en'?'Save':'Kaydet');
-    if (btns[2]) btns[2].textContent = lang==='en'?'Logout':'Çıkış';
   }
-  // Finansal panel başlıkları
-  document.querySelectorAll('.fin-panel-title').forEach(function(el){
-    var txt = el.textContent.trim().replace(/\s+/g,' ');
-    var finTitles = {
-      tr: {
-        'Para Birimi & Yatırım Parametreleri': 'Para Birimi & Yatırım Parametreleri',
-        'Süt Geliri — 6 Aylık Fiyat Döngüsü': 'Süt Geliri — 6 Aylık Fiyat Döngüsü',
-        'Hayvan Gelirleri': 'Hayvan Gelirleri',
-        'Giderler': 'Giderler',
-        'Veteriner & Hastalık Giderleri': 'Veteriner & Hastalık Giderleri',
-      },
-      en: {
-        'Para Birimi & Yatırım Parametreleri': 'Currency & Investment Parameters',
-        'Süt Geliri — 6 Aylık Fiyat Döngüsü': 'Milk Revenue — 6-Month Price Cycle',
-        'Hayvan Gelirleri': 'Animal Revenue',
-        'Giderler': 'Expenses',
-        'Veteriner & Hastalık Giderleri': 'Veterinary & Disease Costs',
-      }
-    };
-    // Sadece emoji+metin kısmını eşleştir
-    for (var k in finTitles.tr) {
-      if (txt.includes(k.substring(0,10))) {
-        el.firstChild && (el.firstChild.textContent = (lang==='en'?finTitles.en[k]:finTitles.tr[k]));
-      }
-    }
+  
+  // Auth labels
+  var lblMap = {
+    "authLblUser": "username", "authLblPass": "password", "authLblPassC": "passwordAgain",
+    "adminLblUser": "username", "adminLblPass": "password"
+  };
+  for(var id in lblMap) {
+    var el = document.getElementById(id);
+    if(el) el.textContent = i(lblMap[id]);
+  }
+
+  // App subtitle
+  var appSub = document.getElementById("appSubtitle");
+  if(appSub) appSub.textContent = i("appSubtitle");
+  
+  // Scenario buttons
+  var lm = document.getElementById("lblMevcut"); if(lm) lm.textContent = i("mevcut");
+  var ls = document.getElementById("lblStartup"); if(ls) ls.textContent = i("startup");
+  
+  // Main tabs
+  var tbS = document.getElementById("tabBtnSim"); if(tbS) tbS.innerHTML = "&#128290; " + i("tabSim");
+  var tbF = document.getElementById("tabBtnFin"); if(tbF) tbF.innerHTML = "&#128200; " + i("tabFin");
+  
+  // Calc button
+  var cbtn = document.getElementById("calcBtnTxt"); if(cbtn) cbtn.textContent = i("calcBtn");
+  var rbtn = document.querySelector(".btn-reset"); if(rbtn) rbtn.textContent = i("resetBtn");
+  
+  // User bar
+  var ubSim = document.getElementById("ubSim"); if(ubSim) ubSim.innerHTML = "&#128194; " + i("mySims");
+  var ubSave = document.getElementById("ubSave"); if(ubSave) ubSave.innerHTML = "&#128190; " + i("save");
+  var ubOut = document.getElementById("ubOut"); if(ubOut) ubOut.textContent = i("logout");
+  
+  // Form section titles - data-i18n attribute kullan
+  document.querySelectorAll("[data-i18n]").forEach(function(el) {
+    var key = el.getAttribute("data-i18n");
+    var txt = i(key);
+    if(txt && txt !== key) el.textContent = txt;
   });
+  
+  // Lang buttons
+  document.querySelectorAll(".lang-btn").forEach(function(b) {
+    b.classList.toggle("active", b.dataset.lang === lang);
+  });
+  
+  // Saves title
+  var st = document.getElementById("savesTitle"); if(st) st.innerHTML = "&#128194; " + i("mySims");
+  
+  // Finansal panel butonları
+  var fb1 = document.getElementById("finHesaplaBtn");
+  if(fb1) fb1.innerHTML = "&#128200; " + i("finHesapla");
+  var fb2 = document.getElementById("finSimHesaplaBtn");
+  if(fb2) fb2.innerHTML = "&#128290; " + i("finSimHesapla");
+  var fn1 = document.getElementById("finNote1"); if(fn1) fn1.innerHTML = "<strong>" + i("finHesapla") + ":</strong> " + i("finHesaplaNote1");
+  var fn2 = document.getElementById("finNote2"); if(fn2) fn2.innerHTML = "<strong>" + i("finSimHesapla") + ":</strong> " + i("finHesaplaNote2");
+  
+  // Finansal panel başlıkları
+  var finTitleEl = document.getElementById("finToggleLabel"); if(finTitleEl) finTitleEl.textContent = i("finTitle");
+  var finCurTitle = document.getElementById("finCurrencyTitle"); if(finCurTitle) finCurTitle.textContent = i("finCurrencyTitle");
+  var finMilkT = document.getElementById("finMilkTitle"); if(finMilkT) finMilkT.textContent = i("finMilkTitle");
+  var finMilkD = document.getElementById("finMilkDesc"); if(finMilkD) finMilkD.textContent = i("finMilkDesc");
+  var finHayT = document.getElementById("finHayvanTitle"); if(finHayT) finHayT.textContent = i("finHayvanTitle");
+  var finGidT = document.getElementById("finGiderTitle"); if(finGidT) finGidT.textContent = i("finGiderTitle");
+  var finVetT = document.getElementById("finVetTitle"); if(finVetT) finVetT.textContent = i("finVetTitle");
+  var finVetD = document.getElementById("finVetDesc"); if(finVetD) finVetD.textContent = i("finVetDesc");
+  var finCowD = document.getElementById("finCowDisTitle"); if(finCowD) finCowD.textContent = i("finCowDis");
+  var finCalD = document.getElementById("finCalfDisTitle"); if(finCalD) finCalD.textContent = i("finCalfDis");
+  
+  // Milk table header
+  var milkH = document.querySelectorAll(".milk-th");
+  if(milkH[0]) milkH[0].textContent = i("finMilkMonth");
+  if(milkH[1]) milkH[1].textContent = i("finMilkLitre");
+  if(milkH[2]) milkH[2].textContent = i("finMilkPrice");
+  
+  // Süt ayları yeniden yaz (eğer açıksa)
+  var mr = document.getElementById("milkRows");
+  if(mr && mr.innerHTML) buildMilkRows();
 }
 
 </script>
 <script>
+
 
 
 // ═══════════════════════════════════════════════
@@ -2417,9 +3036,8 @@ function t(k){ return (T[currentLang]||T.tr)[k]||k; }
 
 function setLang(lang){
   currentLang=lang; localStorage.setItem("g60lang",lang);
-  document.querySelectorAll(".lang-btn").forEach(function(b){ b.classList.toggle("active",b.dataset.lang===lang); });
   applyLang();
-  if(typeof applyFormLang==="function") applyFormLang(lang);
+  if(typeof applyAllLang==="function") applyAllLang(lang);
 }
 function applyLang(){
   document.querySelectorAll("[data-t]").forEach(function(el){ el.textContent=t(el.dataset.t); });
@@ -2978,24 +3596,32 @@ function showToast(msg,isErr){
 }
 
 window.addEventListener("load",function(){
-  setLang(currentLang);
   setCurrency(currentCurrency);
   initFirebase();
-  // Tab başlangıç görünürlüğünü ayarla
+  // Tab başlangıç
   document.querySelectorAll('.tab-content').forEach(function(el){
     el.style.display = el.classList.contains('active') ? 'block' : 'none';
   });
+  // Dil uygula
+  setTimeout(function(){
+    if(typeof applyAllLang==="function") applyAllLang(currentLang);
+  }, 100);
 });
+
 
 
 
 </script>
 <script>
 
-// ═══ FİNANS SEKME YÖNETİMİ ═══
+// ═══ SEKME & FİNANS YÖNETİMİ ═══
+var finansAcik = false;
+
 function switchMainTab(tab) {
-  document.querySelectorAll('.main-tab').forEach(function(b){ b.classList.toggle('active', b.dataset.tab===tab); });
-  document.querySelectorAll('.tab-content').forEach(function(el){ 
+  document.querySelectorAll('.main-tab').forEach(function(b){
+    b.classList.toggle('active', b.dataset.tab===tab);
+  });
+  document.querySelectorAll('.tab-content').forEach(function(el){
     el.classList.toggle('active', el.id==='tab_'+tab);
     el.style.display = el.id==='tab_'+tab ? 'block' : 'none';
   });
@@ -3005,72 +3631,90 @@ function switchMainTab(tab) {
   }
 }
 
-function hesaplaFinans() {
-  if(!projData.snaps || !projData.snaps.length) {
-    showToast('Önce simülasyon hesaplaması yapın.', true); return;
-  }
-  var p = typeof collectParams==='function' ? collectParams() : {};
-  finansAcik = true;
-  var finObj = calcFinans(projData.snaps, p);
-  if(finObj) {
-    renderFinansResults(finObj);
-    showToast('Finansal analiz tamamlandı!');
-  }
-}
-
-function hesaplaSimVeFinans() {
-  finansAcik = true;
-  hesapla();
-  // renderResults override zaten finansı çağırıyor
-  showToast('Simülasyon + finansal analiz tamamlandı!');
-}
-
-// setCurrency tüm semboller için
 function setCurrency(cur){
   currentCurrency=cur; localStorage.setItem("g60cur",cur);
   ['curTL','curUSD','curTL2','curUSD2'].forEach(function(id){
-    var el=document.getElementById(id); if(el) el.classList.toggle("active",id==="cur"+cur||id==="cur"+cur+"2");
+    var el=document.getElementById(id);
+    if(el) el.classList.toggle("active", el.id==="cur"+cur || el.id==="cur"+cur+"2");
   });
-  document.querySelectorAll(".cur-sym").forEach(function(el){ el.textContent=cur==="TL"?"₺":"$"; });
+  document.querySelectorAll(".cur-sym").forEach(function(el){
+    el.textContent = cur==="TL" ? "₺" : "$";
+  });
 }
 
-// applyLang sonuna form dil değişimi ekle
-var _origSetLang = setLang;
-setLang = function(lang){
-  _origSetLang(lang);
-  if(typeof applyFormLang === "function") applyFormLang(lang);
-};
+function toggleBesi(checked){
+  var dp=document.getElementById("direktSatisPanel");
+  var bp=document.getElementById("besiPanel");
+  if(dp) dp.style.display=checked?"none":"block";
+  if(bp) bp.style.display=checked?"block":"none";
+}
 
-// Render sonrası finans otomatik güncelle (entegre mod)
+function hesaplaFinans(){
+  if(!projData.snaps || !projData.snaps.length){
+    showToast(i("finHesaplaOnce"), true); return;
+  }
+  var p = typeof collectParams==="function" ? collectParams() : {};
+  finansAcik = true;
+  var finObj = calcFinans(projData.snaps, p);
+  if(finObj){ renderFinansResults(finObj); showToast(i("finTamam")); }
+}
+
+function hesaplaSimVeFinans(){
+  finansAcik = true;
+  hesapla();
+  showToast(i("finSimTamam"));
+}
+
+function showQR(){
+  var url = window.location.href.split("?")[0];
+  document.getElementById("qrUrl").textContent = url;
+  var img = document.getElementById("qrImg");
+  img.src = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data="+encodeURIComponent(url)+"&format=png&margin=10";
+  img.onerror = function(){ this.alt = "QR: "+url; };
+  document.getElementById("qrModal").classList.add("open");
+}
+function downloadQR(){
+  var url = window.location.href.split("?")[0];
+  var a = document.createElement("a");
+  a.href = "https://api.qrserver.com/v1/create-qr-code/?size=400x400&data="+encodeURIComponent(url)+"&format=png&margin=10";
+  a.download = "gelecek60-qr.png"; a.target="_blank"; a.click();
+}
+
+// Render sonrası finans
 (function(){
   var _origRender = renderResults;
   renderResults = function(snaps, initial, p){
     _origRender(snaps, initial, p);
-    if(typeof finansAcik !== "undefined" && finansAcik){
-      var fp = p || (typeof collectParams === "function" ? collectParams() : {});
+    if(finansAcik){
+      var fp = p || (typeof collectParams==="function" ? collectParams() : {});
       var finObj = calcFinans(snaps, fp);
       if(finObj) renderFinansResults(finObj);
     }
   };
 })();
 
-// QR: güvenilir URL
-function showQR(){
-  var url = window.location.href.split("?")[0];
-  document.getElementById("qrUrl").textContent = url;
-  var img = document.getElementById("qrImg");
-  img.src = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" + encodeURIComponent(url) + "&format=png&margin=10";
-  img.onerror = function(){ this.src=""; this.alt="QR kodu yüklenemedi. URL: " + url; };
-  document.getElementById("qrModal").classList.add("open");
+// Auth toggle
+function toggleAuthModeNew(){
+  toggleAuthMode();
+  if(typeof applyAllLang==="function") applyAllLang(currentLang);
 }
-function downloadQR(){
-  var url = window.location.href.split("?")[0];
-  var a = document.createElement("a");
-  a.href = "https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=" + encodeURIComponent(url) + "&format=png&margin=10";
-  a.download = "gelecek60-qr.png";
-  a.target = "_blank";
-  a.click();
-}
+
+// Finans panelini tab_finans'a dinamik olarak ekle (DOM hazır olduğunda)
+(function(){
+  var finTab = document.getElementById('tab_finans');
+  if(finTab && !finTab.innerHTML.trim()){
+    finTab.innerHTML = document.getElementById('_finPanelSrc') ? document.getElementById('_finPanelSrc').innerHTML : '';
+  }
+})();
+</script>
+
+<script id="_finPanelSrcScript">
+// Finans paneli içeriğini tab'a yükle
+(function(){
+  var finPanel = document.getElementById('tab_finans');
+  if(!finPanel) return;
+  finPanel.innerHTML = '<!-- ═══ FİNANSAL ANALİZ PANELİ ═══ -->\n<div class="fin-toggle" onclick="document.getElementById(\'finansCheck\').click()">\n  <input type="checkbox" id="finansCheck" onclick="event.stopPropagation();toggleFinans(this.checked)">\n  <label id="finToggleLabel" for="finansCheck" style="cursor:pointer;">💰 Finansal Analiz Modülü</label>\n</div>\n<div id="finansPanel" style="display:none;">\n\n  <!-- Para Birimi & Yatırım -->\n  <div class="fin-panel">\n    <div class="fin-panel-title" id="finCurrencyTitle">💱 Para Birimi & Yatırım Parametreleri</div>\n    <div class="fin-grid">\n      <div class="input-group">\n        <label data-i18n="finCurrencyTitle">Para Birimi</label>\n        <div style="display:flex;gap:0;margin-top:4px;border:1.5px solid var(--border);border-radius:8px;overflow:hidden;width:fit-content;">\n          <button class="cur-btn active" id="curTL2" onclick="setCurrency(\'TL\')">₺ TL</button>\n          <button class="cur-btn" id="curUSD2" onclick="setCurrency(\'USD\')">$ USD</button>\n        </div>\n      </div>\n      <div class="input-group">\n        <label data-i18n="finUsdRate">USD/TL Kur</label>\n        <input type="number" id="finUSDrate" placeholder="35" min="1" step="0.5">\n      </div>\n      <div class="input-group">\n        <label data-i18n="finYatirim">Toplam Yatırım (<span class="cur-sym">₺</span>)</label>\n        <input type="number" id="finToplYatirim" placeholder="0" min="0">\n      </div>\n      <div class="input-group">\n        <label data-i18n="finTaksit">Aylık Kredi Taksiti (<span class="cur-sym">₺</span>)</label>\n        <input type="number" id="finAylikTaksit" placeholder="0" min="0">\n      </div>\n    </div>\n  </div>\n\n  <!-- Süt Geliri -->\n  <div class="fin-panel">\n    <div class="fin-panel-title" id="finMilkTitle">🥛 Süt Geliri — 6 Aylık Fiyat Döngüsü</div>\n    <div style="font-size:.72rem;color:var(--muted);margin-bottom:10px;" id="finMilkDesc">\n      Devlet desteği ve kalite primi dahil toplam alım fiyatını girin.\n    </div>\n    <div style="overflow-x:auto;">\n      <table class="milk-table">\n        <thead><tr>\n          <th class="milk-th">Ay</th>\n          <th class="milk-th">Süt (L/baş/gün)</th>\n          <th class="milk-th">Fiyat (<span class="cur-sym">₺</span>/L)</th>\n        </tr></thead>\n        <tbody id="milkRows"></tbody>\n      </table>\n    </div>\n  </div>\n\n  <!-- Hayvan Gelirleri -->\n  <div class="fin-panel">\n    <div class="fin-panel-title" id="finHayvanTitle">🐄 Hayvan Gelirleri</div>\n    <div class="fin-grid">\n      <div class="input-group">\n        <label data-i18n="finKarkas">Karkas Et Fiyatı (<span class="cur-sym">₺</span>/kg)</label>\n        <input type="number" id="finKarkasKg" placeholder="500" min="0">\n        <div class="fin-note-inline" id="finKarkasNote">Reform ineği: ort. 550 kg × %52 randıman × fiyat</div>\n      </div>\n    </div>\n    <!-- Erkek Buzağı -->\n    <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">\n      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">\n        <input type="checkbox" id="besiCheck" onchange="toggleBesi(this.checked)" style="width:18px;height:18px;accent-color:var(--blue);">\n        <label for="besiCheck" id="finErkekCheckLabel" style="font-size:.78rem;color:var(--text);cursor:pointer;">Erkek buzağıları besi için ayır</label>\n      </div>\n      <div id="direktSatisPanel" class="fin-grid">\n        <div class="input-group">\n          <label data-i18n="finErkekFiyat">Erkek Buzağı Satış Fiyatı (<span class="cur-sym">₺</span>/baş)</label>\n          <input type="number" id="finErkekFiyat" placeholder="8000" min="0">\n        </div>\n      </div>\n      <div class="besi-panel" id="besiPanel" style="display:none;">\n        <div class="fin-grid-3">\n          <div class="input-group">\n            <label data-i18n="finBesiSure">Besi Süresi (ay)</label>\n            <input type="number" id="besiSure" value="12" min="1" max="24">\n          </div>\n          <div class="input-group">\n            <label data-i18n="finBesiMaliyet">Aylık Besi Maliyeti (<span class="cur-sym">₺</span>/baş)</label>\n            <input type="number" id="besiAylikMaliyet" placeholder="3000" min="0">\n          </div>\n          <div class="input-group">\n            <label data-i18n="finBesiAgirlik">Besi Sonu Canlı Ağırlık (kg)</label>\n            <input type="number" id="besiAgirlik" value="550" min="200">\n          </div>\n        </div>\n      </div>\n    </div>\n  </div>\n\n  <!-- Giderler -->\n  <div class="fin-panel">\n    <div class="fin-panel-title" id="finGiderTitle">📊 Giderler</div>\n    <div style="font-size:.72rem;color:var(--muted);margin-bottom:12px;" id="finGiderDesc">\n      Boş bırakılan kalemler Türkiye çiftlik verisi katsayılarıyla hesaplanır\n    </div>\n    <div class="fin-grid">\n      <div class="input-group">\n        <label data-i18n="finBesleme">Besleme (<span class="cur-sym">₺</span>/baş/gün)</label>\n        <input type="number" id="finBesleme" placeholder="Opsiyonel" min="0">\n        <div class="fin-note-inline" id="finBeslemeNote">boş = Türkiye verisi: gelirin %67\'si</div>\n      </div>\n      <div class="input-group">\n        <label data-i18n="finIscilik">İşçilik (<span class="cur-sym">₺</span>/baş/ay)</label>\n        <input type="number" id="finIscilik" placeholder="Opsiyonel" min="0">\n        <div class="fin-note-inline" id="finIscNote">boş = Türkiye verisi: %23.5</div>\n      </div>\n      <div class="input-group">\n        <label data-i18n="finDiger">Enerji+Bakım+İşletme (<span class="cur-sym">₺</span>/baş/ay)</label>\n        <input type="number" id="finDiger" placeholder="Opsiyonel" min="0">\n        <div class="fin-note-inline" id="finDigerNote">boş = Türkiye verisi: %9.4</div>\n      </div>\n      <div class="input-group">\n        <label data-i18n="finAmort">Ekipman Amortismanı (<span class="cur-sym">₺</span>/baş/ay)</label>\n        <input type="number" id="finAmort" placeholder="Opsiyonel" min="0">\n        <div class="fin-note-inline" id="finAmortNote">boş = Türkiye verisi: %1.5</div>\n      </div>\n      <div class="input-group">\n        <label data-i18n="finKonvSperma">Konvansiyonel Sperma (<span class="cur-sym">₺</span>/doz)</label>\n        <input type="number" id="finKonvSperma" value="300" min="0">\n      </div>\n      <div class="input-group">\n        <label data-i18n="finSexedSperma">Sexed Sperma (<span class="cur-sym">₺</span>/doz)</label>\n        <input type="number" id="finSexedSperma" value="1200" min="0">\n      </div>\n    </div>\n  </div>\n\n  <!-- Veteriner -->\n  <div class="fin-panel">\n    <div class="fin-panel-title" id="finVetTitle">🏥 Veteriner & Hastalık Giderleri</div>\n    <div style="font-size:.72rem;color:var(--muted);margin-bottom:12px;" id="finVetDesc">\n      Prevalans (%) girin → maliyet otomatik hesaplanır (tedavi + verim kaybı).\n    </div>\n    <div style="font-family:\'Barlow Condensed\',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase;margin-bottom:8px;" id="finCowDisTitle">İnek Hastalıkları</div>\n    <div class="dis-grid">\n      <div class="dis-row"><label>Klinik Ketozis</label><input type="number" id="dKet" placeholder="5" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>\n      <div class="dis-row"><label>Retensio Secundinarum</label><input type="number" id="dRet" placeholder="8" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>\n      <div class="dis-row"><label>Klinik Hipokalsemi</label><input type="number" id="dHipo" placeholder="5" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>\n      <div class="dis-row"><label>Sol Abomazum Deplasmanı</label><input type="number" id="dLDA" placeholder="3" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>\n      <div class="dis-row"><label>Sağ Abomazum Deplasmanı</label><input type="number" id="dRDA" placeholder="0.5" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>\n      <div class="dis-row"><label>Klinik Topallık</label><input type="number" id="dTop" placeholder="15" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>\n      <div class="dis-row"><label>Klinik Metritis</label><input type="number" id="dMet" placeholder="20" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>\n      <div class="dis-row"><label>Ovaryum Kistleri</label><input type="number" id="dOvk" placeholder="10" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>\n    </div>\n    <div style="font-family:\'Barlow Condensed\',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase;margin:12px 0 8px;" id="finCalfDisTitle">Buzağı Hastalıkları (0–2 ay)</div>\n    <div class="dis-grid">\n      <div class="dis-row"><label>Buzağı İshali</label><input type="number" id="dBuzI" placeholder="25" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>\n      <div class="dis-row"><label>Buzağı Pnömonisi</label><input type="number" id="dBuzP" placeholder="15" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>\n    </div>\n    <div style="font-size:.68rem;color:var(--muted);margin-top:10px;font-style:italic;" id="finVetNoteEl">\n      Maliyet = tedavi gideri + verim kaybı (Türkiye verisi ile uyumlu uluslararası literatür)\n    </div>\n  </div>\n\n  <!-- Hesapla Butonları -->\n  <div style="display:flex;gap:10px;margin:16px 0;flex-wrap:wrap;">\n    <button class="btn-calc" id="finHesaplaBtn" onclick="hesaplaFinans()" style="background:linear-gradient(135deg,var(--gold),#8b6509);">\n      💰 Finansal Analiz Hesapla\n    </button>\n    <button class="btn-calc" id="finSimHesaplaBtn" onclick="hesaplaSimVeFinans()" style="background:linear-gradient(135deg,var(--accent),#1a5c26);font-size:.75rem;">\n      🔗 Simülasyon + Finansal Birlikte Hesapla\n    </button>\n  </div>\n  <div style="font-size:.72rem;color:var(--muted);margin-bottom:16px;line-height:1.8;">\n    <div id="finNote1">ⓘ <strong>Finansal Analiz Hesapla:</strong> Sadece finansal sonuçları günceller.</div>\n    <div id="finNote2">ⓘ <strong>Simülasyon + Finansal:</strong> Önce sürü simülasyonu çalışır, ardından finansal analiz eklenir.</div>\n  </div>\n\n</div>\n<!-- Finansal Sonuçlar -->\n<div id="finansResults"></div>\n';
+})();
 </script>
 </body>
 </html>
