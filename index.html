@@ -444,7 +444,7 @@ input[type="checkbox"]{display:none;}
 .main-tab:hover:not(.active){color:var(--text);}
 .main-tab.fin-tab.active{color:var(--gold);border-bottom-color:var(--gold);}
 .tab-content{display:none;padding-top:16px;}
-.tab-content.active{display:block;}
+.tab-content.active{display:block !important;}
 
 .cur-btn{padding:5px 13px;background:transparent;border:none;color:var(--muted);cursor:pointer;font-family:"Barlow Condensed",sans-serif;font-size:.68rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all .2s;}
 .cur-btn.active{background:var(--gold);color:#fff;}
@@ -464,11 +464,11 @@ input[type="checkbox"]{display:none;}
     </div>
     <div class="auth-sub" id="authSubtitle">Hesabınıza giriş yapın</div>
     <div class="auth-err" id="authErr"></div>
-    <div class="auth-field"><label>Kullanıcı Adı</label>
+    <div class="auth-field"><label data-t="username">Kullanıcı Adı</label>
       <input type="text" id="authUser" placeholder="kullanici_adi" autocomplete="username" onkeydown="if(event.key==='Enter')authAction()"></div>
-    <div class="auth-field"><label>Şifre</label>
+    <div class="auth-field"><label data-t="password">Şifre</label>
       <input type="password" id="authPass" placeholder="••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')authAction()"></div>
-    <div class="auth-field" id="authPassCF" style="display:none;"><label>Şifre Tekrar</label>
+    <div class="auth-field" id="authPassCF" style="display:none;"><label data-t="passwordAgain">Şifre Tekrar</label>
       <input type="password" id="authPassC"></div>
     <button class="btn-auth" id="authBtn" onclick="authAction()">Giriş Yap</button>
     <div class="auth-toggle" id="authToggle" onclick="toggleAuthMode()">Hesabınız yok mu? <span>Kayıt olun</span></div>
@@ -861,7 +861,7 @@ input[type="checkbox"]{display:none;}
 <!-- ═══════════════════════════════════════
      FİNANSAL ANALİZ PANELİ — Ayrı Sekme
 ═══════════════════════════════════════ -->
-<div id="finansTabPanel" style="display:none;margin-top:16px;">
+<div id="finansTabPanel" style="margin-top:16px;">
 
   <!-- Finansal Parametre Formu -->
   <div id="finansFormArea">
@@ -2981,6 +2981,10 @@ window.addEventListener("load",function(){
   setLang(currentLang);
   setCurrency(currentCurrency);
   initFirebase();
+  // Tab başlangıç görünürlüğünü ayarla
+  document.querySelectorAll('.tab-content').forEach(function(el){
+    el.style.display = el.classList.contains('active') ? 'block' : 'none';
+  });
 });
 
 
@@ -2991,9 +2995,13 @@ window.addEventListener("load",function(){
 // ═══ FİNANS SEKME YÖNETİMİ ═══
 function switchMainTab(tab) {
   document.querySelectorAll('.main-tab').forEach(function(b){ b.classList.toggle('active', b.dataset.tab===tab); });
-  document.querySelectorAll('.tab-content').forEach(function(c){ c.classList.toggle('active', c.id==='tab_'+tab); });
-  if(tab==='finans' && document.getElementById('milkRows') && !document.getElementById('milkRows').innerHTML) {
-    buildMilkRows();
+  document.querySelectorAll('.tab-content').forEach(function(el){ 
+    el.classList.toggle('active', el.id==='tab_'+tab);
+    el.style.display = el.id==='tab_'+tab ? 'block' : 'none';
+  });
+  if(tab==='finans') {
+    var mr = document.getElementById('milkRows');
+    if(mr && !mr.innerHTML) buildMilkRows();
   }
 }
 
@@ -3035,17 +3043,15 @@ setLang = function(lang){
 
 // Render sonrası finans otomatik güncelle (entegre mod)
 (function(){
-  var origRender = window.renderResults;
-  if(typeof origRender === "function"){
-    window.renderResults = function(snaps, initial){
-      origRender(snaps, initial);
-      if(typeof finansAcik !== "undefined" && finansAcik){
-        var p = typeof collectParams === "function" ? collectParams() : {};
-        var finObj = calcFinans(snaps, p);
-        if(finObj) renderFinansResults(finObj);
-      }
-    };
-  }
+  var _origRender = renderResults;
+  renderResults = function(snaps, initial, p){
+    _origRender(snaps, initial, p);
+    if(typeof finansAcik !== "undefined" && finansAcik){
+      var fp = p || (typeof collectParams === "function" ? collectParams() : {});
+      var finObj = calcFinans(snaps, fp);
+      if(finObj) renderFinansResults(finObj);
+    }
+  };
 })();
 
 // QR: güvenilir URL
