@@ -100,6 +100,8 @@ input[type="checkbox"]{display:none;}
 .ay-badge{display:inline-block;padding:2px 7px;border-radius:4px;font-family:"Barlow Condensed",sans-serif;font-size:.65rem;font-weight:700;}
 .ay-y1{background:rgba(93,191,110,.1);color:var(--accent);}
 .ay-y2{background:rgba(212,168,71,.1);color:var(--gold);}
+.ay-y3{background:rgba(106,180,212,.15);color:var(--blue);}
+.ay-y4{background:rgba(180,122,212,.15);color:var(--purple);}
 .cat-name{display:flex;align-items:center;gap:5px;}
 .cat-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
 .pos{color:var(--accent);}.neg{color:var(--danger);}.neu{color:var(--muted);}
@@ -288,7 +290,7 @@ input[type="checkbox"]{display:none;}
 .fin-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .fin-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
 @media(max-width:640px){.fin-grid,.fin-grid-3{grid-template-columns:1fr;}}
-.fin-note-inline{font-size:.65rem;color:var(--muted);font-style:italic;margin-top:2px;}
+.fin-note-inline{font-size:.65rem;color:var(--muted);font-style:italic;margin-top:2px;font-weight:700;}
 .besi-panel{background:rgba(36,113,163,.04);border:1.5px solid rgba(36,113,163,.2);border-radius:10px;padding:14px;margin-top:10px;}
 .milk-table{width:100%;border-collapse:collapse;font-size:.76rem;}
 .milk-table th{padding:7px 10px;background:#f5f0e8;font-family:"Barlow Condensed",sans-serif;font-size:.62rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);text-align:center;border:1px solid var(--border);}
@@ -366,7 +368,7 @@ input[type="checkbox"]{display:none;}
 .fin-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .fin-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
 @media(max-width:640px){.fin-grid,.fin-grid-3{grid-template-columns:1fr;}}
-.fin-note-inline{font-size:.65rem;color:var(--muted);font-style:italic;margin-top:2px;}
+.fin-note-inline{font-size:.65rem;color:var(--muted);font-style:italic;margin-top:2px;font-weight:700;}
 .besi-panel{background:rgba(36,113,163,.04);border:1.5px solid rgba(36,113,163,.2);border-radius:10px;padding:14px;margin-top:10px;}
 .milk-table{width:100%;border-collapse:collapse;font-size:.76rem;}
 .milk-table th{padding:7px 10px;background:#f5f0e8;font-family:"Barlow Condensed",sans-serif;font-size:.62rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);text-align:center;border:1px solid var(--border);}
@@ -452,7 +454,7 @@ input[type="checkbox"]{display:none;}
 .fin-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .fin-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
 @media(max-width:640px){.fin-grid,.fin-grid-3{grid-template-columns:1fr;}}
-.fin-note-inline{font-size:.65rem;color:var(--muted);font-style:italic;margin-top:2px;}
+.fin-note-inline{font-size:.65rem;color:var(--muted);font-style:italic;margin-top:2px;font-weight:700;}
 .besi-panel{background:rgba(36,113,163,.04);border:1.5px solid rgba(36,113,163,.2);border-radius:10px;padding:14px;margin-top:10px;}
 .milk-table{width:100%;border-collapse:collapse;font-size:.76rem;}
 .milk-table th{padding:7px 10px;background:#f5f0e8;font-family:"Barlow Condensed",sans-serif;font-size:.62rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);text-align:center;border:1px solid var(--border);}
@@ -524,7 +526,11 @@ input[type="checkbox"]{display:none;}
 .cur-btn{padding:5px 13px;background:transparent;border:none;color:var(--muted);cursor:pointer;font-family:"Barlow Condensed",sans-serif;font-size:.68rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all .2s;}
 .cur-btn.active{background:var(--gold);color:#fff;}
 .besi-panel{background:rgba(36,113,163,.04);border:1.5px solid rgba(36,113,163,.2);border-radius:10px;padding:14px;margin-top:10px;}
-.fin-note-inline{font-size:.65rem;color:var(--muted);font-style:italic;margin-top:2px;}
+.fin-note-inline{font-size:.65rem;color:var(--muted);font-style:italic;margin-top:2px;font-weight:700;}
+
+.input-sym-wrap{position:relative;display:flex;align-items:center;}
+.input-sym-wrap .sym-prefix{position:absolute;left:10px;font-weight:700;color:var(--muted);font-size:.85rem;pointer-events:none;z-index:1;}
+.input-sym-wrap input[type="number"]{padding-left:26px;}
 </style>
 </head>
 <body>
@@ -685,66 +691,66 @@ input[type="checkbox"]{display:none;}
       <div class="form-section">
         <div class="section-label" data-i18n="secMevcutSuru">Mevcut Sürü Yapısı (Baş)</div>
         <div class="field-row">
-          <div class="field"><label data-i18n="lblLaktasyon">İnek (Laktasyon)</label><input type="number" id="laktasyon" value="100" min="0" data-default="100"></div>
-          <div class="field"><label data-i18n="lblKuru">İnek (Kuru)</label><input type="number" id="kuru" value="18" min="0" data-default="18"></div>
+          <div class="field"><label data-i18n="lblLaktasyon">İnek (Laktasyon)</label><input type="number" id="laktasyon" value="100" min="0" data-default="100" onfocus="this.select()"></div>
+          <div class="field"><label data-i18n="lblKuru">İnek (Kuru)</label><input type="number" id="kuru" value="18" min="0" data-default="18" onfocus="this.select()"></div>
         </div>
         <div class="field-row">
-          <div class="field"><label data-i18n="lblDuve">Düve (15-24 ay)</label><input type="number" id="duveB" value="35" min="0" data-default="35"></div>
-          <div class="field"><label data-i18n="lblBoga">Boğa</label><input type="number" id="boga" value="0" min="0" data-default="0"></div>
+          <div class="field"><label data-i18n="lblDuve">Düve (15-24 ay)</label><input type="number" id="duveB" value="35" min="0" data-default="35" onfocus="this.select()"></div>
+          <div class="field"><label data-i18n="lblBoga">Boğa</label><input type="number" id="boga" value="0" min="0" data-default="0" onfocus="this.select()"></div>
         </div>
         <div class="field-row">
-          <div class="field"><label data-i18n="lblBuz02">Dişi Buzağı (0-2 ay)</label><input type="number" id="buz02" value="11" min="0" data-default="11"></div>
-          <div class="field"><label data-i18n="lblBuz36">Dişi Buzağı (3-6 ay)</label><input type="number" id="buz36" value="14" min="0" data-default="14"></div>
+          <div class="field"><label data-i18n="lblBuz02">Dişi Buzağı (0-2 ay)</label><input type="number" id="buz02" value="11" min="0" data-default="11" onfocus="this.select()"></div>
+          <div class="field"><label data-i18n="lblBuz36">Dişi Buzağı (3-6 ay)</label><input type="number" id="buz36" value="14" min="0" data-default="14" onfocus="this.select()"></div>
         </div>
         <div class="field-row">
-          <div class="field"><label data-i18n="lblDana714">Dişi Dana (7-14 ay)</label><input type="number" id="dana714" value="28" min="0" data-default="28"></div>
-          <div class="field"><label data-i18n="lblErkekDana">Erkek Dana (0-6 ay)</label><input type="number" id="erkekDana" value="0" min="0" data-default="0"></div>
+          <div class="field"><label data-i18n="lblDana714">Dişi Dana (7-14 ay)</label><input type="number" id="dana714" value="28" min="0" data-default="28" onfocus="this.select()"></div>
+          <div class="field"><label data-i18n="lblErkekDana">Erkek Dana (0-6 ay)</label><input type="number" id="erkekDana" value="0" min="0" data-default="0" onfocus="this.select()"></div>
         </div>
       </div>
       <div class="form-section">
         <div class="section-label" data-i18n="secGebeDurum">Gebelik Durumu — İnekler</div>
         <div class="field-row">
-          <div class="field"><label data-i18n="lblGebeInekL">Gebe İnek (Laktasyonda)</label><input type="number" id="gebeInek" value="75" min="0" data-default="75"></div>
-          <div class="field"><label data-i18n="lblGebeInekGunL">Ort. Gebelik Günü (Lak.)</label><div class="input-unit"><input type="number" id="gebeInekGun" value="142" min="1" max="283" data-default="142"><span class="unit">gün</span></div></div>
+          <div class="field"><label data-i18n="lblGebeInekL">Gebe İnek (Laktasyonda)</label><input type="number" id="gebeInek" value="75" min="0" data-default="75" onfocus="this.select()"></div>
+          <div class="field"><label data-i18n="lblGebeInekGunL">Ort. Gebelik Günü (Lak.)</label><div class="input-unit"><input type="number" id="gebeInekGun" value="142" min="1" max="283" data-default="142" onfocus="this.select()"><span class="unit">gün</span></div></div>
         </div>
         <div class="field-row">
-          <div class="field"><label data-i18n="lblGebeInekKuruL">Ort. Kuru Gebelik Günü</label><div class="input-unit"><input type="number" id="gebeInekKuruGun" value="230" min="1" max="283" data-default="230"><span class="unit">gün</span></div></div>
-          <div class="field"><label data-i18n="lblAcikGunOrt">Açık Gün Ortalaması</label><div class="input-unit"><input type="number" id="acikGunInek" value="110" min="0" max="365" data-default="110"><span class="unit">gün</span></div></div>
+          <div class="field"><label data-i18n="lblGebeInekKuruL">Ort. Kuru Gebelik Günü</label><div class="input-unit"><input type="number" id="gebeInekKuruGun" value="230" min="1" max="283" data-default="230" onfocus="this.select()"><span class="unit">gün</span></div></div>
+          <div class="field"><label data-i18n="lblAcikGunOrt">Açık Gün Ortalaması</label><div class="input-unit"><input type="number" id="acikGunInek" value="110" min="0" max="365" data-default="110" onfocus="this.select()"><span class="unit">gün</span></div></div>
         </div>
         <div class="field-row">
-          <div class="field"><label data-i18n="lblVwpL">Gönüllü Bekleme (VWP)</label><div class="input-unit"><input type="number" id="vwpInek" value="50" min="0" max="120" data-default="50"><span class="unit">gün</span></div></div>
-          <div class="field"><label data-i18n="lblCrInekS">CR — İnek</label><div class="input-unit"><input type="number" id="crInek" value="60" min="10" max="80" step="0.5" data-default="60"><span class="unit">%</span></div></div>
+          <div class="field"><label data-i18n="lblVwpL">Gönüllü Bekleme (VWP)</label><div class="input-unit"><input type="number" id="vwpInek" value="50" min="0" max="120" data-default="50" onfocus="this.select()"><span class="unit">gün</span></div></div>
+          <div class="field"><label data-i18n="lblCrInekS">CR — İnek</label><div class="input-unit"><input type="number" id="crInek" value="60" min="10" max="80" step="0.5" data-default="60" onfocus="this.select()"><span class="unit">%</span></div></div>
         </div>
         <div class="field-row">
-          <div class="field"><label data-i18n="lblOrtLakS">Ort. Laktasyon Sayısı</label><div class="input-unit"><input type="number" id="ortLaktasyonGiris" value="2.8" min="1" max="5" step="0.1" data-default="2.8"><span class="unit">lak.</span></div></div>
+          <div class="field"><label data-i18n="lblOrtLakS">Ort. Laktasyon Sayısı</label><div class="input-unit"><input type="number" id="ortLaktasyonGiris" value="2.8" min="1" max="5" step="0.1" data-default="2.8" onfocus="this.select()"><span class="unit">lak.</span></div></div>
         </div>
       </div>
       <div class="form-section">
         <div class="section-label" data-i18n="secGebeDurum">Gebelik Durumu — Düveler</div>
         <div class="field-row">
-          <div class="field"><label data-i18n="lblGebeDuveS">Gebe Düve Sayısı</label><input type="number" id="gebeDuve" value="32" min="0" data-default="32"></div>
-          <div class="field"><label data-i18n="lblGebeGunS">Ort. Gebelik Günü</label><div class="input-unit"><input type="number" id="gebeDuveGun" value="135" min="1" max="283" data-default="135"><span class="unit">gün</span></div></div>
+          <div class="field"><label data-i18n="lblGebeDuveS">Gebe Düve Sayısı</label><input type="number" id="gebeDuve" value="32" min="0" data-default="32" onfocus="this.select()"></div>
+          <div class="field"><label data-i18n="lblGebeGunS">Ort. Gebelik Günü</label><div class="input-unit"><input type="number" id="gebeDuveGun" value="135" min="1" max="283" data-default="135" onfocus="this.select()"><span class="unit">gün</span></div></div>
         </div>
         <div class="field-row">
-          <div class="field"><label data-i18n="lblIlkTohumS">İlk Tohumlama Yaşı</label><div class="input-unit"><input type="number" id="ilkTohum" value="15" min="10" max="24" data-default="15"><span class="unit">ay</span></div></div>
-          <div class="field"><label data-i18n="lblCrDuveS">CR — Düve</label><div class="input-unit"><input type="number" id="crDuve" value="65" min="10" max="85" step="0.5" data-default="65"><span class="unit">%</span></div></div>
+          <div class="field"><label data-i18n="lblIlkTohumS">İlk Tohumlama Yaşı</label><div class="input-unit"><input type="number" id="ilkTohum" value="15" min="10" max="24" data-default="15" onfocus="this.select()"><span class="unit">ay</span></div></div>
+          <div class="field"><label data-i18n="lblCrDuveS">CR — Düve</label><div class="input-unit"><input type="number" id="crDuve" value="65" min="10" max="85" step="0.5" data-default="65" onfocus="this.select()"><span class="unit">%</span></div></div>
         </div>
         <div class="field-row">
-          <div class="field"><label data-i18n="lblMaksTohumDuveS">Maks. tohumlama (düve)</label><div class="input-unit"><input type="number" id="maksTohum" value="5" min="2" max="10" data-default="5"><span class="unit">kez</span></div></div>
+          <div class="field"><label data-i18n="lblMaksTohumDuveS">Maks. tohumlama (düve)</label><div class="input-unit"><input type="number" id="maksTohum" value="5" min="2" max="10" data-default="5" onfocus="this.select()"><span class="unit">kez</span></div></div>
         </div>
       </div>
       <div class="form-section">
         <div class="section-label" data-i18n="secSpermaInek">Sperma — İnekler</div>
         <div class="field-row">
-          <div class="field"><label data-i18n="lblKonvDozS">Konv. doz/gebelik</label><div class="input-unit"><input type="number" id="spermaInek" value="2.2" min="1" max="10" step="0.1" data-default="2.2"><span class="unit">doz</span></div></div>
-          <div class="field"><label data-i18n="lblDisiOranS">Dişi doğum oranı</label><div class="input-unit"><input type="number" id="disiOranInek" value="50" min="30" max="70" step="0.5" data-default="50"><span class="unit">%</span></div></div>
+          <div class="field"><label data-i18n="lblKonvDozS">Konv. doz/gebelik</label><div class="input-unit"><input type="number" id="spermaInek" value="2.2" min="1" max="10" step="0.1" data-default="2.2" onfocus="this.select()"><span class="unit">doz</span></div></div>
+          <div class="field"><label data-i18n="lblDisiOranS">Dişi doğum oranı</label><div class="input-unit"><input type="number" id="disiOranInek" value="50" min="30" max="70" step="0.5" data-default="50" onfocus="this.select()"><span class="unit">%</span></div></div>
         </div>
       </div>
       <div class="form-section">
         <div class="section-label" data-i18n="secSpermaDuve">Sperma — Düveler</div>
         <div class="field-row">
-          <div class="field"><label data-i18n="lblKonvDozS">Konv. doz/gebelik</label><div class="input-unit"><input type="number" id="spermaDuve" value="1.8" min="1" max="10" step="0.1" data-default="1.8"><span class="unit">doz</span></div></div>
-          <div class="field"><label data-i18n="lblDisiOranS">Dişi doğum oranı</label><div class="input-unit"><input type="number" id="disiOranDuve" value="50" min="30" max="70" step="0.5" data-default="50"><span class="unit">%</span></div></div>
+          <div class="field"><label data-i18n="lblKonvDozS">Konv. doz/gebelik</label><div class="input-unit"><input type="number" id="spermaDuve" value="1.8" min="1" max="10" step="0.1" data-default="1.8" onfocus="this.select()"><span class="unit">doz</span></div></div>
+          <div class="field"><label data-i18n="lblDisiOranS">Dişi doğum oranı</label><div class="input-unit"><input type="number" id="disiOranDuve" value="50" min="30" max="70" step="0.5" data-default="50" onfocus="this.select()"><span class="unit">%</span></div></div>
         </div>
       </div>
       <div class="sexed-section">
@@ -756,12 +762,12 @@ input[type="checkbox"]{display:none;}
           </div>
           <div id="sexedBodyInek_mevcut" style="display:none;">
             <div class="field-row">
-              <div class="field"><label data-i18n="lblSexedCrInekS">Sexed CR — İnek</label><div class="input-unit"><input type="number" id="sexedCrInek" value="35" min="5" max="60" step="0.5" data-default="35"><span class="unit">%</span></div></div>
-              <div class="field"><label data-i18n="lblSexedDozS">Sexed doz/gebelik</label><div class="input-unit"><input type="number" id="sexedDozInek" value="3.0" min="1" max="12" step="0.1" data-default="3.0"><span class="unit">doz</span></div></div>
+              <div class="field"><label data-i18n="lblSexedCrInekS">Sexed CR — İnek</label><div class="input-unit"><input type="number" id="sexedCrInek" value="35" min="5" max="60" step="0.5" data-default="35" onfocus="this.select()"><span class="unit">%</span></div></div>
+              <div class="field"><label data-i18n="lblSexedDozS">Sexed doz/gebelik</label><div class="input-unit"><input type="number" id="sexedDozInek" value="3.0" min="1" max="12" step="0.1" data-default="3.0" onfocus="this.select()"><span class="unit">doz</span></div></div>
             </div>
             <div class="field-row">
-              <div class="field"><label data-i18n="lblSexedOranS">Sexed uygulama oranı</label><div class="input-unit"><input type="number" id="sexedOranInek" value="50" min="0" max="100" step="5" data-default="50"><span class="unit">%</span></div></div>
-              <div class="field"><label data-i18n="lblSexedOnceS">Geb. öncesi sexed doz</label><div class="input-unit"><input type="number" id="sexedOnceInek" value="2" min="0" max="8" data-default="2"><span class="unit">doz</span></div></div>
+              <div class="field"><label data-i18n="lblSexedOranS">Sexed uygulama oranı</label><div class="input-unit"><input type="number" id="sexedOranInek" value="50" min="0" max="100" step="5" data-default="50" onfocus="this.select()"><span class="unit">%</span></div></div>
+              <div class="field"><label data-i18n="lblSexedOnceS">Geb. öncesi sexed doz</label><div class="input-unit"><input type="number" id="sexedOnceInek" value="2" min="0" max="8" data-default="2" onfocus="this.select()"><span class="unit">doz</span></div></div>
             </div>
           </div>
           <div style="display:flex;align-items:center;justify-content:space-between;margin-top:9px;margin-bottom:5px;">
@@ -770,12 +776,12 @@ input[type="checkbox"]{display:none;}
           </div>
           <div id="sexedBodyDuve_mevcut" style="display:none;">
             <div class="field-row">
-              <div class="field"><label data-i18n="lblSexedCrDuveS">Sexed CR — Düve</label><div class="input-unit"><input type="number" id="sexedCrDuve" value="45" min="5" max="75" step="0.5" data-default="45"><span class="unit">%</span></div></div>
-              <div class="field"><label data-i18n="lblSexedDozS">Sexed doz/gebelik</label><div class="input-unit"><input type="number" id="sexedDozDuve" value="2.5" min="1" max="12" step="0.1" data-default="2.5"><span class="unit">doz</span></div></div>
+              <div class="field"><label data-i18n="lblSexedCrDuveS">Sexed CR — Düve</label><div class="input-unit"><input type="number" id="sexedCrDuve" value="45" min="5" max="75" step="0.5" data-default="45" onfocus="this.select()"><span class="unit">%</span></div></div>
+              <div class="field"><label data-i18n="lblSexedDozS">Sexed doz/gebelik</label><div class="input-unit"><input type="number" id="sexedDozDuve" value="2.5" min="1" max="12" step="0.1" data-default="2.5" onfocus="this.select()"><span class="unit">doz</span></div></div>
             </div>
             <div class="field-row">
-              <div class="field"><label data-i18n="lblSexedOranS">Sexed uygulama oranı</label><div class="input-unit"><input type="number" id="sexedOranDuve" value="80" min="0" max="100" step="5" data-default="80"><span class="unit">%</span></div></div>
-              <div class="field"><label data-i18n="lblSexedOnceS">Geb. öncesi sexed doz</label><div class="input-unit"><input type="number" id="sexedOnceDuve" value="1" min="0" max="8" data-default="1"><span class="unit">doz</span></div></div>
+              <div class="field"><label data-i18n="lblSexedOranS">Sexed uygulama oranı</label><div class="input-unit"><input type="number" id="sexedOranDuve" value="80" min="0" max="100" step="5" data-default="80" onfocus="this.select()"><span class="unit">%</span></div></div>
+              <div class="field"><label data-i18n="lblSexedOnceS">Geb. öncesi sexed doz</label><div class="input-unit"><input type="number" id="sexedOnceDuve" value="1" min="0" max="8" data-default="1" onfocus="this.select()"><span class="unit">doz</span></div></div>
             </div>
           </div>
           <div style="font-size:.7rem;color:var(--muted);margin-top:7px;line-height:1.5;">Sexed sperma ile dişi dogum oranı <strong style="color:var(--accent2)">%85-92</strong> civarına yükselir.</div>
@@ -784,31 +790,31 @@ input[type="checkbox"]{display:none;}
       <div class="form-section">
         <div class="section-label" data-i18n="secOlum">Doğum ve Ölüm Oranları</div>
         <div class="field-row">
-          <div class="field"><label data-i18n="lblIkizS">İkiz doğum oranı</label><div class="input-unit"><input type="number" id="ikizOran" value="3" min="0" max="15" data-default="3"><span class="unit">%</span></div></div>
-          <div class="field"><label data-i18n="lblOlumBuzS">Buzağı ölüm (0-6 ay)</label><div class="input-unit"><input type="number" id="olumBuz" value="5" min="0" max="40" data-default="5"><span class="unit">%</span></div></div>
+          <div class="field"><label data-i18n="lblIkizS">İkiz doğum oranı</label><div class="input-unit"><input type="number" id="ikizOran" value="3" min="0" max="15" data-default="3" onfocus="this.select()"><span class="unit">%</span></div></div>
+          <div class="field"><label data-i18n="lblOlumBuzS">Buzağı ölüm (0-6 ay)</label><div class="input-unit"><input type="number" id="olumBuz" value="5" min="0" max="40" data-default="5" onfocus="this.select()"><span class="unit">%</span></div></div>
         </div>
         <div class="field-row">
-          <div class="field"><label data-i18n="lblOlumGenP">Genç hayvan ölüm</label><div class="input-unit"><input type="number" id="olumGen" value="2" min="0" max="20" data-default="2"><span class="unit">%</span></div></div>
-          <div class="field"><label data-i18n="lblOlumInekS">Erişkin inek ölüm</label><div class="input-unit"><input type="number" id="olumInek" value="3" min="0" max="20" data-default="3"><span class="unit">%</span></div></div>
+          <div class="field"><label data-i18n="lblOlumGenP">Genç hayvan ölüm</label><div class="input-unit"><input type="number" id="olumGen" value="2" min="0" max="20" data-default="2" onfocus="this.select()"><span class="unit">%</span></div></div>
+          <div class="field"><label data-i18n="lblOlumInekS">Erişkin inek ölüm</label><div class="input-unit"><input type="number" id="olumInek" value="3" min="0" max="20" data-default="3" onfocus="this.select()"><span class="unit">%</span></div></div>
         </div>
       </div>
       <div class="form-section">
         <div class="section-label" data-i18n="secReform">Reform ve Yönetim</div>
         <div class="field-row">
-          <div class="field"><label data-i18n="lblReformS">Reform (iskarta)</label><div class="input-unit"><input type="number" id="reform" value="15" min="0" max="50" data-default="15"><span class="unit">%</span></div></div>
-          <div class="field"><label data-i18n="lblMaksLakS">Maks. Laktasyon (inek)</label><div class="input-unit"><input type="number" id="maksLaktasyonInek" value="5" min="2" max="10" data-default="5"><span class="unit">lak.</span></div></div>
+          <div class="field"><label data-i18n="lblReformS">Reform (iskarta)</label><div class="input-unit"><input type="number" id="reform" value="15" min="0" max="50" data-default="15" onfocus="this.select()"><span class="unit">%</span></div></div>
+          <div class="field"><label data-i18n="lblMaksLakS">Maks. Laktasyon (inek)</label><div class="input-unit"><input type="number" id="maksLaktasyonInek" value="5" min="2" max="10" data-default="5" onfocus="this.select()"><span class="unit">lak.</span></div></div>
         </div>
         <div class="field-row">
-          <div class="field"><label data-i18n="lblMaksTohumInekS">Maks. Tohumlama (inek)</label><div class="input-unit"><input type="number" id="maksTohumInek" value="5" min="2" max="15" data-default="5"><span class="unit">kez</span></div></div>
-          <div class="field"><label data-i18n="lblKurudonem">Kuru dönem</label><div class="input-unit"><input type="number" id="kuruGun" value="60" min="30" max="120" data-default="60"><span class="unit">gün</span></div></div>
+          <div class="field"><label data-i18n="lblMaksTohumInekS">Maks. Tohumlama (inek)</label><div class="input-unit"><input type="number" id="maksTohumInek" value="5" min="2" max="15" data-default="5" onfocus="this.select()"><span class="unit">kez</span></div></div>
+          <div class="field"><label data-i18n="lblKurudonem">Kuru dönem</label><div class="input-unit"><input type="number" id="kuruGun" value="60" min="30" max="120" data-default="60" onfocus="this.select()"><span class="unit">gün</span></div></div>
         </div>
         <div class="field-row">
-          <div class="field"><label data-i18n="lblSatDuveP">Satılan düve (yıllık)</label><input type="number" id="satDuve" value="0" min="0" data-default="0"></div>
-          <div class="field"><label data-i18n="lblAlinanS">Dışarıdan alınan inek</label><input type="number" id="alinan" value="0" min="0" data-default="0"></div>
+          <div class="field"><label data-i18n="lblSatDuveP">Satılan düve (yıllık)</label><input type="number" id="satDuve" value="0" min="0" data-default="0" onfocus="this.select()"></div>
+          <div class="field"><label data-i18n="lblAlinanS">Dışarıdan alınan inek</label><input type="number" id="alinan" value="0" min="0" data-default="0" onfocus="this.select()"></div>
         </div>
         <div class="field">
           <label data-i18n="lblSatErkekP">Satılan erkek dana (yıllık)</label>
-          <input type="number" id="satErkek" value="0" min="0" data-default="0">
+          <input type="number" id="satErkek" value="0" min="0" data-default="0" onfocus="this.select()">
           <div class="check-row" id="checkErkek" onclick="toggleCheck('checkErkek','cbErkek')" style="margin-top:5px;">
             <input type="checkbox" id="cbErkek"><div class="custom-check"></div><span class="check-label">Tamamı satılsın</span>
           </div>
@@ -822,37 +828,37 @@ input[type="checkbox"]{display:none;}
       <div class="form-section">
         <div class="section-label" data-i18n="secMevcutSuru">Başlangıç Hayvan Varlığı</div>
         <div class="field-row">
-          <div class="field"><label data-i18n="lblTopGebeDuve">Toplam Gebe Düve</label><input type="number" id="s_gebeDuve" value="50" min="1" data-default="50"></div>
-          <div class="field"><label data-i18n="lblGebeGunS">Ort. Gebelik Günü</label><div class="input-unit"><input type="number" id="s_gebeDuveGun" value="150" min="1" max="283" data-default="150"><span class="unit">gün</span></div></div>
+          <div class="field"><label data-i18n="lblTopGebeDuve">Toplam Gebe Düve</label><input type="number" id="s_gebeDuve" value="50" min="1" data-default="50" onfocus="this.select()"></div>
+          <div class="field"><label data-i18n="lblGebeGunS">Ort. Gebelik Günü</label><div class="input-unit"><input type="number" id="s_gebeDuveGun" value="150" min="1" max="283" data-default="150" onfocus="this.select()"><span class="unit">gün</span></div></div>
         </div>
         <div class="field-row">
-          <div class="field"><label data-i18n="lblIlaveBoga">İlave Boğa</label><input type="number" id="s_boga" value="2" min="0" data-default="2"></div>
-          <div class="field"><label data-i18n="lblIlkTohumS">İlk Tohumlama Yaşı</label><div class="input-unit"><input type="number" id="s_ilkTohum" value="15" min="10" max="24" data-default="15"><span class="unit">ay</span></div></div>
+          <div class="field"><label data-i18n="lblIlaveBoga">İlave Boğa</label><input type="number" id="s_boga" value="2" min="0" data-default="2" onfocus="this.select()"></div>
+          <div class="field"><label data-i18n="lblIlkTohumS">İlk Tohumlama Yaşı</label><div class="input-unit"><input type="number" id="s_ilkTohum" value="15" min="10" max="24" data-default="15" onfocus="this.select()"><span class="unit">ay</span></div></div>
         </div>
         <div class="field-row">
-          <div class="field"><label data-i18n="lblMaksTohumDuveS">Maks. tohumlama (düve)</label><div class="input-unit"><input type="number" id="s_maksTohum" value="5" min="2" max="10" data-default="5"><span class="unit">kez</span></div></div>
+          <div class="field"><label data-i18n="lblMaksTohumDuveS">Maks. tohumlama (düve)</label><div class="input-unit"><input type="number" id="s_maksTohum" value="5" min="2" max="10" data-default="5" onfocus="this.select()"><span class="unit">kez</span></div></div>
         </div>
       </div>
       <div class="form-section">
         <div class="section-label" data-i18n="secTohum">Üreme Parametreleri</div>
         <div class="field-row">
-          <div class="field"><label data-i18n="lblCrInekP">CR (İnek)</label><div class="input-unit"><input type="number" id="s_crInek" value="50" min="10" max="80" step="0.5" data-default="50"><span class="unit">%</span></div></div>
-          <div class="field"><label data-i18n="lblCrDuveP">CR (Düve)</label><div class="input-unit"><input type="number" id="s_crDuve" value="62" min="10" max="85" step="0.5" data-default="62"><span class="unit">%</span></div></div>
+          <div class="field"><label data-i18n="lblCrInekP">CR (İnek)</label><div class="input-unit"><input type="number" id="s_crInek" value="50" min="10" max="80" step="0.5" data-default="50" onfocus="this.select()"><span class="unit">%</span></div></div>
+          <div class="field"><label data-i18n="lblCrDuveP">CR (Düve)</label><div class="input-unit"><input type="number" id="s_crDuve" value="62" min="10" max="85" step="0.5" data-default="62" onfocus="this.select()"><span class="unit">%</span></div></div>
         </div>
         <div class="field-row">
-          <div class="field"><label data-i18n="lblDisiInekP">Dişi doğum — İnek</label><div class="input-unit"><input type="number" id="s_disiOranInek" value="50" min="30" max="70" step="0.5" data-default="50"><span class="unit">%</span></div></div>
-          <div class="field"><label data-i18n="lblDisiDuveP">Dişi doğum — Düve</label><div class="input-unit"><input type="number" id="s_disiOranDuve" value="50" min="30" max="70" step="0.5" data-default="50"><span class="unit">%</span></div></div>
+          <div class="field"><label data-i18n="lblDisiInekP">Dişi doğum — İnek</label><div class="input-unit"><input type="number" id="s_disiOranInek" value="50" min="30" max="70" step="0.5" data-default="50" onfocus="this.select()"><span class="unit">%</span></div></div>
+          <div class="field"><label data-i18n="lblDisiDuveP">Dişi doğum — Düve</label><div class="input-unit"><input type="number" id="s_disiOranDuve" value="50" min="30" max="70" step="0.5" data-default="50" onfocus="this.select()"><span class="unit">%</span></div></div>
         </div>
         <div class="field-row">
-          <div class="field"><label data-i18n="lblIkizS">İkiz doğum oranı</label><div class="input-unit"><input type="number" id="s_ikiz" value="3" min="0" max="15" data-default="3"><span class="unit">%</span></div></div>
-          <div class="field"><label data-i18n="lblAcikGunP">Açık Gün Ort.</label><div class="input-unit"><input type="number" id="s_acikGun" value="110" min="0" max="365" data-default="110"><span class="unit">gün</span></div></div>
+          <div class="field"><label data-i18n="lblIkizS">İkiz doğum oranı</label><div class="input-unit"><input type="number" id="s_ikiz" value="3" min="0" max="15" data-default="3" onfocus="this.select()"><span class="unit">%</span></div></div>
+          <div class="field"><label data-i18n="lblAcikGunP">Açık Gün Ort.</label><div class="input-unit"><input type="number" id="s_acikGun" value="110" min="0" max="365" data-default="110" onfocus="this.select()"><span class="unit">gün</span></div></div>
         </div>
         <div class="field-row">
-          <div class="field"><label data-i18n="lblVwpP">VWP</label><div class="input-unit"><input type="number" id="s_vwpInek" value="50" min="0" max="120" data-default="50"><span class="unit">gün</span></div></div>
-          <div class="field"><label data-i18n="lblKonvInekP">Konv. Sperma — İnek</label><div class="input-unit"><input type="number" id="s_spermaInek" value="2.2" min="1" max="10" step="0.1" data-default="2.2"><span class="unit">doz</span></div></div>
+          <div class="field"><label data-i18n="lblVwpP">VWP</label><div class="input-unit"><input type="number" id="s_vwpInek" value="50" min="0" max="120" data-default="50" onfocus="this.select()"><span class="unit">gün</span></div></div>
+          <div class="field"><label data-i18n="lblKonvInekP">Konv. Sperma — İnek</label><div class="input-unit"><input type="number" id="s_spermaInek" value="2.2" min="1" max="10" step="0.1" data-default="2.2" onfocus="this.select()"><span class="unit">doz</span></div></div>
         </div>
         <div class="field-row">
-          <div class="field"><label data-i18n="lblKonvDuveP">Konv. Sperma — Düve</label><div class="input-unit"><input type="number" id="s_spermaDuve" value="1.8" min="1" max="10" step="0.1" data-default="1.8"><span class="unit">doz</span></div></div>
+          <div class="field"><label data-i18n="lblKonvDuveP">Konv. Sperma — Düve</label><div class="input-unit"><input type="number" id="s_spermaDuve" value="1.8" min="1" max="10" step="0.1" data-default="1.8" onfocus="this.select()"><span class="unit">doz</span></div></div>
         </div>
       </div>
       <div class="sexed-section">
@@ -864,12 +870,12 @@ input[type="checkbox"]{display:none;}
           </div>
           <div id="sexedBodyInek_startup" style="display:none;">
             <div class="field-row">
-              <div class="field"><label data-i18n="lblSexedCrInekS">Sexed CR — İnek</label><div class="input-unit"><input type="number" id="s_sexedCrInek" value="35" data-default="35"><span class="unit">%</span></div></div>
-              <div class="field"><label data-i18n="lblSexedDozS">Sexed doz/gebelik</label><div class="input-unit"><input type="number" id="s_sexedDozInek" value="3.0" step="0.1" data-default="3.0"><span class="unit">doz</span></div></div>
+              <div class="field"><label data-i18n="lblSexedCrInekS">Sexed CR — İnek</label><div class="input-unit"><input type="number" id="s_sexedCrInek" value="35" data-default="35" onfocus="this.select()"><span class="unit">%</span></div></div>
+              <div class="field"><label data-i18n="lblSexedDozS">Sexed doz/gebelik</label><div class="input-unit"><input type="number" id="s_sexedDozInek" value="3.0" step="0.1" data-default="3.0" onfocus="this.select()"><span class="unit">doz</span></div></div>
             </div>
             <div class="field-row">
-              <div class="field"><label data-i18n="lblSexedOranS">Sexed uygulama oranı</label><div class="input-unit"><input type="number" id="s_sexedOranInek" value="50" step="5" data-default="50"><span class="unit">%</span></div></div>
-              <div class="field"><label data-i18n="lblSexedOnceS">Geb. öncesi sexed doz</label><div class="input-unit"><input type="number" id="s_sexedOnceInek" value="2" data-default="2"><span class="unit">doz</span></div></div>
+              <div class="field"><label data-i18n="lblSexedOranS">Sexed uygulama oranı</label><div class="input-unit"><input type="number" id="s_sexedOranInek" value="50" step="5" data-default="50" onfocus="this.select()"><span class="unit">%</span></div></div>
+              <div class="field"><label data-i18n="lblSexedOnceS">Geb. öncesi sexed doz</label><div class="input-unit"><input type="number" id="s_sexedOnceInek" value="2" data-default="2" onfocus="this.select()"><span class="unit">doz</span></div></div>
             </div>
           </div>
           <div style="display:flex;align-items:center;justify-content:space-between;margin-top:9px;margin-bottom:5px;">
@@ -878,12 +884,12 @@ input[type="checkbox"]{display:none;}
           </div>
           <div id="sexedBodyDuve_startup" style="display:none;">
             <div class="field-row">
-              <div class="field"><label data-i18n="lblSexedCrDuveS">Sexed CR — Düve</label><div class="input-unit"><input type="number" id="s_sexedCrDuve" value="45" data-default="45"><span class="unit">%</span></div></div>
-              <div class="field"><label data-i18n="lblSexedDozS">Sexed doz/gebelik</label><div class="input-unit"><input type="number" id="s_sexedDozDuve" value="2.5" step="0.1" data-default="2.5"><span class="unit">doz</span></div></div>
+              <div class="field"><label data-i18n="lblSexedCrDuveS">Sexed CR — Düve</label><div class="input-unit"><input type="number" id="s_sexedCrDuve" value="45" data-default="45" onfocus="this.select()"><span class="unit">%</span></div></div>
+              <div class="field"><label data-i18n="lblSexedDozS">Sexed doz/gebelik</label><div class="input-unit"><input type="number" id="s_sexedDozDuve" value="2.5" step="0.1" data-default="2.5" onfocus="this.select()"><span class="unit">doz</span></div></div>
             </div>
             <div class="field-row">
-              <div class="field"><label data-i18n="lblSexedOranS">Sexed uygulama oranı</label><div class="input-unit"><input type="number" id="s_sexedOranDuve" value="80" step="5" data-default="80"><span class="unit">%</span></div></div>
-              <div class="field"><label data-i18n="lblSexedOnceS">Geb. öncesi sexed doz</label><div class="input-unit"><input type="number" id="s_sexedOnceDuve" value="1" data-default="1"><span class="unit">doz</span></div></div>
+              <div class="field"><label data-i18n="lblSexedOranS">Sexed uygulama oranı</label><div class="input-unit"><input type="number" id="s_sexedOranDuve" value="80" step="5" data-default="80" onfocus="this.select()"><span class="unit">%</span></div></div>
+              <div class="field"><label data-i18n="lblSexedOnceS">Geb. öncesi sexed doz</label><div class="input-unit"><input type="number" id="s_sexedOnceDuve" value="1" data-default="1" onfocus="this.select()"><span class="unit">doz</span></div></div>
             </div>
           </div>
           <div style="font-size:.7rem;color:var(--muted);margin-top:7px;">Sexed sperma ile dişi dogum oranı <strong style="color:var(--accent2)">%85-92</strong> olur.</div>
@@ -892,24 +898,24 @@ input[type="checkbox"]{display:none;}
       <div class="form-section">
         <div class="section-label">Ölüm ve Yönetim</div>
         <div class="field-row">
-          <div class="field"><label data-i18n="lblOlumBuzP">Buzağı ölüm</label><div class="input-unit"><input type="number" id="s_olumBuz" value="5" data-default="5"><span class="unit">%</span></div></div>
-          <div class="field"><label data-i18n="lblOlumGenP">Genç hayvan ölüm</label><div class="input-unit"><input type="number" id="s_olumGen" value="2" data-default="2"><span class="unit">%</span></div></div>
+          <div class="field"><label data-i18n="lblOlumBuzP">Buzağı ölüm</label><div class="input-unit"><input type="number" id="s_olumBuz" value="5" data-default="5" onfocus="this.select()"><span class="unit">%</span></div></div>
+          <div class="field"><label data-i18n="lblOlumGenP">Genç hayvan ölüm</label><div class="input-unit"><input type="number" id="s_olumGen" value="2" data-default="2" onfocus="this.select()"><span class="unit">%</span></div></div>
         </div>
         <div class="field-row">
-          <div class="field"><label data-i18n="lblOlumInekP">İnek ölüm</label><div class="input-unit"><input type="number" id="s_olumInek" value="3" data-default="3"><span class="unit">%</span></div></div>
-          <div class="field"><label data-i18n="lblReformP">Reform</label><div class="input-unit"><input type="number" id="s_reform" value="20" data-default="20"><span class="unit">%</span></div></div>
+          <div class="field"><label data-i18n="lblOlumInekP">İnek ölüm</label><div class="input-unit"><input type="number" id="s_olumInek" value="3" data-default="3" onfocus="this.select()"><span class="unit">%</span></div></div>
+          <div class="field"><label data-i18n="lblReformP">Reform</label><div class="input-unit"><input type="number" id="s_reform" value="20" data-default="20" onfocus="this.select()"><span class="unit">%</span></div></div>
         </div>
         <div class="field-row">
-          <div class="field"><label data-i18n="lblMaksLakP">Maks. Laktasyon</label><div class="input-unit"><input type="number" id="s_maksLaktasyonInek" value="5" data-default="5"><span class="unit">lak.</span></div></div>
-          <div class="field"><label data-i18n="lblMaksTohumP">Maks. Tohumlama</label><div class="input-unit"><input type="number" id="s_maksTohumInek" value="5" data-default="5"><span class="unit">kez</span></div></div>
+          <div class="field"><label data-i18n="lblMaksLakP">Maks. Laktasyon</label><div class="input-unit"><input type="number" id="s_maksLaktasyonInek" value="5" data-default="5" onfocus="this.select()"><span class="unit">lak.</span></div></div>
+          <div class="field"><label data-i18n="lblMaksTohumP">Maks. Tohumlama</label><div class="input-unit"><input type="number" id="s_maksTohumInek" value="5" data-default="5" onfocus="this.select()"><span class="unit">kez</span></div></div>
         </div>
         <div class="field-row">
-          <div class="field"><label data-i18n="lblKurudonem">Kuru dönem</label><div class="input-unit"><input type="number" id="s_kuruGun" value="60" data-default="60"><span class="unit">gün</span></div></div>
-          <div class="field"><label data-i18n="lblSatDuveP">Satılan düve (yıllık)</label><input type="number" id="s_satDuve" value="0" data-default="0"></div>
+          <div class="field"><label data-i18n="lblKurudonem">Kuru dönem</label><div class="input-unit"><input type="number" id="s_kuruGun" value="60" data-default="60" onfocus="this.select()"><span class="unit">gün</span></div></div>
+          <div class="field"><label data-i18n="lblSatDuveP">Satılan düve (yıllık)</label><input type="number" id="s_satDuve" value="0" data-default="0" onfocus="this.select()"></div>
         </div>
         <div class="field">
           <label data-i18n="lblSatErkekP">Satılan erkek dana (yıllık)</label>
-          <input type="number" id="s_satErkek" value="0" data-default="0">
+          <input type="number" id="s_satErkek" value="0" data-default="0" onfocus="this.select()">
           <div class="check-row" id="s_checkErkek" onclick="toggleCheck('s_checkErkek','s_cbErkek')" style="margin-top:5px;">
             <input type="checkbox" id="s_cbErkek"><div class="custom-check"></div><span class="check-label">Tamamı satılsın</span>
           </div>
@@ -937,15 +943,15 @@ input[type="checkbox"]{display:none;}
       </div>
       <div class="input-group">
         <label data-i18n="finUsdRate">USD/TL Kur</label>
-        <input type="number" id="finUSDrate" placeholder="35" min="1" step="0.5">
+        <input type="number" id="finUSDrate" placeholder="35" min="1" step="0.5" onfocus="this.select()">
       </div>
       <div class="input-group">
         <label data-i18n="finYatirim">Toplam Yatırım (<span class="cur-sym">₺</span>)</label>
-        <input type="number" id="finToplYatirim" placeholder="0" min="0">
+        <input type="number" id="finToplYatirim" placeholder="0" min="0" onfocus="this.select()">
       </div>
       <div class="input-group">
         <label data-i18n="finTaksit">Aylık Kredi Taksiti (<span class="cur-sym">₺</span>)</label>
-        <input type="number" id="finAylikTaksit" placeholder="0" min="0">
+        <input type="number" id="finAylikTaksit" placeholder="0" min="0" onfocus="this.select()">
       </div>
     </div>
   </div>
@@ -974,39 +980,42 @@ input[type="checkbox"]{display:none;}
     <div class="fin-grid">
       <div class="input-group">
         <label data-i18n="finKarkas">Karkas Et Fiyatı (<span class="cur-sym">₺</span>/kg)</label>
-        <input type="number" id="finKarkasKg" placeholder="500" min="0">
+        <input type="number" id="finKarkasKg" placeholder="500" min="0" onfocus="this.select()">
         <div class="fin-note-inline" id="finKarkasNote">Reform ineği: ort. 550 kg × %52 randıman × fiyat</div>
       </div>
       <div class="input-group">
         <label>Düve Satış Fiyatı (<span class="cur-sym">₺</span>/baş) <span style="color:var(--muted);font-size:.65rem;">(boş=0)</span></label>
-        <input type="number" id="finDuveFiyat" placeholder="Opsiyonel" min="0">
+        <input type="number" id="finDuveFiyat" placeholder="Opsiyonel" min="0" onfocus="this.select()">
       </div>
     </div>
     <!-- Erkek Buzağı -->
     <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-        <input type="checkbox" id="besiCheck" onchange="toggleBesi(this.checked)" style="width:18px;height:18px;accent-color:var(--blue);">
-        <label for="besiCheck" id="finErkekCheckLabel" style="font-size:.78rem;color:var(--text);cursor:pointer;">Erkek buzağıları besi için ayır</label>
+      <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:#f0f6ff;border:2px solid rgba(36,113,163,.35);border-radius:10px;margin-bottom:10px;cursor:pointer;" onclick="document.getElementById('besiCheck').click()">
+        <input type="checkbox" id="besiCheck" onchange="toggleBesi(this.checked)" onclick="event.stopPropagation()" style="width:22px;height:22px;accent-color:var(--blue);cursor:pointer;flex-shrink:0;">
+        <div>
+          <label for="besiCheck" id="finErkekCheckLabel" style="font-size:.82rem;font-weight:700;color:var(--blue);cursor:pointer;display:block;">🐄 Erkek buzağıları besi için ayır</label>
+          <div style="font-size:.68rem;color:var(--muted);margin-top:2px;">İşaretlenmezse direkt satış fiyatı uygulanır</div>
+        </div>
       </div>
       <div id="direktSatisPanel" class="fin-grid">
         <div class="input-group">
           <label data-i18n="finErkekFiyat">Erkek Buzağı Satış Fiyatı (<span class="cur-sym">₺</span>/baş)</label>
-          <input type="number" id="finErkekFiyat" placeholder="8000" min="0">
+          <input type="number" id="finErkekFiyat" placeholder="8000" min="0" onfocus="this.select()">
         </div>
       </div>
       <div class="besi-panel" id="besiPanel" style="display:none;">
         <div class="fin-grid-3">
           <div class="input-group">
             <label data-i18n="finBesiSure">Besi Süresi (ay)</label>
-            <input type="number" id="besiSure" value="12" min="1" max="24">
+            <input type="number" id="besiSure" value="12" min="1" max="24" onfocus="this.select()">
           </div>
           <div class="input-group">
             <label data-i18n="finBesiMaliyet">Aylık Besi Maliyeti (<span class="cur-sym">₺</span>/baş)</label>
-            <input type="number" id="besiAylikMaliyet" placeholder="3000" min="0">
+            <input type="number" id="besiAylikMaliyet" placeholder="3000" min="0" onfocus="this.select()">
           </div>
           <div class="input-group">
             <label data-i18n="finBesiAgirlik">Besi Sonu Canlı Ağırlık (kg)</label>
-            <input type="number" id="besiAgirlik" value="550" min="200">
+            <input type="number" id="besiAgirlik" value="550" min="200" onfocus="this.select()">
           </div>
         </div>
       </div>
@@ -1022,31 +1031,31 @@ input[type="checkbox"]{display:none;}
     <div class="fin-grid">
       <div class="input-group">
         <label data-i18n="finBesleme">Besleme (<span class="cur-sym">₺</span>/baş/gün)</label>
-        <input type="number" id="finBesleme" placeholder="Opsiyonel" min="0">
+        <input type="number" id="finBesleme" placeholder="Opsiyonel" min="0" onfocus="this.select()">
         <div class="fin-note-inline" id="finBeslemeNote">boş = Türkiye verisi: gelirin %67'si</div>
       </div>
       <div class="input-group">
         <label data-i18n="finIscilik">İşçilik (<span class="cur-sym">₺</span>/baş/ay)</label>
-        <input type="number" id="finIscilik" placeholder="Opsiyonel" min="0">
+        <input type="number" id="finIscilik" placeholder="Opsiyonel" min="0" onfocus="this.select()">
         <div class="fin-note-inline" id="finIscNote">boş = Türkiye verisi: %23.5</div>
       </div>
       <div class="input-group">
         <label data-i18n="finDiger">Enerji+Bakım+İşletme (<span class="cur-sym">₺</span>/baş/ay)</label>
-        <input type="number" id="finDiger" placeholder="Opsiyonel" min="0">
+        <input type="number" id="finDiger" placeholder="Opsiyonel" min="0" onfocus="this.select()">
         <div class="fin-note-inline" id="finDigerNote">boş = Türkiye verisi: %9.4</div>
       </div>
       <div class="input-group">
         <label data-i18n="finAmort">Ekipman Amortismanı (<span class="cur-sym">₺</span>/baş/ay)</label>
-        <input type="number" id="finAmort" placeholder="Opsiyonel" min="0">
+        <input type="number" id="finAmort" placeholder="Opsiyonel" min="0" onfocus="this.select()">
         <div class="fin-note-inline" id="finAmortNote">boş = Türkiye verisi: %1.5</div>
       </div>
       <div class="input-group">
         <label data-i18n="finKonvSperma">Konvansiyonel Sperma (<span class="cur-sym">₺</span>/doz)</label>
-        <input type="number" id="finKonvSperma" value="300" min="0">
+        <input type="number" id="finKonvSperma" value="300" min="0" placeholder="300" onfocus="this.select()">
       </div>
       <div class="input-group">
         <label data-i18n="finSexedSperma">Sexed Sperma (<span class="cur-sym">₺</span>/doz)</label>
-        <input type="number" id="finSexedSperma" value="1200" min="0">
+        <input type="number" id="finSexedSperma" value="1200" min="0" placeholder="1.200" onfocus="this.select()">
       </div>
     </div>
   </div>
@@ -1059,19 +1068,19 @@ input[type="checkbox"]{display:none;}
     </div>
     <div style="font-family:'Barlow Condensed',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase;margin-bottom:8px;" id="finCowDisTitle">İnek Hastalıkları</div>
     <div class="dis-grid">
-      <div class="dis-row"><label>Klinik Ketozis</label><input type="number" id="dKet" placeholder="5" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
-      <div class="dis-row"><label>Retensio Secundinarum</label><input type="number" id="dRet" placeholder="8" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
-      <div class="dis-row"><label>Klinik Hipokalsemi</label><input type="number" id="dHipo" placeholder="5" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
-      <div class="dis-row"><label>Sol Abomazum Deplasmanı</label><input type="number" id="dLDA" placeholder="3" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
-      <div class="dis-row"><label>Sağ Abomazum Deplasmanı</label><input type="number" id="dRDA" placeholder="0.5" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
-      <div class="dis-row"><label>Klinik Topallık</label><input type="number" id="dTop" placeholder="15" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
-      <div class="dis-row"><label>Klinik Metritis</label><input type="number" id="dMet" placeholder="20" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
-      <div class="dis-row"><label>Ovaryum Kistleri</label><input type="number" id="dOvk" placeholder="10" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
+      <div class="dis-row"><label>Klinik Ketozis</label><input type="number" id="dKet" placeholder="5" min="0" max="100" step="0.1" onfocus="this.select()"><span class="dis-unit">%</span></div>
+      <div class="dis-row"><label>Retensio Secundinarum</label><input type="number" id="dRet" placeholder="8" min="0" max="100" step="0.1" onfocus="this.select()"><span class="dis-unit">%</span></div>
+      <div class="dis-row"><label>Klinik Hipokalsemi</label><input type="number" id="dHipo" placeholder="5" min="0" max="100" step="0.1" onfocus="this.select()"><span class="dis-unit">%</span></div>
+      <div class="dis-row"><label>Sol Abomazum Deplasmanı</label><input type="number" id="dLDA" placeholder="3" min="0" max="100" step="0.1" onfocus="this.select()"><span class="dis-unit">%</span></div>
+      <div class="dis-row"><label>Sağ Abomazum Deplasmanı</label><input type="number" id="dRDA" placeholder="0.5" min="0" max="100" step="0.1" onfocus="this.select()"><span class="dis-unit">%</span></div>
+      <div class="dis-row"><label>Klinik Topallık</label><input type="number" id="dTop" placeholder="15" min="0" max="100" step="0.1" onfocus="this.select()"><span class="dis-unit">%</span></div>
+      <div class="dis-row"><label>Klinik Metritis</label><input type="number" id="dMet" placeholder="20" min="0" max="100" step="0.1" onfocus="this.select()"><span class="dis-unit">%</span></div>
+      <div class="dis-row"><label>Ovaryum Kistleri</label><input type="number" id="dOvk" placeholder="10" min="0" max="100" step="0.1" onfocus="this.select()"><span class="dis-unit">%</span></div>
     </div>
     <div style="font-family:'Barlow Condensed',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase;margin:12px 0 8px;" id="finCalfDisTitle">Buzağı Hastalıkları (0–2 ay)</div>
     <div class="dis-grid">
-      <div class="dis-row"><label>Buzağı İshali</label><input type="number" id="dBuzI" placeholder="25" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
-      <div class="dis-row"><label>Buzağı Pnömonisi</label><input type="number" id="dBuzP" placeholder="15" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
+      <div class="dis-row"><label>Buzağı İshali</label><input type="number" id="dBuzI" placeholder="25" min="0" max="100" step="0.1" onfocus="this.select()"><span class="dis-unit">%</span></div>
+      <div class="dis-row"><label>Buzağı Pnömonisi</label><input type="number" id="dBuzP" placeholder="15" min="0" max="100" step="0.1" onfocus="this.select()"><span class="dis-unit">%</span></div>
     </div>
     <div style="font-size:.68rem;color:var(--muted);margin-top:10px;font-style:italic;" id="finVetNoteEl">
       Maliyet = tedavi gideri + verim kaybı (Türkiye verisi ile uyumlu uluslararası literatür)
@@ -1079,13 +1088,14 @@ input[type="checkbox"]{display:none;}
   </div>
 
   <!-- Hesapla Butonları -->
-  <div style="display:flex;gap:10px;margin:16px 0;flex-wrap:wrap;">
+  <div style="display:flex;gap:10px;margin:16px 0;flex-wrap:wrap;align-items:center;">
     <button class="btn-calc" id="finHesaplaBtn" onclick="hesaplaFinans()" style="background:linear-gradient(135deg,var(--gold),#8b6509);">
       💰 Finansal Analiz Hesapla
     </button>
     <button class="btn-calc" id="finSimHesaplaBtn" onclick="hesaplaSimVeFinans()" style="background:linear-gradient(135deg,var(--accent),#1a5c26);font-size:.75rem;">
       🔗 Simülasyon + Finansal Birlikte Hesapla
     </button>
+    <button class="btn-reset" onclick="sifirlaFinans()" style="width:auto;padding:10px 20px;">↺ Finansal Sıfırla</button>
   </div>
   <div style="font-size:.72rem;color:var(--muted);margin-bottom:16px;line-height:1.8;">
     <div id="finNote1">ⓘ <strong>Finansal Analiz Hesapla:</strong> Sadece finansal sonuçları günceller.</div>
@@ -1137,15 +1147,15 @@ input[type="checkbox"]{display:none;}
       </div>
       <div class="input-group">
         <label data-i18n="finUsdRate">USD/TL Kur</label>
-        <input type="number" id="finUSDrate" placeholder="35" min="1" step="0.5">
+        <input type="number" id="finUSDrate" placeholder="35" min="1" step="0.5" onfocus="this.select()">
       </div>
       <div class="input-group">
         <label data-i18n="finYatirim">Toplam Yatırım (<span class="cur-sym">₺</span>)</label>
-        <input type="number" id="finToplYatirim" placeholder="0" min="0">
+        <input type="number" id="finToplYatirim" placeholder="0" min="0" onfocus="this.select()">
       </div>
       <div class="input-group">
         <label data-i18n="finTaksit">Aylık Kredi Taksiti (<span class="cur-sym">₺</span>)</label>
-        <input type="number" id="finAylikTaksit" placeholder="0" min="0">
+        <input type="number" id="finAylikTaksit" placeholder="0" min="0" onfocus="this.select()">
       </div>
     </div>
   </div>
@@ -1174,35 +1184,38 @@ input[type="checkbox"]{display:none;}
     <div class="fin-grid">
       <div class="input-group">
         <label data-i18n="finKarkas">Karkas Et Fiyatı (<span class="cur-sym">₺</span>/kg)</label>
-        <input type="number" id="finKarkasKg" placeholder="500" min="0">
+        <input type="number" id="finKarkasKg" placeholder="500" min="0" onfocus="this.select()">
         <div class="fin-note-inline" id="finKarkasNote">Reform ineği: ort. 550 kg × %52 randıman × fiyat</div>
       </div>
     </div>
     <!-- Erkek Buzağı -->
     <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-        <input type="checkbox" id="besiCheck" onchange="toggleBesi(this.checked)" style="width:18px;height:18px;accent-color:var(--blue);">
-        <label for="besiCheck" id="finErkekCheckLabel" style="font-size:.78rem;color:var(--text);cursor:pointer;">Erkek buzağıları besi için ayır</label>
+      <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:#f0f6ff;border:2px solid rgba(36,113,163,.35);border-radius:10px;margin-bottom:10px;cursor:pointer;" onclick="document.getElementById('besiCheck').click()">
+        <input type="checkbox" id="besiCheck" onchange="toggleBesi(this.checked)" onclick="event.stopPropagation()" style="width:22px;height:22px;accent-color:var(--blue);cursor:pointer;flex-shrink:0;">
+        <div>
+          <label for="besiCheck" id="finErkekCheckLabel" style="font-size:.82rem;font-weight:700;color:var(--blue);cursor:pointer;display:block;">🐄 Erkek buzağıları besi için ayır</label>
+          <div style="font-size:.68rem;color:var(--muted);margin-top:2px;">İşaretlenmezse direkt satış fiyatı uygulanır</div>
+        </div>
       </div>
       <div id="direktSatisPanel" class="fin-grid">
         <div class="input-group">
           <label data-i18n="finErkekFiyat">Erkek Buzağı Satış Fiyatı (<span class="cur-sym">₺</span>/baş)</label>
-          <input type="number" id="finErkekFiyat" placeholder="8000" min="0">
+          <input type="number" id="finErkekFiyat" placeholder="8000" min="0" onfocus="this.select()">
         </div>
       </div>
       <div class="besi-panel" id="besiPanel" style="display:none;">
         <div class="fin-grid-3">
           <div class="input-group">
             <label data-i18n="finBesiSure">Besi Süresi (ay)</label>
-            <input type="number" id="besiSure" value="12" min="1" max="24">
+            <input type="number" id="besiSure" value="12" min="1" max="24" onfocus="this.select()">
           </div>
           <div class="input-group">
             <label data-i18n="finBesiMaliyet">Aylık Besi Maliyeti (<span class="cur-sym">₺</span>/baş)</label>
-            <input type="number" id="besiAylikMaliyet" placeholder="3000" min="0">
+            <input type="number" id="besiAylikMaliyet" placeholder="3000" min="0" onfocus="this.select()">
           </div>
           <div class="input-group">
             <label data-i18n="finBesiAgirlik">Besi Sonu Canlı Ağırlık (kg)</label>
-            <input type="number" id="besiAgirlik" value="550" min="200">
+            <input type="number" id="besiAgirlik" value="550" min="200" onfocus="this.select()">
           </div>
         </div>
       </div>
@@ -1218,31 +1231,31 @@ input[type="checkbox"]{display:none;}
     <div class="fin-grid">
       <div class="input-group">
         <label data-i18n="finBesleme">Besleme (<span class="cur-sym">₺</span>/baş/gün)</label>
-        <input type="number" id="finBesleme" placeholder="Opsiyonel" min="0">
+        <input type="number" id="finBesleme" placeholder="Opsiyonel" min="0" onfocus="this.select()">
         <div class="fin-note-inline" id="finBeslemeNote">boş = Türkiye verisi: gelirin %67'si</div>
       </div>
       <div class="input-group">
         <label data-i18n="finIscilik">İşçilik (<span class="cur-sym">₺</span>/baş/ay)</label>
-        <input type="number" id="finIscilik" placeholder="Opsiyonel" min="0">
+        <input type="number" id="finIscilik" placeholder="Opsiyonel" min="0" onfocus="this.select()">
         <div class="fin-note-inline" id="finIscNote">boş = Türkiye verisi: %23.5</div>
       </div>
       <div class="input-group">
         <label data-i18n="finDiger">Enerji+Bakım+İşletme (<span class="cur-sym">₺</span>/baş/ay)</label>
-        <input type="number" id="finDiger" placeholder="Opsiyonel" min="0">
+        <input type="number" id="finDiger" placeholder="Opsiyonel" min="0" onfocus="this.select()">
         <div class="fin-note-inline" id="finDigerNote">boş = Türkiye verisi: %9.4</div>
       </div>
       <div class="input-group">
         <label data-i18n="finAmort">Ekipman Amortismanı (<span class="cur-sym">₺</span>/baş/ay)</label>
-        <input type="number" id="finAmort" placeholder="Opsiyonel" min="0">
+        <input type="number" id="finAmort" placeholder="Opsiyonel" min="0" onfocus="this.select()">
         <div class="fin-note-inline" id="finAmortNote">boş = Türkiye verisi: %1.5</div>
       </div>
       <div class="input-group">
         <label data-i18n="finKonvSperma">Konvansiyonel Sperma (<span class="cur-sym">₺</span>/doz)</label>
-        <input type="number" id="finKonvSperma" value="300" min="0">
+        <input type="number" id="finKonvSperma" value="300" min="0" placeholder="300" onfocus="this.select()">
       </div>
       <div class="input-group">
         <label data-i18n="finSexedSperma">Sexed Sperma (<span class="cur-sym">₺</span>/doz)</label>
-        <input type="number" id="finSexedSperma" value="1200" min="0">
+        <input type="number" id="finSexedSperma" value="1200" min="0" placeholder="1.200" onfocus="this.select()">
       </div>
     </div>
   </div>
@@ -1255,19 +1268,19 @@ input[type="checkbox"]{display:none;}
     </div>
     <div style="font-family:'Barlow Condensed',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase;margin-bottom:8px;" id="finCowDisTitle">İnek Hastalıkları</div>
     <div class="dis-grid">
-      <div class="dis-row"><label>Klinik Ketozis</label><input type="number" id="dKet" placeholder="5" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
-      <div class="dis-row"><label>Retensio Secundinarum</label><input type="number" id="dRet" placeholder="8" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
-      <div class="dis-row"><label>Klinik Hipokalsemi</label><input type="number" id="dHipo" placeholder="5" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
-      <div class="dis-row"><label>Sol Abomazum Deplasmanı</label><input type="number" id="dLDA" placeholder="3" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
-      <div class="dis-row"><label>Sağ Abomazum Deplasmanı</label><input type="number" id="dRDA" placeholder="0.5" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
-      <div class="dis-row"><label>Klinik Topallık</label><input type="number" id="dTop" placeholder="15" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
-      <div class="dis-row"><label>Klinik Metritis</label><input type="number" id="dMet" placeholder="20" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
-      <div class="dis-row"><label>Ovaryum Kistleri</label><input type="number" id="dOvk" placeholder="10" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
+      <div class="dis-row"><label>Klinik Ketozis</label><input type="number" id="dKet" placeholder="5" min="0" max="100" step="0.1" onfocus="this.select()"><span class="dis-unit">%</span></div>
+      <div class="dis-row"><label>Retensio Secundinarum</label><input type="number" id="dRet" placeholder="8" min="0" max="100" step="0.1" onfocus="this.select()"><span class="dis-unit">%</span></div>
+      <div class="dis-row"><label>Klinik Hipokalsemi</label><input type="number" id="dHipo" placeholder="5" min="0" max="100" step="0.1" onfocus="this.select()"><span class="dis-unit">%</span></div>
+      <div class="dis-row"><label>Sol Abomazum Deplasmanı</label><input type="number" id="dLDA" placeholder="3" min="0" max="100" step="0.1" onfocus="this.select()"><span class="dis-unit">%</span></div>
+      <div class="dis-row"><label>Sağ Abomazum Deplasmanı</label><input type="number" id="dRDA" placeholder="0.5" min="0" max="100" step="0.1" onfocus="this.select()"><span class="dis-unit">%</span></div>
+      <div class="dis-row"><label>Klinik Topallık</label><input type="number" id="dTop" placeholder="15" min="0" max="100" step="0.1" onfocus="this.select()"><span class="dis-unit">%</span></div>
+      <div class="dis-row"><label>Klinik Metritis</label><input type="number" id="dMet" placeholder="20" min="0" max="100" step="0.1" onfocus="this.select()"><span class="dis-unit">%</span></div>
+      <div class="dis-row"><label>Ovaryum Kistleri</label><input type="number" id="dOvk" placeholder="10" min="0" max="100" step="0.1" onfocus="this.select()"><span class="dis-unit">%</span></div>
     </div>
     <div style="font-family:'Barlow Condensed',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase;margin:12px 0 8px;" id="finCalfDisTitle">Buzağı Hastalıkları (0–2 ay)</div>
     <div class="dis-grid">
-      <div class="dis-row"><label>Buzağı İshali</label><input type="number" id="dBuzI" placeholder="25" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
-      <div class="dis-row"><label>Buzağı Pnömonisi</label><input type="number" id="dBuzP" placeholder="15" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
+      <div class="dis-row"><label>Buzağı İshali</label><input type="number" id="dBuzI" placeholder="25" min="0" max="100" step="0.1" onfocus="this.select()"><span class="dis-unit">%</span></div>
+      <div class="dis-row"><label>Buzağı Pnömonisi</label><input type="number" id="dBuzP" placeholder="15" min="0" max="100" step="0.1" onfocus="this.select()"><span class="dis-unit">%</span></div>
     </div>
     <div style="font-size:.68rem;color:var(--muted);margin-top:10px;font-style:italic;" id="finVetNoteEl">
       Maliyet = tedavi gideri + verim kaybı (Türkiye verisi ile uyumlu uluslararası literatür)
@@ -1275,13 +1288,14 @@ input[type="checkbox"]{display:none;}
   </div>
 
   <!-- Hesapla Butonları -->
-  <div style="display:flex;gap:10px;margin:16px 0;flex-wrap:wrap;">
+  <div style="display:flex;gap:10px;margin:16px 0;flex-wrap:wrap;align-items:center;">
     <button class="btn-calc" id="finHesaplaBtn" onclick="hesaplaFinans()" style="background:linear-gradient(135deg,var(--gold),#8b6509);">
       💰 Finansal Analiz Hesapla
     </button>
     <button class="btn-calc" id="finSimHesaplaBtn" onclick="hesaplaSimVeFinans()" style="background:linear-gradient(135deg,var(--accent),#1a5c26);font-size:.75rem;">
       🔗 Simülasyon + Finansal Birlikte Hesapla
     </button>
+    <button class="btn-reset" onclick="sifirlaFinans()" style="width:auto;padding:10px 20px;">↺ Finansal Sıfırla</button>
   </div>
   <div style="font-size:.72rem;color:var(--muted);margin-bottom:16px;line-height:1.8;">
     <div id="finNote1">ⓘ <strong>Finansal Analiz Hesapla:</strong> Sadece finansal sonuçları günceller.</div>
@@ -1682,8 +1696,8 @@ function getTotal(s){return(s.laktasyon||0)+(s.kuru||0)+(s.duveB||0)+(s.buz02||0
 
 function renderResults(snaps, initial, p) {
   var initTotal = getTotal(initial);
-  var ay12 = snaps[11]||{}, ay24 = snaps[23]||{};
-  var t12=getTotal(ay12), t24=getTotal(ay24);
+  var ay12 = snaps[11]||{}, ay24 = snaps[23]||{}, ay48 = snaps[47]||{}, ay60 = snaps[59]||{};
+  var t12=getTotal(ay12), t24=getTotal(ay24), t48=getTotal(ay48), t60=getTotal(ay60);
   var html = '';
 
   html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">'
@@ -1692,14 +1706,14 @@ function renderResults(snaps, initial, p) {
 
   // [FIX-9] Startup notu
   if(initial._startup && snaps.length>0){
-    var ay24s=snaps[23]||{};
+    var ay24s=snaps[59]||{};
     var gebeDQ=ay24s.gebeDuveQSayi||0;
     html += '<div class="startup-note">'
       + '<strong>ℹ Sıfırdan Kuruluş — Biyolojik Süreç Notu</strong><br>'
       + '1. nesil ineklerden doğan dişi buzağıların düve olup ilk tohumlanması ~15 ay, '
-      + 'gebelik süresi ~9 ay daha gerektirir. <strong>2. nesil inekler 24 aylık projeksiyon penceresinin dışında doğurmaya başlar.</strong><br>'
-      + '24. ay sonu gebe düve kuyruğu: <strong>' + gebeDQ + ' baş</strong> — '
-      + 'bu hayvanlar 25-33. aylarda doğurup sürüyü büyütecek.'
+      + 'gebelik süresi ~9 ay daha gerektirir. <strong>2. nesil inekler 24 aylık süreçten sonra doğurmaya başlar, 60 aylık projeksiyonda tam etkisi görülür.</strong><br>'
+      + '60. ay sonu gebe düve kuyruğu: <strong>' + gebeDQ + ' baş</strong> — '
+      + 'bu hayvanlar ilerleyen aylarda doğurup sürüyü büyütmeye devam edecek.'
       + '</div>';
   }
 
@@ -1714,28 +1728,29 @@ function renderResults(snaps, initial, p) {
       +'<span class="sum-chg '+(up?"up":"dn")+'">'+(up?"↑":"↓")+' '+Math.abs(chg)+'%</span></div>';
   }
   html += sumCard('Başlangıç', initTotal, initTotal, 'baş (taban)');
-  html += sumCard('6. Ay', getTotal(snaps[5]||{}), initTotal, 'baş');
   html += sumCard('12. Ay', t12, initTotal, 'baş');
   html += sumCard('24. Ay', t24, initTotal, 'baş');
+  html += sumCard('48. Ay', t48, initTotal, 'baş');
+  html += sumCard('60. Ay', t60, initTotal, 'baş');
   html += '</div>';
 
   // Hayvan varlığı tablosu
   html += '<div class="section-title">📅 Aylık Hayvan Varlığı — 60 Ay</div><div class="table-scroll"><table class="snap-table"><thead><tr><th>Kategori</th><th>Baş.</th>';
-  for(var m=1;m<=24;m++) html += '<th><span class="ay-badge '+(m<=12?"ay-y1":"ay-y2")+'">'+m+'</span></th>';
+  for(var m=1;m<=60;m++) html += '<th><span class="ay-badge '+(m<=12?"ay-y1":m<=24?"ay-y2":m<=48?"ay-y3":"ay-y4")+'">'+m+'</span></th>';
   html += '</tr></thead><tbody>';
   for(var ci=0;ci<CATS.length;ci++){
     var cat=CATS[ci];
     html += '<tr><td><div class="cat-name"><div class="cat-dot" style="background:'+cat.color+'"></div>'+cat.name+'</div></td><td>'+(initial[cat.key]||0)+'</td>';
-    for(var m=0;m<24;m++) html += '<td><strong>'+(snaps[m][cat.key]||0)+'</strong></td>';
+    for(var m=0;m<60;m++) html += '<td><strong>'+(snaps[m]?snaps[m][cat.key]||0:0)+'</strong></td>';
     html += '</tr>';
   }
   html += '<tr class="total-row"><td>TOPLAM</td><td>'+initTotal+'</td>';
-  for(var m=0;m<24;m++){var tv=getTotal(snaps[m]);var d=tv-initTotal;html += '<td><strong>'+tv+'</strong><br><small class="'+(d>0?"pos":d<0?"neg":"neu")+'">'+(d>=0?"+":"")+d+'</small></td>';}
+  for(var m=0;m<60;m++){var tv=getTotal(snaps[m]||{});var d=tv-initTotal;html += '<td><strong>'+tv+'</strong><br><small class="'+(d>0?"pos":d<0?"neg":"neu")+'">'+(d>=0?"+":"")+d+'</small></td>';}
   html += '</tr></tbody></table></div>';
 
   // Üreme & gebelik tablosu
   html += '<div class="section-title">🔬 Aylık Üreme ve Gebelik</div><div class="table-scroll"><table class="snap-table"><thead><tr><th>Gösterge</th><th>Baş.</th>';
-  for(var m=1;m<=24;m++) html += '<th><span class="ay-badge '+(m<=12?"ay-y1":"ay-y2")+'">'+m+'</span></th>';
+  for(var m=1;m<=60;m++) html += '<th><span class="ay-badge '+(m<=12?"ay-y1":m<=24?"ay-y2":m<=48?"ay-y3":"ay-y4")+'">'+m+'</span></th>';
   html += '</tr></thead><tbody>';
   var reproLabels=["Buzağı (dönem)","Gebe İnek (kesit)","Açık İnek (kesit)","Kuru İnek","Ort. Laktasyon","Reform İnek","Reform Düve","İnek Ölümü"];
   var reproFns=[
@@ -1750,7 +1765,7 @@ function renderResults(snaps, initial, p) {
   ];
   for(var ri=0;ri<reproLabels.length;ri++){
     html += '<tr><td>'+reproLabels[ri]+'</td><td>—</td>';
-    for(var m=0;m<24;m++) html += '<td>'+reproFns[ri](snaps[m])+'</td>';
+    for(var m=0;m<60;m++) html += '<td>'+reproFns[ri](snaps[m]||{})+'</td>';
     html += '</tr>';
   }
   html += '</tbody></table></div>';
@@ -1762,7 +1777,7 @@ function renderResults(snaps, initial, p) {
   html += '<strong>Doz hesabı (v1.1):</strong> Konv. sperma = gebe olan inek/düve × doz/gebelik parametresi. ';
   html += 'Sexed sperma = gebe olan × sexed doz + tohumlanan × gebelik öncesi doz.</div>';
   html += '<div class="table-scroll"><table class="snap-table"><thead><tr><th>Gösterge</th><th>Baş.</th>';
-  for(var m=1;m<=24;m++) html += '<th><span class="ay-badge '+(m<=12?"ay-y1":"ay-y2")+'">'+m+'</span></th>';
+  for(var m=1;m<=60;m++) html += '<th><span class="ay-badge '+(m<=12?"ay-y1":m<=24?"ay-y2":m<=48?"ay-y3":"ay-y4")+'">'+m+'</span></th>';
   html += '</tr></thead><tbody>';
   var spermaLabels=["Tohum. İnek (adet)","Sperma İnek (doz)","Tohum. Düve (adet)","Sperma Düve (doz)","TOPLAM SPERMA (doz)"];
   var spermaFns=[
@@ -1774,7 +1789,7 @@ function renderResults(snaps, initial, p) {
   ];
   for(var ri=0;ri<spermaLabels.length;ri++){
     html += '<tr '+(ri===4?"class='total-row'":"")+"><td>"+spermaLabels[ri]+"</td><td>—</td>";
-    for(var m=0;m<24;m++) html += '<td>'+spermaFns[ri](snaps[m])+'</td>';
+    for(var m=0;m<60;m++) html += '<td>'+spermaFns[ri](snaps[m]||{})+'</td>';
     html += '</tr>';
   }
   html += '</tbody></table></div>';
@@ -2175,13 +2190,19 @@ function calcFinans(snaps, params){
 // ── SONUÇ RENDER ─────────────────────────────────────────
 function fmtM(v){
   var sym=currentCurrency==="TL"?"₺":"$";
-  if(Math.abs(v)>=1000000) return sym+(v/1000000).toFixed(2)+"M";
-  if(Math.abs(v)>=1000)    return sym+(v/1000).toFixed(1)+"K";
-  return sym+Math.round(v).toLocaleString("tr-TR");
+  var neg = v < 0;
+  var abs = Math.abs(v);
+  var formatted;
+  if(abs>=1000000) formatted = (abs/1000000).toFixed(2)+"M";
+  else if(abs>=1000) formatted = Math.round(abs).toLocaleString(currentCurrency==="TL"?"tr-TR":"en-US");
+  else formatted = Math.round(abs).toLocaleString(currentCurrency==="TL"?"tr-TR":"en-US");
+  return (neg?"-":"")+sym+formatted;
 }
 function fmtFull(v){
   var sym=currentCurrency==="TL"?"₺":"$";
-  return sym+Math.round(v).toLocaleString("tr-TR");
+  var neg = v < 0;
+  var formatted = Math.round(Math.abs(v)).toLocaleString(currentCurrency==="TL"?"tr-TR":"en-US");
+  return (neg?"-":"")+sym+formatted;
 }
 
 function renderFinansResults(finObj){
@@ -3790,6 +3811,39 @@ window.addEventListener("load",function(){
 <script>
 
 // ═══ SEKME & FİNANS YÖNETİMİ ═══
+function sifirlaFinans() {
+  // Tüm finans input'larını temizle
+  var finIds = ["finUSDrate","finToplYatirim","finAylikTaksit","finKarkasKg",
+    "finDuveFiyat","finErkekFiyat","besiSure","besiAylikMaliyet","besiAgirlik",
+    "finBesleme","finIscilik","finDiger","finAmort","finKonvSperma","finSexedSperma",
+    "dKet","dRet","dHipo","dLDA","dRDA","dTop","dMet","dOvk","dBuzI","dBuzP"];
+  for(var i=0;i<finIds.length;i++){
+    var el=document.getElementById(finIds[i]);
+    if(el) el.value="";
+  }
+  // Default değerleri yükle
+  var defaults = {finKonvSperma:300,finSexedSperma:1200,besiSure:12,besiAgirlik:550};
+  for(var k in defaults){
+    var el=document.getElementById(k);
+    if(el) el.value=defaults[k];
+  }
+  // Besi paneli kapat
+  toggleBesi(false);
+  var bc=document.getElementById("besiCheck");
+  if(bc) bc.checked=false;
+  // Finansal sonuçları temizle
+  var fr=document.getElementById("finansResults");
+  if(fr) fr.innerHTML="";
+  finansAcik=false;
+  var fc=document.getElementById("finansCheck");
+  if(fc) fc.checked=false;
+  var fp=document.getElementById("finansPanel");
+  if(fp) fp.style.display="none";
+  // Milk rows sıfırla
+  buildMilkRows();
+  showToast("Finansal analiz sıfırlandı.");
+}
+// ═══ SEKME & FİNANS YÖNETİMİ ═══
 var finansAcik = false;
 
 function switchMainTab(tab) {
@@ -3828,16 +3882,28 @@ function hesaplaFinans(){
   if(!projData.snaps || !projData.snaps.length){
     showToast(i("finHesaplaOnce"), true); return;
   }
+  // milkRows boşsa doldur
+  var mr = document.getElementById("milkRows");
+  if(mr && !mr.innerHTML) buildMilkRows();
   var p = typeof collectParams==="function" ? collectParams() : {};
   finansAcik = true;
   var finObj = calcFinans(projData.snaps, p);
-  if(finObj){ renderFinansResults(finObj); showToast(i("finTamam")); }
+  if(finObj){ 
+    renderFinansResults(finObj); 
+    showToast(i("finTamam"));
+    // Finansal sekmeye geç
+    switchMainTab("finans");
+  } else {
+    showToast("Finansal hesaplama başarısız. Lütfen süt fiyatı ve parametreleri kontrol edin.", true);
+  }
 }
 
 function hesaplaSimVeFinans(){
+  var mr = document.getElementById("milkRows");
+  if(mr && !mr.innerHTML) buildMilkRows();
   finansAcik = true;
   hesapla();
-  showToast(i("finSimTamam"));
+  // renderResults override zaten finansı çağırıyor
 }
 
 function showQR(){
