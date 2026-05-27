@@ -671,12 +671,6 @@ input[type="checkbox"]{display:none;}
   <button class="scenario-btn" onclick="switchScenario('startup')"><span class="dot"></span><span id="lblStartup">Sıfırdan Kuruluş</span></button>
 </div>
 
-<div class="main-tabs">
-  <button class="main-tab active" data-tab="simulasyon" onclick="switchMainTab('simulasyon')" id="tabBtnSim">&#128290; Sürü Simülasyonu</button>
-  <button class="main-tab fin-tab" data-tab="finans" onclick="switchMainTab('finans')" id="tabBtnFin">&#128200; Finansal Analiz</button>
-</div>
-
-<div class="tab-content active" id="tab_simulasyon">
 <div class="main-grid">
 <div class="panel">
   <div class="panel-header">
@@ -1125,13 +1119,6 @@ input[type="checkbox"]{display:none;}
 </div>
 </div>
 </div>
-
-<div class="tab-content" id="tab_finans" style="display:none;">
-<!-- ═══ FİNANSAL ANALİZ PANELİ ═══ -->
-<div class="fin-toggle" onclick="document.getElementById('finansCheck').click()">
-  <input type="checkbox" id="finansCheck" onclick="event.stopPropagation();toggleFinans(this.checked)">
-  <label id="finToggleLabel" for="finansCheck" style="cursor:pointer;">💰 Finansal Analiz Modülü</label>
-</div>
 <div id="finansPanel" style="display:none;">
 
   <!-- Para Birimi & Yatırım -->
@@ -1305,8 +1292,6 @@ input[type="checkbox"]{display:none;}
 </div>
 <!-- Finansal Sonuçlar -->
 <div id="finansResults"></div>
-
-</div>
 
 <div style="text-align:center;padding:6px 0 2px;">
   <span onclick="openAdminOverlay()" style="font-size:.5rem;color:rgba(0,0,0,.06);cursor:pointer;user-select:none;">&#9881;</span>
@@ -1992,8 +1977,16 @@ function gfv(id){ var el=document.getElementById(id); return el?(parseFloat(el.v
 
 function setCurrency(cur){
   currentCurrency=cur; localStorage.setItem("g60cur",cur);
-  ["curTL","curUSD"].forEach(function(id){ var el=document.getElementById(id); if(el) el.classList.toggle("active",id==="cur"+cur); });
+  ["curTL","curUSD","curTL2","curUSD2"].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el) el.classList.toggle("active", id==="cur"+cur || id==="cur"+cur+"2");
+  });
   document.querySelectorAll(".cur-sym").forEach(function(el){ el.textContent=cur==="TL"?"₺":"$"; });
+  // Input placeholder'larını güncelle
+  document.querySelectorAll(".fin-currency-input").forEach(function(el){
+    var prefix = el.previousElementSibling;
+    if(prefix && prefix.classList.contains("sym-prefix")) prefix.textContent = cur==="TL"?"₺":"$";
+  });
 }
 
 function toggleFinans(checked){
@@ -2070,7 +2063,6 @@ function calcAylikSutGelir(snap, ayIdx){
 // ── ANA FİNANSAL HESAPLAMA ──────────────────────────────
 function calcFinans(snaps, params){
   if(!snaps||!snaps.length) return null;
-  if(!finansAcik) return null;
 
   var rate      = gfv("finUSDrate")||35;
   var karkasKg  = gfv("finKarkasKg")||500;
