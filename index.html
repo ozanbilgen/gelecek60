@@ -1117,6 +1117,181 @@ input[type="checkbox"]{display:none;}
 </div>
 
 <div class="tab-content" id="tab_finans" style="display:none;">
+<!-- ═══ FİNANSAL ANALİZ PANELİ ═══ -->
+<div class="fin-toggle" onclick="document.getElementById('finansCheck').click()">
+  <input type="checkbox" id="finansCheck" onclick="event.stopPropagation();toggleFinans(this.checked)">
+  <label id="finToggleLabel" for="finansCheck" style="cursor:pointer;">💰 Finansal Analiz Modülü</label>
+</div>
+<div id="finansPanel" style="display:none;">
+
+  <!-- Para Birimi & Yatırım -->
+  <div class="fin-panel">
+    <div class="fin-panel-title" id="finCurrencyTitle">💱 Para Birimi & Yatırım Parametreleri</div>
+    <div class="fin-grid">
+      <div class="input-group">
+        <label data-i18n="finCurrencyTitle">Para Birimi</label>
+        <div style="display:flex;gap:0;margin-top:4px;border:1.5px solid var(--border);border-radius:8px;overflow:hidden;width:fit-content;">
+          <button class="cur-btn active" id="curTL2" onclick="setCurrency('TL')">₺ TL</button>
+          <button class="cur-btn" id="curUSD2" onclick="setCurrency('USD')">$ USD</button>
+        </div>
+      </div>
+      <div class="input-group">
+        <label data-i18n="finUsdRate">USD/TL Kur</label>
+        <input type="number" id="finUSDrate" placeholder="35" min="1" step="0.5">
+      </div>
+      <div class="input-group">
+        <label data-i18n="finYatirim">Toplam Yatırım (<span class="cur-sym">₺</span>)</label>
+        <input type="number" id="finToplYatirim" placeholder="0" min="0">
+      </div>
+      <div class="input-group">
+        <label data-i18n="finTaksit">Aylık Kredi Taksiti (<span class="cur-sym">₺</span>)</label>
+        <input type="number" id="finAylikTaksit" placeholder="0" min="0">
+      </div>
+    </div>
+  </div>
+
+  <!-- Süt Geliri -->
+  <div class="fin-panel">
+    <div class="fin-panel-title" id="finMilkTitle">🥛 Süt Geliri — 6 Aylık Fiyat Döngüsü</div>
+    <div style="font-size:.72rem;color:var(--muted);margin-bottom:10px;" id="finMilkDesc">
+      Devlet desteği ve kalite primi dahil toplam alım fiyatını girin.
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="milk-table">
+        <thead><tr>
+          <th class="milk-th">Ay</th>
+          <th class="milk-th">Süt (L/baş/gün)</th>
+          <th class="milk-th">Fiyat (<span class="cur-sym">₺</span>/L)</th>
+        </tr></thead>
+        <tbody id="milkRows"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Hayvan Gelirleri -->
+  <div class="fin-panel">
+    <div class="fin-panel-title" id="finHayvanTitle">🐄 Hayvan Gelirleri</div>
+    <div class="fin-grid">
+      <div class="input-group">
+        <label data-i18n="finKarkas">Karkas Et Fiyatı (<span class="cur-sym">₺</span>/kg)</label>
+        <input type="number" id="finKarkasKg" placeholder="500" min="0">
+        <div class="fin-note-inline" id="finKarkasNote">Reform ineği: ort. 550 kg × %52 randıman × fiyat</div>
+      </div>
+    </div>
+    <!-- Erkek Buzağı -->
+    <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <input type="checkbox" id="besiCheck" onchange="toggleBesi(this.checked)" style="width:18px;height:18px;accent-color:var(--blue);">
+        <label for="besiCheck" id="finErkekCheckLabel" style="font-size:.78rem;color:var(--text);cursor:pointer;">Erkek buzağıları besi için ayır</label>
+      </div>
+      <div id="direktSatisPanel" class="fin-grid">
+        <div class="input-group">
+          <label data-i18n="finErkekFiyat">Erkek Buzağı Satış Fiyatı (<span class="cur-sym">₺</span>/baş)</label>
+          <input type="number" id="finErkekFiyat" placeholder="8000" min="0">
+        </div>
+      </div>
+      <div class="besi-panel" id="besiPanel" style="display:none;">
+        <div class="fin-grid-3">
+          <div class="input-group">
+            <label data-i18n="finBesiSure">Besi Süresi (ay)</label>
+            <input type="number" id="besiSure" value="12" min="1" max="24">
+          </div>
+          <div class="input-group">
+            <label data-i18n="finBesiMaliyet">Aylık Besi Maliyeti (<span class="cur-sym">₺</span>/baş)</label>
+            <input type="number" id="besiAylikMaliyet" placeholder="3000" min="0">
+          </div>
+          <div class="input-group">
+            <label data-i18n="finBesiAgirlik">Besi Sonu Canlı Ağırlık (kg)</label>
+            <input type="number" id="besiAgirlik" value="550" min="200">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Giderler -->
+  <div class="fin-panel">
+    <div class="fin-panel-title" id="finGiderTitle">📊 Giderler</div>
+    <div style="font-size:.72rem;color:var(--muted);margin-bottom:12px;" id="finGiderDesc">
+      Boş bırakılan kalemler Türkiye çiftlik verisi katsayılarıyla hesaplanır
+    </div>
+    <div class="fin-grid">
+      <div class="input-group">
+        <label data-i18n="finBesleme">Besleme (<span class="cur-sym">₺</span>/baş/gün)</label>
+        <input type="number" id="finBesleme" placeholder="Opsiyonel" min="0">
+        <div class="fin-note-inline" id="finBeslemeNote">boş = Türkiye verisi: gelirin %67'si</div>
+      </div>
+      <div class="input-group">
+        <label data-i18n="finIscilik">İşçilik (<span class="cur-sym">₺</span>/baş/ay)</label>
+        <input type="number" id="finIscilik" placeholder="Opsiyonel" min="0">
+        <div class="fin-note-inline" id="finIscNote">boş = Türkiye verisi: %23.5</div>
+      </div>
+      <div class="input-group">
+        <label data-i18n="finDiger">Enerji+Bakım+İşletme (<span class="cur-sym">₺</span>/baş/ay)</label>
+        <input type="number" id="finDiger" placeholder="Opsiyonel" min="0">
+        <div class="fin-note-inline" id="finDigerNote">boş = Türkiye verisi: %9.4</div>
+      </div>
+      <div class="input-group">
+        <label data-i18n="finAmort">Ekipman Amortismanı (<span class="cur-sym">₺</span>/baş/ay)</label>
+        <input type="number" id="finAmort" placeholder="Opsiyonel" min="0">
+        <div class="fin-note-inline" id="finAmortNote">boş = Türkiye verisi: %1.5</div>
+      </div>
+      <div class="input-group">
+        <label data-i18n="finKonvSperma">Konvansiyonel Sperma (<span class="cur-sym">₺</span>/doz)</label>
+        <input type="number" id="finKonvSperma" value="300" min="0">
+      </div>
+      <div class="input-group">
+        <label data-i18n="finSexedSperma">Sexed Sperma (<span class="cur-sym">₺</span>/doz)</label>
+        <input type="number" id="finSexedSperma" value="1200" min="0">
+      </div>
+    </div>
+  </div>
+
+  <!-- Veteriner -->
+  <div class="fin-panel">
+    <div class="fin-panel-title" id="finVetTitle">🏥 Veteriner & Hastalık Giderleri</div>
+    <div style="font-size:.72rem;color:var(--muted);margin-bottom:12px;" id="finVetDesc">
+      Prevalans (%) girin → maliyet otomatik hesaplanır (tedavi + verim kaybı).
+    </div>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase;margin-bottom:8px;" id="finCowDisTitle">İnek Hastalıkları</div>
+    <div class="dis-grid">
+      <div class="dis-row"><label>Klinik Ketozis</label><input type="number" id="dKet" placeholder="5" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
+      <div class="dis-row"><label>Retensio Secundinarum</label><input type="number" id="dRet" placeholder="8" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
+      <div class="dis-row"><label>Klinik Hipokalsemi</label><input type="number" id="dHipo" placeholder="5" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
+      <div class="dis-row"><label>Sol Abomazum Deplasmanı</label><input type="number" id="dLDA" placeholder="3" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
+      <div class="dis-row"><label>Sağ Abomazum Deplasmanı</label><input type="number" id="dRDA" placeholder="0.5" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
+      <div class="dis-row"><label>Klinik Topallık</label><input type="number" id="dTop" placeholder="15" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
+      <div class="dis-row"><label>Klinik Metritis</label><input type="number" id="dMet" placeholder="20" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
+      <div class="dis-row"><label>Ovaryum Kistleri</label><input type="number" id="dOvk" placeholder="10" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
+    </div>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase;margin:12px 0 8px;" id="finCalfDisTitle">Buzağı Hastalıkları (0–2 ay)</div>
+    <div class="dis-grid">
+      <div class="dis-row"><label>Buzağı İshali</label><input type="number" id="dBuzI" placeholder="25" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
+      <div class="dis-row"><label>Buzağı Pnömonisi</label><input type="number" id="dBuzP" placeholder="15" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>
+    </div>
+    <div style="font-size:.68rem;color:var(--muted);margin-top:10px;font-style:italic;" id="finVetNoteEl">
+      Maliyet = tedavi gideri + verim kaybı (Türkiye verisi ile uyumlu uluslararası literatür)
+    </div>
+  </div>
+
+  <!-- Hesapla Butonları -->
+  <div style="display:flex;gap:10px;margin:16px 0;flex-wrap:wrap;">
+    <button class="btn-calc" id="finHesaplaBtn" onclick="hesaplaFinans()" style="background:linear-gradient(135deg,var(--gold),#8b6509);">
+      💰 Finansal Analiz Hesapla
+    </button>
+    <button class="btn-calc" id="finSimHesaplaBtn" onclick="hesaplaSimVeFinans()" style="background:linear-gradient(135deg,var(--accent),#1a5c26);font-size:.75rem;">
+      🔗 Simülasyon + Finansal Birlikte Hesapla
+    </button>
+  </div>
+  <div style="font-size:.72rem;color:var(--muted);margin-bottom:16px;line-height:1.8;">
+    <div id="finNote1">ⓘ <strong>Finansal Analiz Hesapla:</strong> Sadece finansal sonuçları günceller.</div>
+    <div id="finNote2">ⓘ <strong>Simülasyon + Finansal:</strong> Önce sürü simülasyonu çalışır, ardından finansal analiz eklenir.</div>
+  </div>
+
+</div>
+<!-- Finansal Sonuçlar -->
+<div id="finansResults"></div>
+
 </div>
 
 <div style="text-align:center;padding:6px 0 2px;">
@@ -3708,13 +3883,6 @@ function toggleAuthModeNew(){
 })();
 </script>
 
-<script id="_finPanelSrcScript">
-// Finans paneli içeriğini tab'a yükle
-(function(){
-  var finPanel = document.getElementById('tab_finans');
-  if(!finPanel) return;
-  finPanel.innerHTML = '<!-- ═══ FİNANSAL ANALİZ PANELİ ═══ -->\n<div class="fin-toggle" onclick="document.getElementById(\'finansCheck\').click()">\n  <input type="checkbox" id="finansCheck" onclick="event.stopPropagation();toggleFinans(this.checked)">\n  <label id="finToggleLabel" for="finansCheck" style="cursor:pointer;">💰 Finansal Analiz Modülü</label>\n</div>\n<div id="finansPanel" style="display:none;">\n\n  <!-- Para Birimi & Yatırım -->\n  <div class="fin-panel">\n    <div class="fin-panel-title" id="finCurrencyTitle">💱 Para Birimi & Yatırım Parametreleri</div>\n    <div class="fin-grid">\n      <div class="input-group">\n        <label data-i18n="finCurrencyTitle">Para Birimi</label>\n        <div style="display:flex;gap:0;margin-top:4px;border:1.5px solid var(--border);border-radius:8px;overflow:hidden;width:fit-content;">\n          <button class="cur-btn active" id="curTL2" onclick="setCurrency(\'TL\')">₺ TL</button>\n          <button class="cur-btn" id="curUSD2" onclick="setCurrency(\'USD\')">$ USD</button>\n        </div>\n      </div>\n      <div class="input-group">\n        <label data-i18n="finUsdRate">USD/TL Kur</label>\n        <input type="number" id="finUSDrate" placeholder="35" min="1" step="0.5">\n      </div>\n      <div class="input-group">\n        <label data-i18n="finYatirim">Toplam Yatırım (<span class="cur-sym">₺</span>)</label>\n        <input type="number" id="finToplYatirim" placeholder="0" min="0">\n      </div>\n      <div class="input-group">\n        <label data-i18n="finTaksit">Aylık Kredi Taksiti (<span class="cur-sym">₺</span>)</label>\n        <input type="number" id="finAylikTaksit" placeholder="0" min="0">\n      </div>\n    </div>\n  </div>\n\n  <!-- Süt Geliri -->\n  <div class="fin-panel">\n    <div class="fin-panel-title" id="finMilkTitle">🥛 Süt Geliri — 6 Aylık Fiyat Döngüsü</div>\n    <div style="font-size:.72rem;color:var(--muted);margin-bottom:10px;" id="finMilkDesc">\n      Devlet desteği ve kalite primi dahil toplam alım fiyatını girin.\n    </div>\n    <div style="overflow-x:auto;">\n      <table class="milk-table">\n        <thead><tr>\n          <th class="milk-th">Ay</th>\n          <th class="milk-th">Süt (L/baş/gün)</th>\n          <th class="milk-th">Fiyat (<span class="cur-sym">₺</span>/L)</th>\n        </tr></thead>\n        <tbody id="milkRows"></tbody>\n      </table>\n    </div>\n  </div>\n\n  <!-- Hayvan Gelirleri -->\n  <div class="fin-panel">\n    <div class="fin-panel-title" id="finHayvanTitle">🐄 Hayvan Gelirleri</div>\n    <div class="fin-grid">\n      <div class="input-group">\n        <label data-i18n="finKarkas">Karkas Et Fiyatı (<span class="cur-sym">₺</span>/kg)</label>\n        <input type="number" id="finKarkasKg" placeholder="500" min="0">\n        <div class="fin-note-inline" id="finKarkasNote">Reform ineği: ort. 550 kg × %52 randıman × fiyat</div>\n      </div>\n    </div>\n    <!-- Erkek Buzağı -->\n    <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">\n      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">\n        <input type="checkbox" id="besiCheck" onchange="toggleBesi(this.checked)" style="width:18px;height:18px;accent-color:var(--blue);">\n        <label for="besiCheck" id="finErkekCheckLabel" style="font-size:.78rem;color:var(--text);cursor:pointer;">Erkek buzağıları besi için ayır</label>\n      </div>\n      <div id="direktSatisPanel" class="fin-grid">\n        <div class="input-group">\n          <label data-i18n="finErkekFiyat">Erkek Buzağı Satış Fiyatı (<span class="cur-sym">₺</span>/baş)</label>\n          <input type="number" id="finErkekFiyat" placeholder="8000" min="0">\n        </div>\n      </div>\n      <div class="besi-panel" id="besiPanel" style="display:none;">\n        <div class="fin-grid-3">\n          <div class="input-group">\n            <label data-i18n="finBesiSure">Besi Süresi (ay)</label>\n            <input type="number" id="besiSure" value="12" min="1" max="24">\n          </div>\n          <div class="input-group">\n            <label data-i18n="finBesiMaliyet">Aylık Besi Maliyeti (<span class="cur-sym">₺</span>/baş)</label>\n            <input type="number" id="besiAylikMaliyet" placeholder="3000" min="0">\n          </div>\n          <div class="input-group">\n            <label data-i18n="finBesiAgirlik">Besi Sonu Canlı Ağırlık (kg)</label>\n            <input type="number" id="besiAgirlik" value="550" min="200">\n          </div>\n        </div>\n      </div>\n    </div>\n  </div>\n\n  <!-- Giderler -->\n  <div class="fin-panel">\n    <div class="fin-panel-title" id="finGiderTitle">📊 Giderler</div>\n    <div style="font-size:.72rem;color:var(--muted);margin-bottom:12px;" id="finGiderDesc">\n      Boş bırakılan kalemler Türkiye çiftlik verisi katsayılarıyla hesaplanır\n    </div>\n    <div class="fin-grid">\n      <div class="input-group">\n        <label data-i18n="finBesleme">Besleme (<span class="cur-sym">₺</span>/baş/gün)</label>\n        <input type="number" id="finBesleme" placeholder="Opsiyonel" min="0">\n        <div class="fin-note-inline" id="finBeslemeNote">boş = Türkiye verisi: gelirin %67\'si</div>\n      </div>\n      <div class="input-group">\n        <label data-i18n="finIscilik">İşçilik (<span class="cur-sym">₺</span>/baş/ay)</label>\n        <input type="number" id="finIscilik" placeholder="Opsiyonel" min="0">\n        <div class="fin-note-inline" id="finIscNote">boş = Türkiye verisi: %23.5</div>\n      </div>\n      <div class="input-group">\n        <label data-i18n="finDiger">Enerji+Bakım+İşletme (<span class="cur-sym">₺</span>/baş/ay)</label>\n        <input type="number" id="finDiger" placeholder="Opsiyonel" min="0">\n        <div class="fin-note-inline" id="finDigerNote">boş = Türkiye verisi: %9.4</div>\n      </div>\n      <div class="input-group">\n        <label data-i18n="finAmort">Ekipman Amortismanı (<span class="cur-sym">₺</span>/baş/ay)</label>\n        <input type="number" id="finAmort" placeholder="Opsiyonel" min="0">\n        <div class="fin-note-inline" id="finAmortNote">boş = Türkiye verisi: %1.5</div>\n      </div>\n      <div class="input-group">\n        <label data-i18n="finKonvSperma">Konvansiyonel Sperma (<span class="cur-sym">₺</span>/doz)</label>\n        <input type="number" id="finKonvSperma" value="300" min="0">\n      </div>\n      <div class="input-group">\n        <label data-i18n="finSexedSperma">Sexed Sperma (<span class="cur-sym">₺</span>/doz)</label>\n        <input type="number" id="finSexedSperma" value="1200" min="0">\n      </div>\n    </div>\n  </div>\n\n  <!-- Veteriner -->\n  <div class="fin-panel">\n    <div class="fin-panel-title" id="finVetTitle">🏥 Veteriner & Hastalık Giderleri</div>\n    <div style="font-size:.72rem;color:var(--muted);margin-bottom:12px;" id="finVetDesc">\n      Prevalans (%) girin → maliyet otomatik hesaplanır (tedavi + verim kaybı).\n    </div>\n    <div style="font-family:\'Barlow Condensed\',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase;margin-bottom:8px;" id="finCowDisTitle">İnek Hastalıkları</div>\n    <div class="dis-grid">\n      <div class="dis-row"><label>Klinik Ketozis</label><input type="number" id="dKet" placeholder="5" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>\n      <div class="dis-row"><label>Retensio Secundinarum</label><input type="number" id="dRet" placeholder="8" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>\n      <div class="dis-row"><label>Klinik Hipokalsemi</label><input type="number" id="dHipo" placeholder="5" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>\n      <div class="dis-row"><label>Sol Abomazum Deplasmanı</label><input type="number" id="dLDA" placeholder="3" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>\n      <div class="dis-row"><label>Sağ Abomazum Deplasmanı</label><input type="number" id="dRDA" placeholder="0.5" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>\n      <div class="dis-row"><label>Klinik Topallık</label><input type="number" id="dTop" placeholder="15" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>\n      <div class="dis-row"><label>Klinik Metritis</label><input type="number" id="dMet" placeholder="20" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>\n      <div class="dis-row"><label>Ovaryum Kistleri</label><input type="number" id="dOvk" placeholder="10" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>\n    </div>\n    <div style="font-family:\'Barlow Condensed\',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase;margin:12px 0 8px;" id="finCalfDisTitle">Buzağı Hastalıkları (0–2 ay)</div>\n    <div class="dis-grid">\n      <div class="dis-row"><label>Buzağı İshali</label><input type="number" id="dBuzI" placeholder="25" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>\n      <div class="dis-row"><label>Buzağı Pnömonisi</label><input type="number" id="dBuzP" placeholder="15" min="0" max="100" step="0.1"><span class="dis-unit">%</span></div>\n    </div>\n    <div style="font-size:.68rem;color:var(--muted);margin-top:10px;font-style:italic;" id="finVetNoteEl">\n      Maliyet = tedavi gideri + verim kaybı (Türkiye verisi ile uyumlu uluslararası literatür)\n    </div>\n  </div>\n\n  <!-- Hesapla Butonları -->\n  <div style="display:flex;gap:10px;margin:16px 0;flex-wrap:wrap;">\n    <button class="btn-calc" id="finHesaplaBtn" onclick="hesaplaFinans()" style="background:linear-gradient(135deg,var(--gold),#8b6509);">\n      💰 Finansal Analiz Hesapla\n    </button>\n    <button class="btn-calc" id="finSimHesaplaBtn" onclick="hesaplaSimVeFinans()" style="background:linear-gradient(135deg,var(--accent),#1a5c26);font-size:.75rem;">\n      🔗 Simülasyon + Finansal Birlikte Hesapla\n    </button>\n  </div>\n  <div style="font-size:.72rem;color:var(--muted);margin-bottom:16px;line-height:1.8;">\n    <div id="finNote1">ⓘ <strong>Finansal Analiz Hesapla:</strong> Sadece finansal sonuçları günceller.</div>\n    <div id="finNote2">ⓘ <strong>Simülasyon + Finansal:</strong> Önce sürü simülasyonu çalışır, ardından finansal analiz eklenir.</div>\n  </div>\n\n</div>\n<!-- Finansal Sonuçlar -->\n<div id="finansResults"></div>\n';
-})();
-</script>
+
 </body>
 </html>
