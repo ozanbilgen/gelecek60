@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!--Gelecek60 v4.3 — Tam i18n + Reform/Erkek geliri düzeltme + 60ay finans + Yorum-->
+<!--Gelecek60 v4.4 — Sekme sistemi (Simülasyon/Finansal) + Duplicate temizlik + Yol B migration-->
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
@@ -432,13 +432,6 @@ input[type="checkbox"]{display:none;}
 .roi-seg.payback{background:var(--gold);}
 
 /* ═══ ANA SEKMELER ═══ */
-.main-tabs{display:flex;gap:0;margin-bottom:0;border-bottom:2px solid var(--border);}
-.main-tab{background:transparent;border:none;border-bottom:3px solid transparent;padding:10px 20px;font-family:"Barlow Condensed",sans-serif;font-size:.8rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);cursor:pointer;transition:all .2s;margin-bottom:-2px;}
-.main-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
-.main-tab:hover:not(.active){color:var(--text);}
-.main-tab.fin-tab.active{color:var(--gold);border-bottom-color:var(--gold);}
-.tab-content{display:none;padding-top:16px;}
-.tab-content.active{display:block !important;}
 
 .cur-btn{padding:5px 13px;background:transparent;border:none;color:var(--muted);cursor:pointer;font-family:"Barlow Condensed",sans-serif;font-size:.68rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all .2s;}
 .cur-btn.active{background:var(--gold);color:#fff;}
@@ -657,7 +650,7 @@ input.money-input{padding-left:24px !important;}
         <button class="cur-btn" id="curUSD" onclick="setCurrency('USD')">$ USD</button>
       </div>
       <button class="btn-ub" onclick="showQR()" style="padding:5px 10px;" title="QR">&#128248;</button>
-      <div class="badge">v4.3</div>
+      <div class="badge">v4.4</div>
     </div>
   </div>
 </header>
@@ -672,6 +665,11 @@ input.money-input{padding-left:24px !important;}
   </div>
 </div>
 
+<div class="main-tabs">
+  <button class="main-tab active" data-tab="sim" id="tabBtnSim" onclick="switchMainTab('sim')">&#128290; S&#252;r&#252; Sim&#252;lasyonu</button>
+  <button class="main-tab fin-tab" data-tab="finans" id="tabBtnFin" onclick="switchMainTab('finans')">&#128200; Finansal Analiz</button>
+</div>
+<div class="tab-content active" id="tab_sim">
 <div class="scenario-bar">
   <button class="scenario-btn active" onclick="switchScenario('mevcut')"><span class="dot"></span><span id="lblMevcut">Mevcut İşletme</span></button>
   <button class="scenario-btn" onclick="switchScenario('startup')"><span class="dot"></span><span id="lblStartup">Sıfırdan Kuruluş</span></button>
@@ -929,11 +927,32 @@ input.money-input{padding-left:24px !important;}
   <button class="btn-calc" onclick="hesapla()">&#128290; <span id="calcBtnTxt">60 Ay Projeksiyonu Hesapla</span></button>
   <button class="btn-reset" onclick="sifirla()" style="width:auto;padding:10px 20px;">↺ <span id="simSifirlaBtn">Simülasyonu Sıfırla</span></button>
 </div>
-<div class="fin-toggle" onclick="document.getElementById('finansCheck').click()">
-  <input type="checkbox" id="finansCheck" onclick="event.stopPropagation();toggleFinans(this.checked)">
-  <label id="finToggleLabel" for="finansCheck" style="cursor:pointer;">💰 Finansal Analiz Modülü</label>
+<!-- Finansal Sonuçlar -->
+
+<div style="margin:20px 0 10px;">
+  <button class="btn-calc" id="finSimHesaplaBtn" onclick="hesaplaSimVeFinans()" style="background:linear-gradient(135deg,var(--accent),#1a5c26);width:100%;">
+    🔗 <span id="birlikteBtn">Simülasyon + Finansal Analizi Birlikte Hesapla</span>
+  </button>
 </div>
-<div id="finansPanel" style="display:none;">
+
+  </div>
+</div>
+
+<div class="panel" id="resultsPanel">
+  <div id="placeholder" class="panel-body">
+    <div class="results-placeholder">
+      <div class="placeholder-icon">📊</div>
+      <div class="placeholder-text">Verilerinizi girin ve <strong>"60 Ay Projeksiyonu Hesapla"</strong> butonuna tıklayın.</div>
+    </div>
+  </div>
+  <div id="results" style="display:none;">
+    <div class="results-body" id="resultsBody"></div>
+  </div>
+</div>
+</div>
+</div>
+<!-- /tab_sim -->
+<div class="tab-content" id="tab_finans">
 
   <!-- Para Birimi & Yatırım -->
   <div class="fin-panel">
@@ -1104,209 +1123,10 @@ input.money-input{padding-left:24px !important;}
     <div id="finNote2">ⓘ <strong>Simülasyon + Finansal:</strong> Önce sürü simülasyonu çalışır, ardından finansal analiz eklenir.</div>
   </div>
 
-</div>
-<!-- Finansal Sonuçlar -->
-
-<div style="margin:20px 0 10px;">
-  <button class="btn-calc" id="finSimHesaplaBtn" onclick="hesaplaSimVeFinans()" style="background:linear-gradient(135deg,var(--accent),#1a5c26);width:100%;">
-    🔗 <span id="birlikteBtn">Simülasyon + Finansal Analizi Birlikte Hesapla</span>
-  </button>
-</div>
 <div id="finansResults"></div>
-
-  </div>
-</div>
-
-<div class="panel" id="resultsPanel">
-  <div id="placeholder" class="panel-body">
-    <div class="results-placeholder">
-      <div class="placeholder-icon">📊</div>
-      <div class="placeholder-text">Verilerinizi girin ve <strong>"60 Ay Projeksiyonu Hesapla"</strong> butonuna tıklayın.</div>
-    </div>
-  </div>
-  <div id="results" style="display:none;">
-    <div class="results-body" id="resultsBody"></div>
-  </div>
-</div>
-</div>
-</div>
-</div>
-<div id="finansPanel" style="display:none;">
-
-  <!-- Para Birimi & Yatırım -->
-  <div class="fin-panel">
-    <div class="fin-panel-title" id="finCurrencyTitle">💱 Para Birimi & Yatırım Parametreleri</div>
-    <div class="fin-grid">
-      <div class="input-group">
-        <label data-i18n="finCurrencyTitle">Para Birimi</label>
-        <div style="display:flex;gap:0;margin-top:4px;border:1.5px solid var(--border);border-radius:8px;overflow:hidden;width:fit-content;">
-          <button class="cur-btn active" id="curTL2" onclick="setCurrency('TL')">₺ TL</button>
-          <button class="cur-btn" id="curUSD2" onclick="setCurrency('USD')">$ USD</button>
-        </div>
-      </div>
-      <div class="input-group">
-        <label data-i18n="finUsdRate">USD/TL Kur</label>
-        <input type="number" id="finUSDrate" placeholder="35" min="1" step="0.5" onfocus="this.select()">
-      </div>
-      <div class="input-group">
-        <label data-i18n="finYatirim">Toplam Yatırım (<span class="cur-sym">₺</span>)</label>
-        <input type="number" id="finToplYatirim" placeholder="0" min="0" onfocus="this.select()">
-      </div>
-      <div class="input-group">
-        <label data-i18n="finTaksit">Aylık Kredi Taksiti (<span class="cur-sym">₺</span>)</label>
-        <input type="number" id="finAylikTaksit" placeholder="0" min="0" onfocus="this.select()">
-      </div>
-    </div>
-  </div>
-
-  <!-- Süt Geliri -->
-  <div class="fin-panel">
-    <div class="fin-panel-title" id="finMilkTitle">🥛 Süt Geliri — 6 Aylık Fiyat Döngüsü</div>
-    <div style="font-size:.72rem;color:var(--muted);margin-bottom:10px;" id="finMilkDesc">
-      Devlet desteği ve kalite primi dahil toplam alım fiyatını girin.
-    </div>
-    <div style="overflow-x:auto;">
-      <table class="milk-table">
-        <thead><tr>
-          <th class="milk-th">Ay</th>
-          <th class="milk-th">Süt (L/baş/gün)</th>
-          <th class="milk-th">Fiyat (<span class="cur-sym">₺</span>/L)</th>
-        </tr></thead>
-        <tbody id="milkRows"></tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- Hayvan Gelirleri -->
-  <div class="fin-panel">
-    <div class="fin-panel-title" id="finHayvanTitle">🐄 Hayvan Gelirleri</div>
-    <div class="fin-grid">
-      <div class="input-group">
-        <label data-i18n="finKarkas">Karkas Et Fiyatı (<span class="cur-sym">₺</span>/kg)</label>
-        <input type="number" id="finKarkasKg" placeholder="500" min="0" onfocus="this.select()">
-        <div class="fin-note-inline" id="finKarkasNote">Reform ineği: ort. 550 kg × %52 randıman × fiyat</div>
-      </div>
-    </div>
-    <!-- Erkek Buzağı -->
-    <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
-      <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:#f0f6ff;border:2px solid rgba(36,113,163,.35);border-radius:10px;margin-bottom:10px;cursor:pointer;" onclick="document.getElementById('besiCheck').click()">
-        <input type="checkbox" id="besiCheck" onchange="toggleBesi(this.checked)" onclick="event.stopPropagation()" style="width:22px;height:22px;accent-color:var(--blue);cursor:pointer;flex-shrink:0;">
-        <div>
-          <label for="besiCheck" id="finErkekCheckLabel" style="font-size:.82rem;font-weight:700;color:var(--blue);cursor:pointer;display:block;">🐄 Erkek buzağıları besi için ayır</label>
-          <div style="font-size:.68rem;color:var(--muted);margin-top:2px;">İşaretlenmezse direkt satış fiyatı uygulanır</div>
-        </div>
-      </div>
-      <div id="direktSatisPanel" class="fin-grid">
-        <div class="input-group">
-          <label data-i18n="finErkekFiyat">Erkek Buzağı Satış Fiyatı (<span class="cur-sym">₺</span>/baş)</label>
-          <input type="number" id="finErkekFiyat" placeholder="8000" min="0" onfocus="this.select()">
-        </div>
-      </div>
-      <div class="besi-panel" id="besiPanel" style="display:none;">
-        <div class="fin-grid-3">
-          <div class="input-group">
-            <label data-i18n="finBesiSure">Besi Süresi (ay)</label>
-            <input type="number" id="besiSure" value="12" min="1" max="24" onfocus="this.select()">
-          </div>
-          <div class="input-group">
-            <label data-i18n="finBesiMaliyet">Aylık Besi Maliyeti (<span class="cur-sym">₺</span>/baş)</label>
-            <input type="number" id="besiAylikMaliyet" placeholder="3000" min="0" onfocus="this.select()">
-          </div>
-          <div class="input-group">
-            <label data-i18n="finBesiAgirlik">Besi Sonu Canlı Ağırlık (kg)</label>
-            <input type="number" id="besiAgirlik" value="550" min="200" onfocus="this.select()">
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Giderler -->
-  <div class="fin-panel">
-    <div class="fin-panel-title" id="finGiderTitle">📊 Giderler</div>
-    <div style="font-size:.72rem;color:var(--muted);margin-bottom:12px;" id="finGiderDesc">
-      Boş bırakılan kalemler Türkiye çiftlik verisi katsayılarıyla hesaplanır
-    </div>
-    <div class="fin-grid">
-      <div class="input-group">
-        <label data-i18n="finBesleme">Besleme (<span class="cur-sym">₺</span>/baş/gün)</label>
-        <input type="number" id="finBesleme" placeholder="Opsiyonel" min="0" onfocus="this.select()">
-        <div class="fin-note-inline" id="finBeslemeNote">boş = Türkiye verisi: gelirin %67'si</div>
-      </div>
-      <div class="input-group">
-        <label data-i18n="finIscilik">İşçilik (<span class="cur-sym">₺</span>/baş/ay)</label>
-        <input type="number" id="finIscilik" placeholder="Opsiyonel" min="0" onfocus="this.select()">
-        <div class="fin-note-inline" id="finIscNote">boş = Türkiye verisi: %23.5</div>
-      </div>
-      <div class="input-group">
-        <label data-i18n="finDiger">Enerji+Bakım+İşletme (<span class="cur-sym">₺</span>/baş/ay)</label>
-        <input type="number" id="finDiger" placeholder="Opsiyonel" min="0" onfocus="this.select()">
-        <div class="fin-note-inline" id="finDigerNote">boş = Türkiye verisi: %9.4</div>
-      </div>
-      <div class="input-group">
-        <label data-i18n="finAmort">Ekipman Amortismanı (<span class="cur-sym">₺</span>/baş/ay)</label>
-        <input type="number" id="finAmort" placeholder="Opsiyonel" min="0" onfocus="this.select()">
-        <div class="fin-note-inline" id="finAmortNote">boş = Türkiye verisi: %1.5</div>
-      </div>
-      <div class="input-group">
-        <label data-i18n="finKonvSperma">Konvansiyonel Sperma (<span class="cur-sym">₺</span>/doz)</label>
-        <input type="number" id="finKonvSperma" value="300" min="0" placeholder="300" onfocus="this.select()">
-      </div>
-      <div class="input-group">
-        <label data-i18n="finSexedSperma">Sexed Sperma (<span class="cur-sym">₺</span>/doz)</label>
-        <input type="number" id="finSexedSperma" value="1200" min="0" placeholder="1.200" onfocus="this.select()">
-      </div>
-    </div>
-  </div>
-
-  <!-- Veteriner -->
-  <div class="fin-panel">
-    <div class="fin-panel-title" id="finVetTitle">🏥 Veteriner & Hastalık Giderleri</div>
-    <div style="font-size:.72rem;color:var(--muted);margin-bottom:12px;" id="finVetDesc">
-      Prevalans (%) girin → maliyet otomatik hesaplanır (tedavi + verim kaybı).
-    </div>
-    <div style="font-family:'Barlow Condensed',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase;margin-bottom:8px;" id="finCowDisTitle">İnek Hastalıkları</div>
-    <div class="dis-grid">
-      <div class="dis-row"><label>Klinik Ketozis</label><input type="number" id="dKet" placeholder="5" min="0" max="100" step="0.1" onfocus="this.select()"><span class="dis-unit">%</span></div>
-      <div class="dis-row"><label>Retensio Secundinarum</label><input type="number" id="dRet" placeholder="8" min="0" max="100" step="0.1" onfocus="this.select()"><span class="dis-unit">%</span></div>
-      <div class="dis-row"><label>Klinik Hipokalsemi</label><input type="number" id="dHipo" placeholder="5" min="0" max="100" step="0.1" onfocus="this.select()"><span class="dis-unit">%</span></div>
-      <div class="dis-row"><label>Sol Abomazum Deplasmanı</label><input type="number" id="dLDA" placeholder="3" min="0" max="100" step="0.1" onfocus="this.select()"><span class="dis-unit">%</span></div>
-      <div class="dis-row"><label>Sağ Abomazum Deplasmanı</label><input type="number" id="dRDA" placeholder="0.5" min="0" max="100" step="0.1" onfocus="this.select()"><span class="dis-unit">%</span></div>
-      <div class="dis-row"><label>Klinik Topallık</label><input type="number" id="dTop" placeholder="15" min="0" max="100" step="0.1" onfocus="this.select()"><span class="dis-unit">%</span></div>
-      <div class="dis-row"><label>Klinik Metritis</label><input type="number" id="dMet" placeholder="20" min="0" max="100" step="0.1" onfocus="this.select()"><span class="dis-unit">%</span></div>
-      <div class="dis-row"><label>Ovaryum Kistleri</label><input type="number" id="dOvk" placeholder="10" min="0" max="100" step="0.1" onfocus="this.select()"><span class="dis-unit">%</span></div>
-    </div>
-    <div style="font-family:'Barlow Condensed',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase;margin:12px 0 8px;" id="finCalfDisTitle">Buzağı Hastalıkları (0–2 ay)</div>
-    <div class="dis-grid">
-      <div class="dis-row"><label>Buzağı İshali</label><input type="number" id="dBuzI" placeholder="25" min="0" max="100" step="0.1" onfocus="this.select()"><span class="dis-unit">%</span></div>
-      <div class="dis-row"><label>Buzağı Pnömonisi</label><input type="number" id="dBuzP" placeholder="15" min="0" max="100" step="0.1" onfocus="this.select()"><span class="dis-unit">%</span></div>
-    </div>
-    <div style="font-size:.68rem;color:var(--muted);margin-top:10px;font-style:italic;" id="finVetNoteEl">
-      Maliyet = tedavi gideri + verim kaybı (Türkiye verisi ile uyumlu uluslararası literatür)
-    </div>
-  </div>
-
-  <!-- Hesapla Butonları -->
-  <div style="display:flex;gap:10px;margin:16px 0;flex-wrap:wrap;align-items:center;">
-    <button class="btn-calc" id="finHesaplaBtn" onclick="hesaplaFinans()" style="background:linear-gradient(135deg,var(--gold),#8b6509);">
-      💰 Finansal Analiz Hesapla
-    </button>
-    <button class="btn-reset" onclick="sifirlaFinans()" style="width:auto;padding:10px 20px;">↺ Finansal Sıfırla</button>
-  </div>
-  <div style="font-size:.72rem;color:var(--muted);margin-bottom:16px;line-height:1.8;">
-    <div id="finNote1">ⓘ <strong>Finansal Analiz Hesapla:</strong> Sadece finansal sonuçları günceller.</div>
-    <div id="finNote2">ⓘ <strong>Simülasyon + Finansal:</strong> Önce sürü simülasyonu çalışır, ardından finansal analiz eklenir.</div>
-  </div>
-
-</div>
-<!-- Finansal Sonuçlar -->
-<div id="finansResults"></div>
-
-<div style="text-align:center;padding:6px 0 2px;">
-  <span onclick="openAdminOverlay()" style="font-size:.5rem;color:rgba(0,0,0,.06);cursor:pointer;user-select:none;">&#9881;</span>
-</div>
-</div>
-</div>
+</div><!-- /tab_finans -->
+</div><!-- /container -->
+</div><!-- /mainApp -->
 
 <script>
 
@@ -1991,18 +1811,15 @@ function setCurrency(cur){
     if(el) el.classList.toggle("active", id==="cur"+cur || id==="cur"+cur+"2");
   });
   document.querySelectorAll(".cur-sym").forEach(function(el){ el.textContent=cur==="TL"?"₺":"$"; });
-  // Input placeholder'larını güncelle
-  document.querySelectorAll(".fin-currency-input").forEach(function(el){
-    var prefix = el.previousElementSibling;
-    if(prefix && prefix.classList.contains("sym-prefix")) prefix.textContent = cur==="TL"?"₺":"$";
-  });
+  if(typeof updateMoneySymbols==="function") updateMoneySymbols(cur);
 }
 
 function toggleFinans(checked){
   finansAcik=checked;
-  var panel=document.getElementById("finansPanel");
-  if(panel) panel.style.display=checked?"block":"none";
-  if(checked) buildMilkRows();
+  if(checked){
+    buildMilkRows();
+    switchMainTab("finans");
+  }
 }
 
 function toggleBesi(checked){
@@ -2033,11 +1850,11 @@ function calcSagmalAmortismanAylik(params, snap){
   // 1. Tohumlama maliyeti (CR düve'ye göre ortalama doz sayısı × fiyat)
   var crDuve = (params.crDuve||60)/100;
   var dozDuve = crDuve>0 ? (1/crDuve) : 2;  // ortalama doz/gebelik
-  var spermaDozFiyat = gfv("finKonvSperma")||300;
+  var spermaDozFiyat = getMoneyValue("finKonvSperma")||300;
   var semMal = dozDuve * spermaDozFiyat;
 
   // 2. Gebelik süresi besleme (9 ay × baş/gün besleme)
-  var beslemeGunluk = gfv("finBesleme") || 0;
+  var beslemeGunluk = getMoneyValue("finBesleme") || 0;
   if(beslemeGunluk === 0){
     // Otomatik: aylık süt gelirinin %67'si / 30 gün / laktasyon ineği başına
     var aylikSutGelir = calcAylikSutGelir(snap, 0);
@@ -2073,17 +1890,17 @@ function calcAylikSutGelir(snap, ayIdx){
 function calcFinans(snaps, params){
   if(!snaps||!snaps.length) return null;
 
-  var rate      = gfv("finUSDrate")||35;
-  var karkasKg  = gfv("finKarkasKg")||500;
-  var duveFiyat = gfv("finDuveFiyat")||25000;
-  var erkekFiy  = gfv("finErkekFiyat")||8000;
-  var konvFiy   = gfv("finKonvSperma")||300;
-  var sexedFiy  = gfv("finSexedSperma")||1200;
-  var yatirim   = gfv("finToplYatirim")||0;
-  var taksit    = gfv("finAylikTaksit")||0;
+  var rate      = getMoneyValue("finUSDrate")||35;
+  var karkasKg  = getMoneyValue("finKarkasKg")||500;
+  var duveFiyat = getMoneyValue("finDuveFiyat")||25000;
+  var erkekFiy  = getMoneyValue("finErkekFiyat")||8000;
+  var konvFiy   = getMoneyValue("finKonvSperma")||300;
+  var sexedFiy  = getMoneyValue("finSexedSperma")||1200;
+  var yatirim   = getMoneyValue("finToplYatirim")||0;
+  var taksit    = getMoneyValue("finAylikTaksit")||0;
   var besiAktif = document.getElementById("besiCheck")&&document.getElementById("besiCheck").checked;
   var besiSure  = gfv("besiSure")||12;
-  var besiAyMal = gfv("besiAylikMaliyet")||0;
+  var besiAyMal = getMoneyValue("besiAylikMaliyet")||0;
   var besiAgir  = gfv("besiAgirlik")||550;
 
   // Reform ineği karkas hesabı: 550 kg × %52 randıman × karkas fiyatı
@@ -2134,10 +1951,10 @@ function calcFinans(snaps, params){
     var toplamGelir = sutGelir+reformGelir+duveGelir+erkekGelir;
 
     // ── GİDERLER ──
-    var beslemeV = gfv("finBesleme");
-    var iscV     = gfv("finIscilik");
-    var digerV   = gfv("finDiger");
-    var amortV   = gfv("finAmort");
+    var beslemeV = getMoneyValue("finBesleme");
+    var iscV     = getMoneyValue("finIscilik");
+    var digerV   = getMoneyValue("finDiger");
+    var amortV   = getMoneyValue("finAmort");
 
     var besleme  = beslemeV>0 ? beslemeV*top*30 : toplamGelir*0.67;
     var iscilik  = iscV>0     ? iscV*top         : toplamGelir*0.235;
@@ -3519,22 +3336,6 @@ function buildCmpRows(fields,sm,other){
   return html;
 }
 
-// QR
-function showQR(){
-  var url=window.location.href.split("?")[0];
-  document.getElementById("qrUrl").textContent=url;
-  var qc=document.getElementById("qrCanvas");
-    if(!qc){ qc=document.createElement("canvas"); qc.id="qrCanvas"; document.getElementById("qrImg").replaceWith(qc); }
-    if(typeof QRCode!=="undefined"){ QRCode.toCanvas(qc,url,{width:200,margin:1},function(){}); }
-    else { qc.style.display="none"; var img=document.createElement("img"); img.id="qrImg"; img.src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data="+encodeURIComponent(url); img.width=200; img.height=200; qc.parentNode.insertBefore(img,qc); }
-  document.getElementById("qrModal").classList.add("open");
-}
-function downloadQR(){
-  var url=window.location.href.split("?")[0];
-  var a=document.createElement("a");
-  a.href="https://api.qrserver.com/v1/create-qr-code/?size=400x400&data="+encodeURIComponent(url);
-  a.download="gelecek60-qr.png"; a.target="_blank"; a.click();
-}
 
 // ── ADMİN ─────────────────────────────────────
 document.addEventListener("keydown",function(e){ if(e.ctrlKey&&e.shiftKey&&e.key==="A") openAdminOverlay(); });
@@ -3844,35 +3645,27 @@ function initMoneyInputs(){
   });
 }
 
-// setCurrency'de para sembollerini güncelle
-var _origSetCurrency = setCurrency;
-setCurrency = function(cur){
-  _origSetCurrency(cur);
+// setCurrency para sembollerini güncelle — override YOK, doğrudan çağır
+function updateMoneySymbols(cur){
   document.querySelectorAll('.cur-money-sym').forEach(function(el){
     el.textContent = cur==='USD'?'$':'₺';
   });
-  // Format edilmiş değerleri yeniden formatla
   document.querySelectorAll('.money-input').forEach(function(inp){
     var raw = inp.dataset.rawValue;
     if(raw){
       inp.value = Math.round(parseFloat(raw)).toLocaleString(cur==='USD'?'en-US':'tr-TR');
     }
   });
-};
+}
 
-// gfv fonksiyonunu override et — formatlı değeri parse et
-var _origGfv = gfv;
-gfv = function(id){
+// money-input değerlerini parse et — gfv override YOK
+function getMoneyValue(id){
   var el = document.getElementById(id);
-  if(el && el.classList.contains('money-input')){
-    var raw = el.dataset.rawValue;
-    if(raw) return parseFloat(raw)||0;
-    // Formatlı değeri parse et
-    var v = (el.value||'').replace(/\./g,'').replace(',','.').replace(/[^0-9.-]/g,'');
-    return parseFloat(v)||0;
-  }
-  return _origGfv(id);
-};
+  if(!el) return 0;
+  if(el.dataset && el.dataset.rawValue) return parseFloat(el.dataset.rawValue)||0;
+  var v = (el.value||'').replace(/\.(?=\d{3})/g,'').replace(',','.').replace(/[^0-9.-]/g,'');
+  return parseFloat(v)||0;
+}
 
 document.addEventListener('DOMContentLoaded', function(){
   setTimeout(initMoneyInputs, 500);
@@ -3903,83 +3696,13 @@ function sifirlaFinans() {
   var fr=document.getElementById("finansResults");
   if(fr) fr.innerHTML="";
   finansAcik=false;
-  var fc=document.getElementById("finansCheck");
-  if(fc) fc.checked=false;
-  var fp=document.getElementById("finansPanel");
-  if(fp) fp.style.display="none";
+  switchMainTab("sim");
   // Milk rows sıfırla
   buildMilkRows();
   showToast("Finansal analiz sıfırlandı.");
 }
 
-// ── PARA FORMATI ──
-function initMoneyInputs(){
-  document.querySelectorAll('.money-input').forEach(function(inp){
-    // Wrap
-    if(inp.parentNode.classList.contains('money-input-wrap')) return;
-    var wrap = document.createElement('div');
-    wrap.className = 'money-input-wrap';
-    inp.parentNode.insertBefore(wrap, inp);
-    wrap.appendChild(inp);
-    var sym = document.createElement('span');
-    sym.className = 'money-sym cur-money-sym';
-    sym.textContent = typeof currentCurrency!=='undefined'&&currentCurrency==='USD'?'$':'₺';
-    wrap.insertBefore(sym, inp);
-    // Format on blur
-    inp.addEventListener('blur', function(){
-      var v = parseFloat(this.value.replace(/[^0-9.-]/g,''));
-      if(!isNaN(v) && v !== 0) {
-        this.dataset.rawValue = v;
-        this.value = Math.round(v).toLocaleString(
-          typeof currentCurrency!=='undefined'&&currentCurrency==='USD'?'en-US':'tr-TR'
-        );
-      }
-    });
-    // Raw value on focus
-    inp.addEventListener('focus', function(){
-      var raw = this.dataset.rawValue || this.value.replace(/[.,]/g,'').replace(/[^0-9.-]/g,'');
-      this.value = raw;
-      this.select();
-    });
-  });
-}
-
-// setCurrency'de para sembollerini güncelle
-var _origSetCurrency = setCurrency;
-setCurrency = function(cur){
-  _origSetCurrency(cur);
-  document.querySelectorAll('.cur-money-sym').forEach(function(el){
-    el.textContent = cur==='USD'?'$':'₺';
-  });
-  // Format edilmiş değerleri yeniden formatla
-  document.querySelectorAll('.money-input').forEach(function(inp){
-    var raw = inp.dataset.rawValue;
-    if(raw){
-      inp.value = Math.round(parseFloat(raw)).toLocaleString(cur==='USD'?'en-US':'tr-TR');
-    }
-  });
-};
-
-// gfv fonksiyonunu override et — formatlı değeri parse et
-var _origGfv = gfv;
-gfv = function(id){
-  var el = document.getElementById(id);
-  if(el && el.classList.contains('money-input')){
-    var raw = el.dataset.rawValue;
-    if(raw) return parseFloat(raw)||0;
-    // Formatlı değeri parse et
-    var v = (el.value||'').replace(/\./g,'').replace(',','.').replace(/[^0-9.-]/g,'');
-    return parseFloat(v)||0;
-  }
-  return _origGfv(id);
-};
-
-document.addEventListener('DOMContentLoaded', function(){
-  setTimeout(initMoneyInputs, 500);
-});
-
 // ═══ SEKME & FİNANS YÖNETİMİ ═══
-var finansAcik = false;
 
 function switchMainTab(tab) {
   document.querySelectorAll('.main-tab').forEach(function(b){
@@ -3990,27 +3713,12 @@ function switchMainTab(tab) {
     el.style.display = el.id==='tab_'+tab ? 'block' : 'none';
   });
   if(tab==='finans') {
+    finansAcik = true;
     var mr = document.getElementById('milkRows');
     if(mr && !mr.innerHTML) buildMilkRows();
+  } else {
+    finansAcik = false;
   }
-}
-
-function setCurrency(cur){
-  currentCurrency=cur; localStorage.setItem("g60cur",cur);
-  ['curTL','curUSD','curTL2','curUSD2'].forEach(function(id){
-    var el=document.getElementById(id);
-    if(el) el.classList.toggle("active", el.id==="cur"+cur || el.id==="cur"+cur+"2");
-  });
-  document.querySelectorAll(".cur-sym").forEach(function(el){
-    el.textContent = cur==="TL" ? "₺" : "$";
-  });
-}
-
-function toggleBesi(checked){
-  var dp=document.getElementById("direktSatisPanel");
-  var bp=document.getElementById("besiPanel");
-  if(dp) dp.style.display=checked?"none":"block";
-  if(bp) bp.style.display=checked?"block":"none";
 }
 
 function hesaplaFinans(){
@@ -4075,13 +3783,6 @@ function toggleAuthModeNew(){
   if(typeof applyAllLang==="function") applyAllLang(currentLang);
 }
 
-// Finans panelini tab_finans'a dinamik olarak ekle (DOM hazır olduğunda)
-(function(){
-  var finTab = document.getElementById('tab_finans');
-  if(finTab && !finTab.innerHTML.trim()){
-    finTab.innerHTML = document.getElementById('_finPanelSrc') ? document.getElementById('_finPanelSrc').innerHTML : '';
-  }
-})();
 </script>
 
 
