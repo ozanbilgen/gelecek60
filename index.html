@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!--Gelecek60 v4.4 — Sekme sistemi (Simülasyon/Finansal) + Duplicate temizlik + Yol B migration-->
+<!--Gelecek60 v4.5 — sim60 (24→60 ay) + finansal rapor i() vs loop-i cakismasi duzeltme + sekme gecisi-->
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
@@ -650,7 +650,7 @@ input.money-input{padding-left:24px !important;}
         <button class="cur-btn" id="curUSD" onclick="setCurrency('USD')">$ USD</button>
       </div>
       <button class="btn-ub" onclick="showQR()" style="padding:5px 10px;" title="QR">&#128248;</button>
-      <div class="badge">v4.4</div>
+      <div class="badge">v4.5</div>
     </div>
   </div>
 </header>
@@ -1335,7 +1335,7 @@ function sim24(ini, p) {
     konvTohumDuve:0,konvDozDuve:0,sexedTohumDuve:0,sexedDozDuve:0,sexedOnceDuve:0};}
   var aySay=yS(), snaps=[];
 
-  for(var ay=1;ay<=24;ay++){
+  for(var ay=1;ay<=60;ay++){
     for(var ki=0;ki<duvK.length;ki++) duvK[ki].yas++;
     var yQD=[];
     for(var qi=0;qi<gebeQD.length;qi++){
@@ -2075,17 +2075,17 @@ function renderFinansResults(finObj){
         +"</div>";
       // Timeline
       html+="<div class=\"roi-timeline\">";
-      for(var i=0;i<n;i++){
-        var cls=rows[i].kumKar>=finObj.yatirim?"gain":(rows[i].kumKar>=0?"gain":"loss");
-        if(finObj.geriDonumAy===i+1) cls="payback";
-        html+="<div class=\"roi-seg "+cls+"\" style=\"flex:1;\" title=\""+i+1+". ay: "+fmtM(rows[i].kumKar)+"\"></div>";
+      for(var ri=0;ri<n;ri++){
+        var cls=rows[ri].kumKar>=finObj.yatirim?"gain":(rows[ri].kumKar>=0?"gain":"loss");
+        if(finObj.geriDonumAy===ri+1) cls="payback";
+        html+="<div class=\"roi-seg "+cls+"\" style=\"flex:1;\" title=\""+ri+1+". ay: "+fmtM(rows[ri].kumKar)+"\"></div>";
       }
       html+="</div><div style=\"font-size:.65rem;color:var(--muted);margin-top:4px;\">Kırmızı=zarar dönemi &nbsp;|&nbsp; Yeşil=kar dönemi &nbsp;|&nbsp; Altın=geri dönüş noktası</div>";
     }
     if(finObj.taksit>0){
       // Hangi ayda taksit karşılanıyor?
       var bbAy=-1;
-      for(var i=0;i<rows.length;i++){ if(rows[i].netKar>=0&&bbAy<0) bbAy=i+1; }
+      for(var ri=0;ri<rows.length;ri++){ if(rows[ri].netKar>=0&&bbAy<0) bbAy=ri+1; }
       html+="<div style=\"margin-top:10px;font-size:.78rem;\">Aylık taksit: <strong>"+fmtFull(finObj.taksit)+"</strong> &nbsp;|&nbsp; Nakit başabaş: <strong style=\"color:"+(bbAy>0?"var(--accent)":"var(--danger)")+"\">"+( bbAy>0?bbAy+". ay":"60 ay içinde yok")+"</strong></div>";
     }
     html+="</div>";
@@ -3747,6 +3747,7 @@ function hesaplaSimVeFinans(){
   finansAcik = true;
   hesapla();
   // renderResults override zaten finansı çağırıyor
+  switchMainTab("finans");
 }
 
 function showQR(){
