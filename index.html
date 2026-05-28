@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!--Gelecek60 v4.6 — sim60 (24→60 ay) + finansal rapor i() vs loop-i cakismasi duzeltme + sekme gecisi-->
+<!--Gelecek60 v4.10 — sim60 (24→60 ay) + finansal rapor i() vs loop-i cakismasi duzeltme + sekme gecisi-->
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
@@ -650,7 +650,7 @@ input.money-input{padding-left:24px !important;}
         <button class="cur-btn" id="curUSD" onclick="setCurrency('USD')">$ USD</button>
       </div>
       <button class="btn-ub" onclick="showQR()" style="padding:5px 10px;" title="QR">&#128248;</button>
-      <div class="badge">v4.6</div>
+      <div class="badge">v4.10</div>
     </div>
   </div>
 </header>
@@ -1672,18 +1672,18 @@ function exportExcel() {
   if(!projData.snaps){alert("Önce hesaplama yapın.");return;}
   var snaps=projData.snaps,ini=projData.initial,p=projData.params;
   var iTotal=getTotal(ini),wb=XLSX.utils.book_new();
-  var hdr=["Kategori","Baslangic"];for(var m=0;m<24;m++)hdr.push((m+1)+". Ay");
+  var hdr=["Kategori","Baslangic"];for(var m=0;m<60;m++)hdr.push((m+1)+". Ay");
   var d1=[hdr];
-  for(var ci=0;ci<CATS.length;ci++){var row=[CATS[ci].name,ini[CATS[ci].key]||0];for(var m=0;m<24;m++)row.push(snaps[m][CATS[ci].key]||0);d1.push(row);}
-  var tr=["TOPLAM",iTotal];for(var m=0;m<24;m++)tr.push(getTotal(snaps[m]));d1.push(tr);
+  for(var ci=0;ci<CATS.length;ci++){var row=[CATS[ci].name,ini[CATS[ci].key]||0];for(var m=0;m<60;m++)row.push(snaps[m][CATS[ci].key]||0);d1.push(row);}
+  var tr=["TOPLAM",iTotal];for(var m=0;m<60;m++)tr.push(getTotal(snaps[m]));d1.push(tr);
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(d1),"Hayvan Varligi");
-  var hdr2=["Gosterge","Baslangic"];for(var m=0;m<24;m++)hdr2.push((m+1)+". Ay");
+  var hdr2=["Gosterge","Baslangic"];for(var m=0;m<60;m++)hdr2.push((m+1)+". Ay");
   var d2=[hdr2];
   var rL=["Buzagi","Gebe Inek","Acik Inek","Kuru Inek","Ort. Laktasyon","Reform Inek","Reform Duve","Inek Olum","Buzagilama Araligi (gün)"];
   var rF=[function(s){return Math.round(s.buzagiSayisi||0);},function(s){return s.gebeInekProj||0;},function(s){return s.acikInekProj||0;},function(s){return s.kuru||0;},function(s){return (s.ortLaktasyon||0).toFixed(2);},function(s){return Math.round((s.reformInek||0)+(s.reformMaksLak||0)+(s.reformMaksTohum||0));},function(s){return Math.round(s.reformDuve||0);},function(s){return Math.round(s.inekOlum||0);},function(s){return s.buzAraligiGun||0;}];
-  for(var ri=0;ri<rL.length;ri++){var row=[rL[ri],"—"];for(var m=0;m<24;m++)row.push(rF[ri](snaps[m]));d2.push(row);}
+  for(var ri=0;ri<rL.length;ri++){var row=[rL[ri],"—"];for(var m=0;m<60;m++)row.push(rF[ri](snaps[m]));d2.push(row);}
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(d2),"Ureme");
-  var hdr3=["Gosterge","Baslangic"];for(var m=0;m<24;m++)hdr3.push((m+1)+". Ay");
+  var hdr3=["Gosterge","Baslangic"];for(var m=0;m<60;m++)hdr3.push((m+1)+". Ay");
   var d3=[hdr3,
     ["Tohum. Inek","—"].concat(snaps.map(function(s){return Math.round((s.konvTohumInek||0)+(s.sexedTohumInek||0));})),
     ["Konv. Sperma Inek (doz)","—"].concat(snaps.map(function(s){return Math.round(s.konvDozInek||0);})),
@@ -1694,7 +1694,7 @@ function exportExcel() {
     ["TOPLAM SPERMA","—"].concat(snaps.map(function(s){return Math.round((s.toplamInekDoz||0)+(s.toplamDuveDoz||0));}))
   ];
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(d3),"Sperma");
-  XLSX.writeFile(wb,"Gelecek24_v1.1.xlsx");
+  XLSX.writeFile(wb,"Gelecek60_v4.6.xlsx");
 }
 
 // SIFIRLA
@@ -1782,7 +1782,7 @@ function buildYorumAlani(rows, totGelir, totGider, totKar, totSut, totErkek, tot
 
 // ═══════════════════════════════════════════════════════
 // GELECEK60 v4.1 — Finansal Analiz Modülü
-// Kaynak: Gerçek TR çiftlik P&L verileri (KBEY/AKS/BİNGÖL 2025-2026)
+// Kaynak: Türkiye işletmeleri finansal veriler ortalaması
 // Maliyet oranları: Besleme %67, İşçilik %23.5, EkipAmort %1.5, Diğer %9.4
 // Sağmal amortisman: simülasyon parametrelerinden otomatik
 // Hastalık maliyetleri: literatür bazlı USD → TL
@@ -1848,7 +1848,7 @@ function buildMilkRows(){
 function calcSagmalAmortismanAylik(params, snap){
   // Bir düvenin süt veren ineğe dönüşme maliyeti:
   // 1. Tohumlama maliyeti (CR düve'ye göre ortalama doz sayısı × fiyat)
-  var crDuve = (params.crDuve||60)/100;
+  var crDuve = params.crDuve > 1 ? params.crDuve/100 : (params.crDuve||0.60);
   var dozDuve = crDuve>0 ? (1/crDuve) : 2;  // ortalama doz/gebelik
   var spermaDozFiyat = getMoneyValue("finKonvSperma")||300;
   var semMal = dozDuve * spermaDozFiyat;
@@ -1859,7 +1859,7 @@ function calcSagmalAmortismanAylik(params, snap){
     // Otomatik: aylık süt gelirinin %67'si / 30 gün / laktasyon ineği başına
     var aylikSutGelir = calcAylikSutGelir(snap, 0);
     var lakInek = snap.laktasyon||1;
-    beslemeGunluk = lakInek>0 ? (aylikSutGelir*0.67/30/lakInek) : 300;
+    beslemeGunluk = lakInek>0 ? (aylikSutGelir*0.558/30/lakInek) : 300;
   }
   var gebBesleme = 9*30*beslemeGunluk*0.7; // düve gebelikte %70 inek maliyeti
 
@@ -1926,7 +1926,7 @@ function calcFinans(snaps, params){
 
     // ── GELİRLER ──
     var sutGelir     = lak*milkL*30*milkP;
-    var reformGelir  = (snap.reformInek||0)*reformKarkasGelir;
+    var reformGelir  = ((snap.reformInek||0)+(snap.reformMaksLak||0)+(snap.reformMaksTohum||0))*reformKarkasGelir;
     var duveGelir    = (snap.satDuveAct||0)*duveFiyat;
 
     var erkekGelir=0, besiGelir=0, besiMaliyeti=0;
@@ -1956,12 +1956,12 @@ function calcFinans(snaps, params){
     var digerV   = getMoneyValue("finDiger");
     var amortV   = getMoneyValue("finAmort");
 
-    var besleme  = beslemeV>0 ? beslemeV*top*30 : toplamGelir*0.67;
-    var iscilik  = iscV>0     ? iscV*top         : toplamGelir*0.235;
-    var diger    = digerV>0   ? digerV*top        : toplamGelir*0.094;
+    var besleme  = beslemeV>0 ? beslemeV*top*30 : toplamGelir*0.558;
+    var iscilik  = iscV>0     ? iscV*top         : toplamGelir*0.207;
+    var diger    = digerV>0   ? digerV*top        : toplamGelir*0.083;
     var ekipAmor = amortV>0   ? amortV*top        : toplamGelir*0.015;
 
-    // Sağmal amortisman (otomatik)
+    // Sagmal amortisman (CR ve kuru gune duyarli -- simülasyon parametrelerinden)
     var sagAmort = lak * calcSagmalAmortismanAylik(params||{}, snap);
 
     // Sperma maliyeti
@@ -1981,11 +1981,11 @@ function calcFinans(snaps, params){
       var prev=(gfv(k)||DIS_DEFAULTS[k])/100;
       vetMal += buz02*prev*DIS_COSTS_USD[k]*rate/12;
     }
-    // İlaç/rutin vet (sperma ve hastalık dışı)
-    var ilacMal = toplamGelir*0.025;
+    // Not: Rutin vet/ilac maliyeti hastalık prevalansları üzerinden hesaplanıyor
+
 
     var besiMalAy = besiAktif ? besiMaliyeti : 0;
-    var toplamGider = besleme+iscilik+diger+ekipAmor+sagAmort+spermaMal+vetMal+ilacMal+besiMalAy+taksit;
+    var toplamGider = besleme+iscilik+diger+ekipAmor+sagAmort+spermaMal+vetMal+besiMalAy+taksit;
     var netKar = toplamGelir - toplamGider;
     kumKar += netKar;
     if(geriDonumAy<0 && yatirim>0 && kumKar>=yatirim) geriDonumAy=ay+1;
@@ -1995,10 +1995,10 @@ function calcFinans(snaps, params){
       sutGelir:sutGelir, reformGelir:reformGelir, duveGelir:duveGelir,
       erkekGelir:erkekGelir, toplamGelir:toplamGelir,
       besleme:besleme, iscilik:iscilik, diger:diger, ekipAmor:ekipAmor,
-      sagAmort:sagAmort, spermaMal:spermaMal, vetMal:vetMal, ilacMal:ilacMal,
+      sagAmort:sagAmort, spermaMal:spermaMal, vetMal:vetMal, ilacMal:0,
       besiMal:besiMalAy, taksit:taksit,
       toplamGider:toplamGider, netKar:netKar, kumKar:kumKar,
-      erkekHaric: sutGelir+reformGelir+duveGelir - (besleme+iscilik+diger+ekipAmor+sagAmort+spermaMal+vetMal+ilacMal+taksit)
+      erkekHaric: sutGelir+reformGelir+duveGelir - (besleme+iscilik+diger+ekipAmor+sagAmort+spermaMal+vetMal+taksit)
     });
   }
 
@@ -2096,7 +2096,7 @@ function renderFinansResults(finObj){
     html+="<div style=\"background:rgba(36,113,163,.06);border:1.5px solid rgba(36,113,163,.3);border-radius:10px;padding:12px 16px;margin-bottom:14px;font-size:.76rem;\">"
       +"<strong style=\"color:var(--blue);\">⚠️ Kritik Bulgu:</strong> Toplam gelirin <strong>%"+erkekKatki.toFixed(1)+"'i</strong> erkek hayvandan geliyor. "
       +"Erkek hayvan hariç net marj: <strong style=\"color:var(--danger);\">%"+(totGelir>0?((totKar-totErkek)/(totGelir-totErkek)*100).toFixed(1):"—")+"</strong>. "
-      +"Gerçek TR çiftlik verileriyle örtüşmektedir (KBEY/AKS 2026 Ocak: erkek hariç VÖK %-15.7)."
+      +"Gerçek TR çiftlik verileriyle örtüşmektedir (Türkiye işletmeleri finansal veriler ortalaması)."
       +"</div>";
   }
 
@@ -2207,7 +2207,7 @@ function renderFinansResults(finObj){
       +"<td><strong>"+fmtM(r.toplamGelir)+"</strong></td>"
       +"<td>"+fmtM(r.besleme)+"</td><td>"+fmtM(r.iscilik)+"</td>"
       +"<td>"+fmtM(r.sagAmort)+"</td><td>"+fmtM(r.spermaMal)+"</td>"
-      +"<td>"+fmtM(r.vetMal+r.ilacMal)+"</td><td>"+fmtM(r.diger+r.ekipAmor+r.besiMal+r.taksit)+"</td>"
+      +"<td>"+fmtM(r.vetMal)+"</td><td>"+fmtM(r.diger+r.ekipAmor+r.besiMal+r.taksit)+"</td>"
       +"<td><strong>"+fmtM(r.toplamGider)+"</strong></td>"
       +"<td><strong>"+fmtM(r.netKar)+"</strong></td>"
       +"<td>"+fmtM(r.kumKar)+"</td>"
@@ -2260,7 +2260,7 @@ function renderFinansResults(finObj){
   rows.forEach(function(r){
     html+="<tr><td>"+r.ay+"</td><td>"+fmtM(r.besleme)+"</td><td>"+fmtM(r.iscilik)+"</td>"
       +"<td>"+fmtM(r.sagAmort)+"</td><td>"+fmtM(r.ekipAmor)+"</td>"
-      +"<td>"+fmtM(r.spermaMal)+"</td><td>"+fmtM(r.vetMal)+"</td><td>"+fmtM(r.ilacMal)+"</td>"
+      +"<td>"+fmtM(r.spermaMal)+"</td><td>"+fmtM(r.vetMal)+"</td>"
       +"<td><strong>"+fmtM(r.toplamGider)+"</strong></td></tr>";
   });
   html+="</tbody></table></div>";
@@ -3752,6 +3752,7 @@ function hesaplaFinans(){
   finansAcik = true;
   var finObj = calcFinans(projData.snaps, p);
   if(finObj){ 
+    projData.finObj = finObj;
     renderFinansResults(finObj); 
     showToast(i("finTamam"));
     // Finansal sekmeye geç
@@ -3793,7 +3794,10 @@ function downloadQR(){
     if(finansAcik){
       var fp = p || (typeof collectParams==="function" ? collectParams() : {});
       var finObj = calcFinans(snaps, fp);
-      if(finObj) renderFinansResults(finObj);
+      if(finObj){
+        projData.finObj = finObj;
+        renderFinansResults(finObj);
+      }
     }
   };
 })();
