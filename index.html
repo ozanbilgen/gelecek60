@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!--Gelecek60 v4.12 — BUG-1:60ay büyüme + BUG-2:SimFinBtn kaldır + BUG-3:SütTablosu + BUG-4:GiderNot + BUG-5:DiseaseCost + BUG-6:BeslemeElastikiyet(refL=6ayOrt,kat=0.694,elastik=0.15/0.18/0.25,altSinir=0.60,agirlikliDagitim)-->
+<!--Gelecek60 v4.12 — BUG-1:60ay büyüme + BUG-2:SimFinBtn kaldır + BUG-3:SütTablosu + BUG-4:GiderNot + BUG-5:DiseaseCost + BUG-6:BeslemeElastikiyet + BUG-7:AIYorum(bekliyor) + BUG-8:DuyarlilikYorum(bekliyor) + BUG-9:EnflasyonKatsayisi(yem%30,sut%20,diger%25)-->
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
@@ -2041,27 +2041,33 @@ function calcFinans(snaps, params){
     var buz02= snap.buz02||0;
     var top  = lak+kuru+buz02+(snap.buz36||0)+(snap.dana714||0)+(snap.duveB||0)+(snap.boga||0)+(snap.erkekDana||0);
 
+    // BUG-9: Enflasyon katsayilari — yem:%30 sut:%20 diger:%25 (yillik, gizli)
+    var yil = Math.floor(ay / 12);
+    var yemKat   = Math.pow(1.30, yil);
+    var sutKat   = Math.pow(1.20, yil);
+    var digerKat = Math.pow(1.25, yil);
+
     var mi=ay%6;
     var milkL=gfv("milkL"+mi)||28;
-    var milkP=gfv("milkP"+mi)||18;
+    var milkP=(gfv("milkP"+mi)||18) * sutKat;
 
     // ── GELİRLER ──
     var sutGelir     = lak*milkL*30*milkP;
-    var reformGelir  = ((snap.reformInek||0)+(snap.reformMaksLak||0)+(snap.reformMaksTohum||0))*reformKarkasGelir;
-    var duveGelir    = (snap.satDuveAct||0)*duveFiyat;
+    var reformGelir  = ((snap.reformInek||0)+(snap.reformMaksLak||0)+(snap.reformMaksTohum||0))*reformKarkasGelir*sutKat;
+    var duveGelir    = (snap.satDuveAct||0)*duveFiyat*sutKat;
 
     var erkekGelir=0, besiGelir=0, besiMaliyeti=0;
     if(!besiAktif){
-      erkekGelir = (snap.erkekBuzagi||0)*erkekFiy;
+      erkekGelir = (snap.erkekBuzagi||0)*erkekFiy*sutKat;
     } else {
       // Besi: bu ay doğan erkekler besiSure ay sonra satılır
       var yeniErkek = snap.erkekBuzagi||0;
-      if(yeniErkek>0) besineBekleyen.push({bitisAy: ay+besiSure, sayi:yeniErkek});
+      if(yeniErkek>0) besineBekleyen.push({bitisAy: ay+besiSure, sayi:yeniErkek, sutKatBitis: Math.pow(1.20, Math.floor((ay+besiSure)/12))});
       // Bu ay biten besiler
       for(var b=besineBekleyen.length-1;b>=0;b--){
         if(besineBekleyen[b].bitisAy===ay){
-          besiGelir += besineBekleyen[b].sayi*besiKarkasGelir;
-          var aylikBesiMal = besiAyMal>0 ? besiAyMal : (konvFiy>0?konvFiy*0.08:300);
+          besiGelir += besineBekleyen[b].sayi*besiKarkasGelir*(besineBekleyen[b].sutKatBitis||sutKat);
+          var aylikBesiMal = besiAyMal>0 ? besiAyMal*yemKat : (konvFiy>0?konvFiy*yemKat*0.08:300*yemKat);
           besiMaliyeti += besineBekleyen[b].sayi*besiSure*aylikBesiMal;
           besineBekleyen.splice(b,1);
         }
@@ -2090,45 +2096,42 @@ function calcFinans(snaps, params){
 
     var besleme;
     if(beslemeV > 0) {
-      // Kullanıcı laktasyon başına günlük değer girdi — ağırlıklı toplama uygula
-      besleme = beslemeV * agirlikliBasSay * 30;
+      // Kullanıcı laktasyon başına günlük değer girdi — ağırlıklı toplama uygula + enflasyon
+      besleme = beslemeV * agirlikliBasSay * 30 * yemKat;
     } else {
       // Fallback: verime duyarlı elastikiyet ile besleme katsayısı
       var verimArtis = refL > 0 ? (milkL - refL) / refL : 0;
       var elastik;
       if(verimArtis <= 0) {
-        elastik = 0.15;       // düşük/referans altı verim: maliyet yavaş düşer
+        elastik = 0.15;
       } else if(milkL <= 32) {
-        elastik = 0.18;       // orta verim aralığı
+        elastik = 0.18;
       } else {
-        elastik = 0.25;       // yüksek verim: azalan marjinal getiri devreye girer
+        elastik = 0.25;
       }
       var beslemeKat = 0.694 * (1 + verimArtis * elastik);
-      beslemeKat = Math.max(0.60, beslemeKat); // alt sınır %60 (biyolojik minimum)
-      // Laktasyon günlük maliyet → ağırlıklı tüm sürüye yansıt
+      beslemeKat = Math.max(0.60, beslemeKat);
+      // milkP zaten sutKat ile büyütüldü — fallback enflasyonu otomatik yansıtır
       var beslemeGunluk = refL * milkP * beslemeKat;
       besleme = beslemeGunluk * agirlikliBasSay * 30;
     }
 
-    var iscilik  = iscV>0     ? iscV*top         : toplamGelir*0.207;
-    var diger    = digerV>0   ? digerV*top        : toplamGelir*0.083;
-    var ekipAmor = amortV>0   ? amortV*top        : toplamGelir*0.015;
+    var iscilik  = iscV>0  ? iscV*top*digerKat   : toplamGelir*0.207;
+    var diger    = digerV>0? digerV*top*digerKat  : toplamGelir*0.083;
+    var ekipAmor = amortV>0? amortV*top*digerKat  : toplamGelir*0.015;
 
-    // Sagmal amortisman (CR ve kuru gune duyarli -- simülasyon parametrelerinden)
-    var sagAmort = lak * calcSagmalAmortismanAylik(params||{}, snap);
+    // Sagmal amortisman — yem katsayısı ile büyütülür
+    var sagAmort = lak * calcSagmalAmortismanAylik(params||{}, snap) * yemKat;
 
-    // Sperma maliyeti
-    // toplamInekDoz = konvDozInek + sexedDozInek + sexedOnceInek (inek tüm dozlar)
-    // toplamDuveDoz = konvDozDuve + sexedDozDuve + sexedOnceDuve (düve tüm dozlar)
+    // Sperma maliyeti — yem katsayısı ile büyütülür
     var topInekDoz = snap.toplamInekDoz||0;
     var topDuveDoz = snap.toplamDuveDoz||0;
-    var spermaMal  = topInekDoz*konvFiy + topDuveDoz*konvFiy;
-    // Sexed sperma: fiyat farkı — sexed dozlar için ek maliyet (sexedFiy - konvFiy)
+    var spermaMal  = (topInekDoz*konvFiy + topDuveDoz*konvFiy) * yemKat;
     var sexedInekDoz = (snap.sexedDozInekYil||0) + (snap.sexedOnceInekYil||0);
     var sexedDuveDoz = (snap.sexedDozDuveYil||0) + (snap.sexedOnceDuveYil||0);
-    spermaMal += sexedInekDoz*(sexedFiy - konvFiy) + sexedDuveDoz*(sexedFiy - konvFiy);
+    spermaMal += (sexedInekDoz*(sexedFiy - konvFiy) + sexedDuveDoz*(sexedFiy - konvFiy)) * yemKat;
 
-    // Hastalık maliyeti
+    // Hastalık maliyeti — yem/ilaç enflasyonu ile büyütülür
     var vetMal = 0;
     for(var ki=0;ki<COW_DIS_KEYS.length;ki++){
       var k=COW_DIS_KEYS[ki];
@@ -2140,7 +2143,7 @@ function calcFinans(snaps, params){
       var prev=(gfv(k)||DIS_DEFAULTS[k])/100;
       vetMal += buz02*prev*DIS_COSTS_USD[k]*rate/12;
     }
-    // Not: Rutin vet/ilac maliyeti hastalık prevalansları üzerinden hesaplanıyor
+    vetMal = vetMal * yemKat;
 
 
     var besiMalAy = besiAktif ? besiMaliyeti : 0;
