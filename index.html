@@ -1217,13 +1217,53 @@ input.money-input{padding-left:24px !important;}
   <!-- BÖLÜM 3: AI Yorumu -->
   <div class="rapor-section">
     <div class="rapor-section-title">&#129302; <span id="raporSec3Title">AI Yorumu</span></div>
-    <div style="font-size:.7rem;color:var(--muted);margin-bottom:12px;" id="raporAiNote">
-      &#9888; Bu özellik internet bağlantısı gerektirir. Yorum Türkçe ve İngilizce olarak üretilir.
+
+    <!-- API Key Rehberi -->
+    <div id="apiKeyRehber" style="background:#fafaf6;border:1.5px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:16px;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:14px;">&#128273; API Key Kurulum Rehberi</div>
+
+      <div style="font-size:.76rem;color:var(--text);line-height:2.0;">
+        <div style="display:flex;gap:10px;margin-bottom:10px;">
+          <div style="min-width:22px;height:22px;background:var(--blue);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;flex-shrink:0;">1</div>
+          <div>Aşağıdaki bağlantıya tıklayarak ücretsiz Anthropic hesabı oluşturun:<br>
+            <a href="https://console.anthropic.com/login" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none;">&#8594; console.anthropic.com/login</a>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;margin-bottom:10px;">
+          <div style="min-width:22px;height:22px;background:var(--blue);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;flex-shrink:0;">2</div>
+          <div>Giriş yaptıktan sonra sol menüden <strong>API Keys</strong> seçin.</div>
+        </div>
+        <div style="display:flex;gap:10px;margin-bottom:10px;">
+          <div style="min-width:22px;height:22px;background:var(--blue);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;flex-shrink:0;">3</div>
+          <div><strong>Create Key</strong> butonuna tıklayın, key'i kopyalayın.</div>
+        </div>
+        <div style="display:flex;gap:10px;margin-bottom:14px;">
+          <div style="min-width:22px;height:22px;background:var(--blue);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;flex-shrink:0;">4</div>
+          <div>Kopyaladığınız key'i aşağıya yapıştırın ve <strong>Kaydet</strong>'e basın.</div>
+        </div>
+
+        <!-- Key Input -->
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <input type="password" id="anthropicApiKey" placeholder="sk-ant-..." 
+            style="flex:1;min-width:220px;background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;font-size:.8rem;font-family:'Barlow',sans-serif;color:var(--text);"
+            onfocus="this.select()">
+          <button onclick="saveApiKey()" style="background:var(--blue);color:#fff;border:none;border-radius:8px;padding:8px 18px;font-family:'Barlow Condensed',sans-serif;font-size:.74rem;font-weight:700;letter-spacing:1px;cursor:pointer;">&#128190; Kaydet</button>
+          <button onclick="toggleApiKeyVisible()" id="btnApiKeyToggle" style="background:transparent;border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;font-size:.74rem;cursor:pointer;color:var(--muted);">&#128065;</button>
+        </div>
+        <div id="apiKeySaveMsg" style="font-size:.68rem;margin-top:6px;display:none;"></div>
+        <div style="font-size:.65rem;color:var(--muted);margin-top:8px;">&#128274; Key yalnızca bu cihazda saklanır, hiçbir sunucuya gönderilmez.</div>
+      </div>
+    </div>
+
+    <!-- AI Yorum Kutusu -->
+    <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px;">
+      <button class="btn-rapor-ai" id="btnAIYorum" onclick="getAIYorum()">&#129302; <span id="btnAIYorumTxt">AI Yorumu Al</span></button>
+      <div style="font-size:.68rem;color:var(--muted);" id="raporAiNote">&#9888; İnternet bağlantısı gerektirir.</div>
     </div>
     <div class="ai-yorum-box">
       <div class="ai-label">&#129302; <span id="aiYorumLabel">Yapay Zeka Analizi</span></div>
       <div class="ai-content" id="aiYorumContent" style="color:var(--muted);font-style:italic;">
-        "AI Yorumu Al" butonuna basarak işletme özelinde yorum alabilirsiniz.
+        API key kaydedip "AI Yorumu Al" butonuna basın.
       </div>
     </div>
   </div>
@@ -3840,6 +3880,7 @@ function showToast(msg,isErr){
 window.addEventListener("load",function(){
   setCurrency(currentCurrency);
   initFirebase();
+  loadApiKey();
   // Tab başlangıç
   document.querySelectorAll('.tab-content').forEach(function(el){
     el.style.display = el.classList.contains('active') ? 'block' : 'none';
@@ -4242,116 +4283,360 @@ function _runSensitivitySvg() {
   }
   svgWrap.innerHTML = '<div style="display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.76rem;padding:20px 0;"><span class="ai-spin"></span> <span>'+i('raporSensCalc')+'</span></div>';
 
-  // Async olarak hesapla (UI'ı bloke etme)
   setTimeout(function() {
     var p0 = projData.params;
     var ini = projData.initial;
+    var fin = projData.finObj;
 
-    // Baz: 60. ay laktasyon + kuru
     function baseLak60(p, h) {
       try {
         var snaps = sim24(h, p);
         var s60 = null;
         for(var k=snaps.length-1; k>=0; k--) { if(snaps[k].ay<=60){s60=snaps[k];break;} }
         if(!s60) s60 = snaps[snaps.length-1]||{};
-        return Math.round((s60.laktasyon||0) + (s60.kuru||0));
+        return Math.round((s60.laktasyon||0)+(s60.kuru||0));
       } catch(e) { return 0; }
     }
 
     var base = baseLak60(p0, ini);
 
-    // 6 parametre tanımı — delta oransal
     var params6 = [
-      {key:'crInek', label:'CR İnek', deltas:[-0.15,-0.10,-0.05,0,0.05,0.10,0.15], fmt:function(v){return '%'+Math.round(v*100);}},
-      {key:'reform', label:'Reform', deltas:[-0.05,-0.03,-0.01,0,0.01,0.03,0.05], fmt:function(v){return '%'+Math.round(v*100);}},
-      {key:'olumInek', label:'İnek Ölüm', deltas:[-0.02,-0.01,-0.005,0,0.005,0.01,0.02], fmt:function(v){return '%'+Math.round(v*100);}},
-      {key:'olumBuz', label:'Buzağı Ölüm', deltas:[-0.05,-0.03,-0.01,0,0.01,0.03,0.05], fmt:function(v){return '%'+Math.round(v*100);}},
-      {key:'kuruGun', label:'Kuru Gün', deltas:[-20,-10,-5,0,5,10,20], fmt:function(v){return Math.round(v)+' gün';}},
-      {key:'vwpInek', label:'VWP', deltas:[-15,-10,-5,0,5,10,15], fmt:function(v){return Math.round(v)+' gün';}}
+      {key:'crInek',   label:'CR İnek (%)',    deltas:[-0.15,-0.10,-0.05,0,0.05,0.10,0.15], fmt:function(v){return '%'+Math.round(v*100);},
+       aciklama:'Konsepsiyon oranı (CR) — tohumlamada gebe kalan inek yüzdesi. En kritik üreme parametresi.'},
+      {key:'reform',   label:'Reform (%)',      deltas:[-0.05,-0.03,-0.01,0,0.01,0.03,0.05], fmt:function(v){return '%'+Math.round(v*100);},
+       aciklama:'Reform (iskarta) oranı — yıllık sürüden çıkan inek yüzdesi. Düşük reform = sürü büyür, yüksek reform = sürü küçülür.'},
+      {key:'olumInek', label:'İnek Ölüm (%)',   deltas:[-0.02,-0.01,-0.005,0,0.005,0.01,0.02], fmt:function(v){return '%'+Math.round(v*100);},
+       aciklama:'Yetişkin inek ölüm oranı. Doğrudan sürü kaybına neden olur, kontrol altında tutulmalıdır.'},
+      {key:'olumBuz',  label:'Buzağı Ölüm (%)' ,deltas:[-0.05,-0.03,-0.01,0,0.01,0.03,0.05], fmt:function(v){return '%'+Math.round(v*100);},
+       aciklama:'Buzağı ölüm oranı — genç hayvan kaybı. Uzun vadede düve stoğunu ve sürü büyümesini etkiler.'},
+      {key:'kuruGun',  label:'Kuru Gün',        deltas:[-20,-10,-5,0,5,10,20], fmt:function(v){return Math.round(v)+' gün';},
+       aciklama:'Kuru dönem uzunluğu. Çok kısa = sonraki laktasyonda verim düşer, çok uzun = sürüde laktasyon ineği oranı azalır.'},
+      {key:'vwpInek',  label:'VWP (gün)',       deltas:[-15,-10,-5,0,5,10,15], fmt:function(v){return Math.round(v)+' gün';},
+       aciklama:'Gönüllü bekleme periyodu — doğum sonrası tohumlamaya başlama süresi. Kısa VWP = buzağılama aralığı kısalır, sürü verimliliği artar.'}
     ];
 
     var results = [];
     for(var pi=0; pi<params6.length; pi++) {
       var pd = params6[pi];
-      var row = {label: pd.label, key: pd.key, points: []};
+      var row = {label:pd.label, key:pd.key, aciklama:pd.aciklama, points:[]};
       for(var di=0; di<pd.deltas.length; di++) {
         var delta = pd.deltas[di];
         var pCopy = {};
         for(var kk in p0) pCopy[kk] = p0[kk];
         var newVal = (p0[pd.key]||0) + delta;
-        if(pd.key === 'crInek') newVal = Math.max(0.05, Math.min(0.99, newVal));
-        if(pd.key === 'reform') newVal = Math.max(0.01, Math.min(0.50, newVal));
-        if(pd.key === 'olumInek') newVal = Math.max(0, Math.min(0.30, newVal));
-        if(pd.key === 'olumBuz') newVal = Math.max(0, Math.min(0.50, newVal));
-        if(pd.key === 'kuruGun') newVal = Math.max(20, Math.min(120, newVal));
-        if(pd.key === 'vwpInek') newVal = Math.max(20, Math.min(150, newVal));
+        if(pd.key==='crInek')   newVal = Math.max(0.05, Math.min(0.99, newVal));
+        if(pd.key==='reform')   newVal = Math.max(0.01, Math.min(0.50, newVal));
+        if(pd.key==='olumInek') newVal = Math.max(0,    Math.min(0.30, newVal));
+        if(pd.key==='olumBuz')  newVal = Math.max(0,    Math.min(0.50, newVal));
+        if(pd.key==='kuruGun')  newVal = Math.max(20,   Math.min(120,  newVal));
+        if(pd.key==='vwpInek')  newVal = Math.max(20,   Math.min(150,  newVal));
         pCopy[pd.key] = newVal;
         var val = baseLak60(pCopy, ini);
-        row.points.push({delta: delta, val: val, diff: val - base, label: pd.fmt ? pd.fmt(newVal) : String(newVal)});
+        row.points.push({delta:delta, val:val, diff:val-base, label:pd.fmt?pd.fmt(newVal):String(newVal)});
       }
       results.push(row);
     }
 
-    // SVG çiz — tornado chart
-    var W = 700, H = 36 * results.length + 60, PAD_L = 100, PAD_R = 20, BAR_H = 20;
-    var allDiffs = [];
-    for(var ri=0; ri<results.length; ri++) {
-      for(var di2=0; di2<results[ri].points.length; di2++) allDiffs.push(results[ri].points[di2].diff);
-    }
+    // Parametreleri etkiye göre sırala (max abs diff)
+    results.sort(function(a,b){
+      var aMax = Math.max.apply(null, a.points.map(function(p){return Math.abs(p.diff);}));
+      var bMax = Math.max.apply(null, b.points.map(function(p){return Math.abs(p.diff);}));
+      return bMax - aMax;
+    });
+
+    // ── TORNADO SVG ──
+    var W=700, BAR_H=20, PAD_L=110, PAD_R=20;
+    var H = 36*results.length + 60;
+    var allDiffs=[];
+    for(var ri=0;ri<results.length;ri++) for(var di2=0;di2<results[ri].points.length;di2++) allDiffs.push(results[ri].points[di2].diff);
     var maxAbs = Math.max(1, Math.max.apply(null, allDiffs.map(function(d){return Math.abs(d);})));
-    var barW = W - PAD_L - PAD_R;
-    var midX = PAD_L + barW / 2;
+    var barW = W-PAD_L-PAD_R;
+    var midX = PAD_L+barW/2;
 
-    var svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" style="font-family:Barlow,sans-serif;">';
-    // Başlık
-    svg += '<text x="'+midX+'" y="18" text-anchor="middle" font-size="10" fill="#6b6448" font-weight="700" letter-spacing="1">'+i('raporSensEtki')+'</text>';
-    // Orta çizgi
-    svg += '<line x1="'+midX+'" y1="28" x2="'+midX+'" y2="'+(H-10)+'" stroke="#d8cfb8" stroke-width="1"/>';
-    // Baz etiketi
-    svg += '<text x="'+midX+'" y="'+( H-2 )+'" text-anchor="middle" font-size="9" fill="#6b6448">'+i('raporSensBase')+': '+base+'</text>';
+    var svg='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" style="font-family:Barlow,sans-serif;">';
+    svg+='<text x="'+midX+'" y="18" text-anchor="middle" font-size="10" fill="#6b6448" font-weight="700" letter-spacing="1">'+i('raporSensEtki')+'</text>';
+    svg+='<line x1="'+midX+'" y1="28" x2="'+midX+'" y2="'+(H-10)+'" stroke="#d8cfb8" stroke-width="1"/>';
+    svg+='<text x="'+midX+'" y="'+(H-2)+'" text-anchor="middle" font-size="9" fill="#6b6448">'+i('raporSensBase')+': '+base+'</text>';
 
-    for(var ri2=0; ri2<results.length; ri2++) {
-      var row2 = results[ri2];
-      var y = 34 + ri2 * 36;
-      // Parametre etiketi
-      svg += '<text x="'+(PAD_L-6)+'" y="'+(y+BAR_H/2)+'" text-anchor="end" dominant-baseline="middle" font-size="10" fill="#6b6448">'+row2.label+'</text>';
-
-      // Her nokta için küçük çubuk
-      var pts = row2.points;
-      for(var pi2=0; pi2<pts.length; pi2++) {
-        var pt = pts[pi2];
-        if(pt.delta === 0) continue; // baz noktası — sadece çizgi
-        var bx = midX + (pt.diff / maxAbs) * (barW/2);
-        var x1 = Math.min(midX, bx), barLen = Math.abs(bx - midX);
-        var clr = pt.diff >= 0 ? '#2d7a3a' : '#c0392b';
-        var alpha = Math.min(1, 0.3 + 0.7 * Math.abs(pt.diff) / maxAbs);
-        var opacity = Math.round(alpha * 10) / 10;
-        svg += '<rect x="'+x1.toFixed(1)+'" y="'+y+'" width="'+Math.max(1, barLen).toFixed(1)+'" height="'+BAR_H+'" fill="'+clr+'" opacity="'+opacity+'" rx="2"/>';
+    for(var ri2=0;ri2<results.length;ri2++){
+      var row2=results[ri2];
+      var y=34+ri2*36;
+      // Öncelik rengi
+      var oncelikRenk = ri2===0?'#c0392b': ri2===1?'#e67e22': ri2===2?'#f1c40f': '#6b6448';
+      svg+='<text x="'+(PAD_L-6)+'" y="'+(y+BAR_H/2)+'" text-anchor="end" dominant-baseline="middle" font-size="10" fill="'+oncelikRenk+'" font-weight="'+(ri2<2?'700':'400')+'">'+row2.label+'</text>';
+      var pts=row2.points;
+      for(var pi2=0;pi2<pts.length;pi2++){
+        var pt=pts[pi2];
+        if(pt.delta===0) continue;
+        var bx=midX+(pt.diff/maxAbs)*(barW/2);
+        var x1=Math.min(midX,bx), barLen=Math.abs(bx-midX);
+        var clr=pt.diff>=0?'#2d7a3a':'#c0392b';
+        var alpha=Math.min(1,0.3+0.7*Math.abs(pt.diff)/maxAbs);
+        svg+='<rect x="'+x1.toFixed(1)+'" y="'+y+'" width="'+Math.max(1,barLen).toFixed(1)+'" height="'+BAR_H+'" fill="'+clr+'" opacity="'+Math.round(alpha*10)/10+'" rx="2"/>';
       }
-      // Baz noktası işareti
-      svg += '<line x1="'+midX+'" y1="'+y+'" x2="'+midX+'" y2="'+(y+BAR_H)+'" stroke="#b8860b" stroke-width="2"/>';
-
-      // Min/Max değer etiketi
-      var minPt = pts[0], maxPt = pts[pts.length-1];
-      var leftDiff = minPt.diff, rightDiff = maxPt.diff;
-      if(leftDiff !== 0) {
-        var lx = midX + (leftDiff/maxAbs)*(barW/2);
-        svg += '<text x="'+(Math.min(lx,midX)-3).toFixed(0)+'" y="'+(y+BAR_H/2)+'" text-anchor="end" dominant-baseline="middle" font-size="8.5" fill="'+(leftDiff>=0?'#2d7a3a':'#c0392b')+'">'+(leftDiff>0?'+':'')+leftDiff+'</text>';
-      }
-      if(rightDiff !== 0) {
-        var rx = midX + (rightDiff/maxAbs)*(barW/2);
-        svg += '<text x="'+(Math.max(rx,midX)+3).toFixed(0)+'" y="'+(y+BAR_H/2)+'" text-anchor="start" dominant-baseline="middle" font-size="8.5" fill="'+(rightDiff>=0?'#2d7a3a':'#c0392b')+'">'+(rightDiff>0?'+':'')+rightDiff+'</text>';
-      }
+      svg+='<line x1="'+midX+'" y1="'+y+'" x2="'+midX+'" y2="'+(y+BAR_H)+'" stroke="#b8860b" stroke-width="2"/>';
+      var minPt=pts[0], maxPt=pts[pts.length-1];
+      if(minPt.diff!==0){var lx=midX+(minPt.diff/maxAbs)*(barW/2);svg+='<text x="'+(Math.min(lx,midX)-3).toFixed(0)+'" y="'+(y+BAR_H/2)+'" text-anchor="end" dominant-baseline="middle" font-size="8.5" fill="'+(minPt.diff>=0?'#2d7a3a':'#c0392b')+'">'+(minPt.diff>0?'+':'')+minPt.diff+'</text>';}
+      if(maxPt.diff!==0){var rx2=midX+(maxPt.diff/maxAbs)*(barW/2);svg+='<text x="'+(Math.max(rx2,midX)+3).toFixed(0)+'" y="'+(y+BAR_H/2)+'" text-anchor="start" dominant-baseline="middle" font-size="8.5" fill="'+(maxPt.diff>=0?'#2d7a3a':'#c0392b')+'">'+(maxPt.diff>0?'+':'')+maxPt.diff+'</text>';}
     }
-    svg += '</svg>';
-    svgWrap.innerHTML = svg;
+    svg+='</svg>';
+
+    // ── PARAMETRE YORUMLARI ──
+    var yorumHtml='<div style="margin-top:20px;">';
+    yorumHtml+='<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:12px;">Parametre Analizi — Öncelik Sırasına Göre</div>';
+    for(var ri3=0;ri3<results.length;ri3++){
+      var row3=results[ri3];
+      var maxDiff3=Math.max.apply(null,row3.points.map(function(p){return Math.abs(p.diff);}));
+      var oncelik = ri3===0?{cls:'red',etiket:'🔴 Kritik Öncelik'}: ri3===1?{cls:'gold',etiket:'🟡 Yüksek Öncelik'}: ri3===2?{cls:'gold',etiket:'🟡 Orta Öncelik'}: {cls:'green',etiket:'🟢 İzleme'};
+      var mevcutDeger = p0[row3.key];
+      var mevcutStr = row3.key==='crInek'||row3.key==='reform'||row3.key==='olumInek'||row3.key==='olumBuz' ? '%'+Math.round(mevcutDeger*100) : Math.round(mevcutDeger)+' gün';
+      yorumHtml+='<div style="background:#fafaf6;border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;">';
+      yorumHtml+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;flex-wrap:wrap;gap:6px;">';
+      yorumHtml+='<span style="font-weight:700;font-size:.78rem;">'+row3.label+'</span>';
+      yorumHtml+='<span style="font-size:.68rem;font-weight:700;color:var(--'+(ri3===0?'danger':ri3<=2?'gold':'accent')+');">'+oncelik.etiket+'</span>';
+      yorumHtml+='</div>';
+      yorumHtml+='<div style="font-size:.73rem;color:var(--muted);margin-bottom:6px;">Mevcut değer: <strong style="color:var(--text);">'+mevcutStr+'</strong> &nbsp;|&nbsp; Max etki: <strong style="color:var(--blue);">±'+maxDiff3+' baş (60. ay)</strong></div>';
+      yorumHtml+='<div style="font-size:.74rem;color:var(--text);line-height:1.7;">'+row3.aciklama+'</div>';
+      // Somut yorum
+      var enIyiDiff = Math.max.apply(null, row3.points.map(function(p){return p.diff;}));
+      var enKotuDiff = Math.min.apply(null, row3.points.map(function(p){return p.diff;}));
+      if(enIyiDiff > 0) yorumHtml+='<div style="font-size:.72rem;color:var(--accent);margin-top:4px;">↑ En iyi senaryoda 60. ayda +'+enIyiDiff+' baş fazla inek.</div>';
+      if(enKotuDiff < 0) yorumHtml+='<div style="font-size:.72rem;color:var(--danger);margin-top:2px;">↓ En kötü senaryoda 60. ayda '+enKotuDiff+' baş az inek.</div>';
+      yorumHtml+='</div>';
+    }
+    yorumHtml+='</div>';
+
+    // ── OTOMATİK PROGRAM YORUMU ──
+    var snap60p = projData.snaps[59]||projData.snaps[projData.snaps.length-1]||{};
+    var basInek=(ini.laktasyon||0)+(ini.kuru||0);
+    var bitInek=(snap60p.laktasyon||0)+(snap60p.kuru||0);
+    var buyumePct=basInek>0?((bitInek-basInek)/basInek*100):0;
+    var buzAralik2=snap60p.buzAraligiGun||Math.round((p0.vwpInek||50)+(1/(p0.crInek||0.6))*21+283);
+
+    var net60p=0, gelir60p=0;
+    if(fin&&fin.rows){for(var fj=0;fj<fin.rows.length;fj++){net60p+=fin.rows[fj].netKar||0;gelir60p+=fin.rows[fj].toplamGelir||0;}}
+    var marj60p=gelir60p>0?net60p/gelir60p*100:0;
+    var bbAy=-1;
+    if(fin&&fin.rows){for(var fj2=0;fj2<fin.rows.length;fj2++){if(fin.rows[fj2].netKar>=0&&bbAy<0)bbAy=fj2+1;}}
+
+    var yorumOzet='<div style="background:rgba(36,113,163,.05);border:1.5px solid rgba(36,113,163,.2);border-radius:12px;padding:18px 20px;margin-top:20px;">';
+    yorumOzet+='<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:14px;">📊 İşletme Değerlendirmesi</div>';
+
+    // 1. Sürdürülebilirlik
+    var surdKlas = buyumePct>10?'✅ Sürdürülebilir': buyumePct>0?'⚠️ Dikkat': '❌ Risk';
+    var surdRenk = buyumePct>10?'var(--accent)': buyumePct>0?'var(--gold)': 'var(--danger)';
+    yorumOzet+='<div style="margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border);">';
+    yorumOzet+='<div style="font-size:.74rem;font-weight:700;color:'+surdRenk+';margin-bottom:5px;">1. Sürdürülebilirlik — <span>'+surdKlas+'</span></div>';
+    yorumOzet+='<div style="font-size:.74rem;color:var(--text);line-height:1.7;">60 ay sonunda sürü '+Math.round(buyumePct>0?'+':'')+buyumePct.toFixed(1)+'% '+(buyumePct>0?'büyüdü':'küçüldü')+' ('+basInek+' → '+Math.round(bitInek)+' baş). ';
+    if(buyumePct>15) yorumOzet+='Güçlü büyüme — mevcut parametreler sürdürülebilir bir işletme göstergesi. ';
+    else if(buyumePct>0) yorumOzet+='Yavaş büyüme — üreme parametrelerini iyileştirerek büyüme hızlandırılabilir. ';
+    else yorumOzet+='Sürü küçülüyor — acil müdahale gerekiyor. CR ve reform oranları gözden geçirilmeli. ';
+    yorumOzet+='Buzağılama aralığı: '+buzAralik2+' gün '+(buzAralik2<=410?'(optimum aralıkta ✓).':'(390-410 gün optimum — iyileştirme var).')+'</div></div>';
+
+    // 2. Karlılık
+    var karKlas = marj60p>15?'✅ Karlı': marj60p>0?'⚠️ Başabaş Yakını': '❌ Zararlı';
+    var karRenk = marj60p>15?'var(--accent)': marj60p>0?'var(--gold)': 'var(--danger)';
+    yorumOzet+='<div style="margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border);">';
+    yorumOzet+='<div style="font-size:.74rem;font-weight:700;color:'+karRenk+';margin-bottom:5px;">2. Karlılık — <span>'+karKlas+'</span></div>';
+    if(fin&&fin.rows){
+      yorumOzet+='<div style="font-size:.74rem;color:var(--text);line-height:1.7;">60 ay net marj: %'+marj60p.toFixed(1)+'. ';
+      if(bbAy>0) yorumOzet+='Başabaş noktası: '+bbAy+'. ay. ';
+      else yorumOzet+='Başabaş noktasına 60 ay içinde ulaşılamıyor. ';
+      if(marj60p<5) yorumOzet+='Karlılığı artırmak için süt verimi, CR ve yem maliyeti öncelikli odak noktaları olmalı.';
+      else if(marj60p<15) yorumOzet+='Marj yeterli ancak enflasyon etkisiyle daralabilir — maliyetleri izleyin.';
+      else yorumOzet+='Sağlıklı karlılık — mevcut performansı koruyun ve büyüme fırsatlarını değerlendirin.';
+      yorumOzet+='</div>';
+    } else {
+      yorumOzet+='<div style="font-size:.74rem;color:var(--muted);font-style:italic;">Finansal analiz yapılmamış — finansal sekmeden hesaplama yapın.</div>';
+    }
+    yorumOzet+='</div>';
+
+    // 3. En Kritik İyileştirme
+    var kritikParam = results[0];
+    var kritikMaxDiff = Math.max.apply(null, kritikParam.points.map(function(p){return p.diff;}));
+    yorumOzet+='<div style="margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border);">';
+    yorumOzet+='<div style="font-size:.74rem;font-weight:700;color:var(--danger);margin-bottom:5px;">3. En Kritik İyileştirme</div>';
+    yorumOzet+='<div style="font-size:.74rem;color:var(--text);line-height:1.7;">Bu işletmede en yüksek etkili parametre: <strong>'+kritikParam.label+'</strong>. ';
+    yorumOzet+='Maksimum iyileştirme senaryosunda 60. ayda <strong>+'+kritikMaxDiff+' baş</strong> fark yaratır. ';
+    yorumOzet+=kritikParam.aciklama+'</div></div>';
+
+    // 4. Hedef Süt Verimi
+    yorumOzet+='<div>';
+    yorumOzet+='<div style="font-size:.74rem;font-weight:700;color:var(--gold);margin-bottom:5px;">4. Hedef Süt Verimi</div>';
+    var milkLs2=[]; for(var ri4=0;ri4<6;ri4++) milkLs2.push(typeof gfv!=='undefined'?gfv('milkL'+ri4)||28:28);
+    var mevcutVerim=milkLs2.reduce(function(a,b){return a+b;})/6;
+    yorumOzet+='<div style="font-size:.74rem;color:var(--text);line-height:1.7;">Mevcut ortalama verim: <strong>'+mevcutVerim.toFixed(1)+' L/baş/gün</strong>. ';
+    if(fin&&fin.rows&&gelir60p>0){
+      var aylikOrtGelir=gelir60p/60;
+      var verimEkLitre2=aylikOrtGelir*2/(mevcutVerim>0?mevcutVerim:28)/(30*(snap60p.laktasyon||100));
+      yorumOzet+='Verimi 2L artırırsanız aylık gelir yaklaşık +'+(Math.round(aylikOrtGelir*2/mevcutVerim/1000)).toLocaleString('tr-TR')+'K TL artar. ';
+    }
+    if(mevcutVerim<28) yorumOzet+='Düşük verim — ıslah, besleme optimizasyonu ve sağlık yönetimine odaklanın.';
+    else if(mevcutVerim<32) yorumOzet+='Orta verim — 32-35L hedefi karlılığı önemli ölçüde iyileştirir.';
+    else yorumOzet+='İyi verim düzeyi — yem verimliliği ve sağlık maliyetleri optimize edilebilir.';
+    yorumOzet+='</div></div>';
+    yorumOzet+='</div>';
+
+    // ── KARLILIK SENARYOLARI ──
+    var senaryoHtml='<div style="margin-top:24px;">';
+    senaryoHtml+='<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);border-bottom:2px solid rgba(184,134,11,.15);padding-bottom:7px;margin-bottom:16px;">💡 Karlılık Senaryoları — Potansiyel İyileştirmeler</div>';
+
+    function fmtTL(v) {
+      var abs=Math.abs(v);
+      var s=abs>=1000000?(v/1000000).toFixed(1)+'M TL': abs>=1000?Math.round(v/1000)+'K TL': Math.round(v)+' TL';
+      return (v>=0?'+':'')+s;
+    }
+
+    var senaryolar = [
+      {
+        baslik:'Süt Verimi +4 Litre',
+        ikon:'🥛',
+        aciklama:'Günlük verimi '+mevcutVerim.toFixed(1)+'L → '+(mevcutVerim+4).toFixed(1)+'L artırmak.',
+        hesapla: function() {
+          if(!fin||!fin.rows) return null;
+          var ekGelir=0;
+          for(var j=0;j<fin.rows.length;j++) ekGelir += (fin.rows[j].lak||0)*4*30*(typeof gfv!=='undefined'?gfv('milkP'+(j%6))||18:18);
+          return ekGelir;
+        },
+        yapilmasi:'Genetik ıslah (yüksek verimli boğa), kaliteli kaba yem ve dengeli TMR rasyonu.'
+      },
+      {
+        baslik:'CR İnek +%10',
+        ikon:'🐄',
+        aciklama:'Konsepsiyon oranını %'+(Math.round(p0.crInek*100))+' → %'+(Math.round(p0.crInek*100)+10)+' çıkarmak.',
+        hesapla: function() {
+          var yeniSnaps = sim24(ini, (function(){var c={};for(var k in p0)c[k]=p0[k];c.crInek=Math.min(0.95,p0.crInek+0.10);return c;})());
+          var ekInek = (yeniSnaps[59].laktasyon||0) - (projData.snaps[59].laktasyon||0);
+          if(!fin||!fin.rows) return null;
+          var ortSutGelirPerInek = fin.rows.length>0 ? fin.rows[fin.rows.length-1].sutGelir/(fin.rows[fin.rows.length-1].lak||1) : 0;
+          return ekInek * ortSutGelirPerInek * 12;
+        },
+        yapilmasi:'Döl kontrolü, senkronizasyon protokolleri, iyi bir boğa programı ve üreme kayıtlarının takibi.'
+      },
+      {
+        baslik:'Yem Maliyeti -%10',
+        ikon:'🌽',
+        aciklama:'Besleme maliyetini %10 düşürmek — silaj kalitesi ve rasyon optimizasyonu.',
+        hesapla: function() {
+          if(!fin||!fin.rows) return null;
+          var topBesleme=0;
+          for(var j=0;j<fin.rows.length;j++) topBesleme+=fin.rows[j].besleme||0;
+          return topBesleme*0.10;
+        },
+        yapilmasi:'Kendi yem üretimi, silaj kalitesini artırma, rasyon dengeleme ve toplu alım anlaşmaları.'
+      },
+      {
+        baslik:'Reform Oranı -%5',
+        ikon:'♻️',
+        aciklama:'Yıllık reform oranını %'+(Math.round(p0.reform*100))+' → %'+(Math.round(p0.reform*100)-5)+" düşürmek.",
+        hesapla: function() {
+          var yeniSnaps = sim24(ini, (function(){var c={};for(var k in p0)c[k]=p0[k];c.reform=Math.max(0.05,p0.reform-0.05);return c;})());
+          var ekInek = (yeniSnaps[59].laktasyon||0) - (projData.snaps[59].laktasyon||0);
+          if(!fin||!fin.rows) return null;
+          var ortGelir = fin.rows.length>0?fin.rows[fin.rows.length-1].sutGelir/(fin.rows[fin.rows.length-1].lak||1):0;
+          return ekInek * ortGelir * 12;
+        },
+        yapilmasi:'Sağlık yönetimi iyileştirme, erken hastalık tespiti ve üreme verimliliğini artırma.'
+      },
+      {
+        baslik:'VWP 10 Gün Kısaltma',
+        ikon:'📅',
+        aciklama:'Gönüllü bekleme periyodunu '+(p0.vwpInek||50)+' → '+((p0.vwpInek||50)-10)+' güne indirmek.',
+        hesapla: function() {
+          var yeniSnaps = sim24(ini, (function(){var c={};for(var k in p0)c[k]=p0[k];c.vwpInek=Math.max(20,(p0.vwpInek||50)-10);return c;})());
+          var ekInek = (yeniSnaps[59].laktasyon||0) - (projData.snaps[59].laktasyon||0);
+          if(!fin||!fin.rows) return null;
+          var ortGelir = fin.rows.length>0?fin.rows[fin.rows.length-1].sutGelir/(fin.rows[fin.rows.length-1].lak||1):0;
+          return ekInek * ortGelir * 12;
+        },
+        yapilmasi:'Postpartum izleme, erken kızgınlık tespiti ve hedefli senkronizasyon protokolleri.'
+      },
+      {
+        baslik:'Tüm Parametreler Optimize',
+        ikon:'🚀',
+        aciklama:'CR +%10, reform -%5, VWP -10 gün, ölüm -%1 — tüm iyileştirmeler birlikte.',
+        hesapla: function() {
+          var pOpt={};
+          for(var k in p0) pOpt[k]=p0[k];
+          pOpt.crInek=Math.min(0.95,p0.crInek+0.10);
+          pOpt.reform=Math.max(0.05,p0.reform-0.05);
+          pOpt.vwpInek=Math.max(20,(p0.vwpInek||50)-10);
+          pOpt.olumInek=Math.max(0.005,p0.olumInek-0.01);
+          pOpt.olumBuz=Math.max(0.01,p0.olumBuz-0.01);
+          var yeniSnaps=sim24(ini,pOpt);
+          var ekInek=(yeniSnaps[59].laktasyon||0)-(projData.snaps[59].laktasyon||0);
+          if(!fin||!fin.rows) return null;
+          var ortGelir=fin.rows.length>0?fin.rows[fin.rows.length-1].sutGelir/(fin.rows[fin.rows.length-1].lak||1):0;
+          return ekInek*ortGelir*12 + (fin.rows.reduce(function(a,r){return a+(r.besleme||0);},0)*0.05);
+        },
+        yapilmasi:'Kapsamlı sürü yönetimi programı — üreme, besleme, sağlık ve genetik ıslah birlikte.'
+      }
+    ];
+
+    for(var si=0; si<senaryolar.length; si++) {
+      var sn=senaryolar[si];
+      var ekKar=null;
+      try { ekKar=sn.hesapla(); } catch(e){}
+      var renkCls = si===senaryolar.length-1 ? 'rgba(36,113,163,.06)' : 'rgba(45,122,58,.04)';
+      var kenarCls = si===senaryolar.length-1 ? 'rgba(36,113,163,.25)' : 'rgba(45,122,58,.2)';
+      senaryoHtml+='<div style="background:'+renkCls+';border:1.5px solid '+kenarCls+';border-radius:12px;padding:16px 18px;margin-bottom:12px;">';
+      senaryoHtml+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px;">';
+      senaryoHtml+='<span style="font-size:.78rem;font-weight:700;">'+sn.ikon+' '+sn.baslik+'</span>';
+      if(ekKar!==null) senaryoHtml+='<span style="font-size:.76rem;font-weight:700;color:'+(ekKar>=0?'var(--accent)':'var(--danger)')+';">60 ay ek gelir: '+fmtTL(ekKar)+'</span>';
+      else senaryoHtml+='<span style="font-size:.68rem;color:var(--muted);">Finansal analiz gerekli</span>';
+      senaryoHtml+='</div>';
+      senaryoHtml+='<div style="font-size:.73rem;color:var(--muted);margin-bottom:6px;">'+sn.aciklama+'</div>';
+      senaryoHtml+='<div style="font-size:.72rem;color:var(--text);"><strong>Yapılması gereken:</strong> '+sn.yapilmasi+'</div>';
+      senaryoHtml+='</div>';
+    }
+    senaryoHtml+='</div>';
+
+    svgWrap.innerHTML = svg + yorumHtml + yorumOzet + senaryoHtml;
   }, 50);
+}
+
+function saveApiKey() {
+  var inp = document.getElementById('anthropicApiKey');
+  var msg = document.getElementById('apiKeySaveMsg');
+  if(!inp) return;
+  var key = inp.value.trim();
+  if(!key || key.indexOf('sk-ant-') !== 0) {
+    if(msg) { msg.style.display='block'; msg.style.color='var(--danger)'; msg.textContent='Geçersiz key. "sk-ant-" ile başlamalıdır.'; }
+    return;
+  }
+  localStorage.setItem('g60apikey', key);
+  if(msg) { msg.style.display='block'; msg.style.color='var(--accent)'; msg.textContent='✓ Key kaydedildi. AI Yorumu Al butonuna basabilirsiniz.'; }
+}
+
+function toggleApiKeyVisible() {
+  var inp = document.getElementById('anthropicApiKey');
+  if(!inp) return;
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+function loadApiKey() {
+  var saved = localStorage.getItem('g60apikey');
+  if(saved) {
+    var inp = document.getElementById('anthropicApiKey');
+    if(inp) inp.value = saved;
+    var msg = document.getElementById('apiKeySaveMsg');
+    if(msg) { msg.style.display='block'; msg.style.color='var(--accent)'; msg.textContent='✓ Kayıtlı key yüklendi.'; }
+  }
 }
 
 function getAIYorum() {
   if(!projData.snaps || !projData.snaps.length) {
     showToast(i('raporAiOnce'), true); return;
   }
+
+  var apiKey = localStorage.getItem('g60apikey') || (document.getElementById('anthropicApiKey') ? document.getElementById('anthropicApiKey').value.trim() : '');
+  if(!apiKey || apiKey.indexOf('sk-ant-') !== 0) {
+    showToast('Önce API key kaydedin.', true);
+    var inp = document.getElementById('anthropicApiKey');
+    if(inp) inp.focus();
+    return;
+  }
+
   var contentEl = document.getElementById('aiYorumContent');
   var btnEl = document.getElementById('btnAIYorum');
   if(!contentEl) return;
@@ -4364,7 +4649,6 @@ function getAIYorum() {
   var fin = projData.finObj;
   var snaps = projData.snaps;
 
-  // 60. ay özet
   var snap60 = null;
   for(var k=snaps.length-1; k>=0; k--) { if(snaps[k].ay<=60){snap60=snaps[k];break;} }
   if(!snap60) snap60 = snaps[snaps.length-1]||{};
@@ -4402,7 +4686,12 @@ function getAIYorum() {
 
   fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
-    headers: {'Content-Type': 'application/json'},
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-allow-browser': 'true'
+    },
     body: JSON.stringify({
       model: 'claude-sonnet-4-20250514',
       max_tokens: 1000,
