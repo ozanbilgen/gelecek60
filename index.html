@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!--Gelecek60 v4.12 — BUG-1:60ay büyüme + BUG-2:SimFinBtn kaldır + BUG-3:SütTablosu + BUG-4:GiderNot + BUG-5:DiseaseCost + BUG-6:BeslemeElastikiyet + BUG-7:AIYorum(bekliyor) + BUG-8:DuyarlilikYorum(bekliyor) + BUG-9:EnflasyonKatsayisi(yem%30,sut%20,diger%25)-->
+<!--Gelecek60 v4.13 — BUG-9:EnflasyonKaldırıldı + CSS:DuplicateTemizlendi + UX-1:Animasyon+Kaydırma + UX-2:FormDoğrulama-->
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
@@ -155,7 +155,6 @@ input[type="checkbox"]{display:none;}
 .btn-ub.red{border-color:rgba(192,57,43,.3);color:var(--danger);}
 
 /* Finans panel */
-.fin-panel{background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:20px 22px;margin-bottom:18px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
 .fin-panel-title{font-family:"Barlow Condensed",sans-serif;font-size:.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:16px;padding-bottom:8px;border-bottom:1.5px solid rgba(184,134,11,.2);}
 .fin-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 @media(max-width:600px){.fin-grid{grid-template-columns:1fr;}}
@@ -357,27 +356,7 @@ input[type="checkbox"]{display:none;}
 .cur-btn{padding:5px 13px;background:transparent;border:none;color:var(--muted);cursor:pointer;font-family:"Barlow Condensed",sans-serif;font-size:.68rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all .2s;border-left:1.5px solid var(--border);}
 .cur-btn:first-child{border-left:none;}
 .cur-btn.active{background:var(--gold);color:#fff;}
-/* ═══ FİNANS MODÜLÜ v4.1 ═══ */
-.fin-toggle{display:flex;align-items:center;gap:12px;padding:14px 18px;background:#fff;border:2px solid var(--border);border-radius:12px;cursor:pointer;margin-bottom:18px;transition:all .2s;box-shadow:0 2px 8px rgba(0,0,0,.05);}
-.fin-toggle:hover{border-color:var(--gold);}
-.fin-toggle input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold);cursor:pointer;flex-shrink:0;}
-.fin-toggle label{font-family:"Barlow Condensed",sans-serif;font-size:.85rem;font-weight:700;letter-spacing:1px;color:var(--text);cursor:pointer;}
-.fin-toggle .fin-desc{font-size:.72rem;color:var(--muted);margin-top:2px;}
-.fin-panel{background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:20px 22px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.04);}
-.fin-panel-title{font-family:"Barlow Condensed",sans-serif;font-size:.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid rgba(184,134,11,.15);display:flex;align-items:center;gap:8px;}
-.fin-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.fin-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
-@media(max-width:640px){.fin-grid,.fin-grid-3{grid-template-columns:1fr;}}
-.fin-note-inline{font-size:.65rem;color:var(--muted);font-style:italic;margin-top:2px;font-weight:700;}
-.besi-panel{background:rgba(36,113,163,.04);border:1.5px solid rgba(36,113,163,.2);border-radius:10px;padding:14px;margin-top:10px;}
-.milk-table{width:100%;border-collapse:collapse;font-size:.76rem;}
-.milk-table th{padding:7px 10px;background:#f5f0e8;font-family:"Barlow Condensed",sans-serif;font-size:.62rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);text-align:center;border:1px solid var(--border);}
-.milk-table td{padding:5px 6px;border:1px solid var(--border);text-align:center;}
-.milk-table input[type=number]{width:80px;padding:5px 6px;font-size:.76rem;border:1px solid var(--border);border-radius:5px;background:#fafaf6;text-align:center;color:var(--text);}
-.milk-table input[type=number]:focus{outline:none;border-color:var(--accent);}
-.dis-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
-@media(max-width:640px){.dis-grid{grid-template-columns:1fr;}}
-.dis-row{display:flex;align-items:center;gap:8px;padding:8px 10px;background:#fafaf6;border:1px solid var(--border);border-radius:8px;}
+
 .dis-row label{flex:1;font-size:.73rem;color:var(--text);line-height:1.3;}
 .dis-row .dis-lit{font-size:.6rem;color:var(--muted);display:block;margin-top:1px;}
 .dis-row input{width:60px;padding:4px 7px;font-size:.76rem;background:#fff;border:1px solid var(--border);border-radius:5px;text-align:right;color:var(--text);}
@@ -436,27 +415,7 @@ input[type="checkbox"]{display:none;}
 .cur-btn{padding:5px 13px;background:transparent;border:none;color:var(--muted);cursor:pointer;font-family:"Barlow Condensed",sans-serif;font-size:.68rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all .2s;}
 .cur-btn.active{background:var(--gold);color:#fff;}
 .besi-panel{background:rgba(36,113,163,.04);border:1.5px solid rgba(36,113,163,.2);border-radius:10px;padding:14px;margin-top:10px;}
-/* ═══ FİNANS MODÜLÜ v4.1 ═══ */
-.fin-toggle{display:flex;align-items:center;gap:12px;padding:14px 18px;background:#fff;border:2px solid var(--border);border-radius:12px;cursor:pointer;margin-bottom:18px;transition:all .2s;box-shadow:0 2px 8px rgba(0,0,0,.05);}
-.fin-toggle:hover{border-color:var(--gold);}
-.fin-toggle input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold);cursor:pointer;flex-shrink:0;}
-.fin-toggle label{font-family:"Barlow Condensed",sans-serif;font-size:.85rem;font-weight:700;letter-spacing:1px;color:var(--text);cursor:pointer;}
-.fin-toggle .fin-desc{font-size:.72rem;color:var(--muted);margin-top:2px;}
-.fin-panel{background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:20px 22px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.04);}
-.fin-panel-title{font-family:"Barlow Condensed",sans-serif;font-size:.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid rgba(184,134,11,.15);display:flex;align-items:center;gap:8px;}
-.fin-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.fin-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
-@media(max-width:640px){.fin-grid,.fin-grid-3{grid-template-columns:1fr;}}
-.fin-note-inline{font-size:.65rem;color:var(--muted);font-style:italic;margin-top:2px;font-weight:700;}
-.besi-panel{background:rgba(36,113,163,.04);border:1.5px solid rgba(36,113,163,.2);border-radius:10px;padding:14px;margin-top:10px;}
-.milk-table{width:100%;border-collapse:collapse;font-size:.76rem;}
-.milk-table th{padding:7px 10px;background:#f5f0e8;font-family:"Barlow Condensed",sans-serif;font-size:.62rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);text-align:center;border:1px solid var(--border);}
-.milk-table td{padding:5px 6px;border:1px solid var(--border);text-align:center;}
-.milk-table input[type=number]{width:80px;padding:5px 6px;font-size:.76rem;border:1px solid var(--border);border-radius:5px;background:#fafaf6;text-align:center;color:var(--text);}
-.milk-table input[type=number]:focus{outline:none;border-color:var(--accent);}
-.dis-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
-@media(max-width:640px){.dis-grid{grid-template-columns:1fr;}}
-.dis-row{display:flex;align-items:center;gap:8px;padding:8px 10px;background:#fafaf6;border:1px solid var(--border);border-radius:8px;}
+
 .dis-row label{flex:1;font-size:.73rem;color:var(--text);line-height:1.3;}
 .dis-row .dis-lit{font-size:.6rem;color:var(--muted);display:block;margin-top:1px;}
 .dis-row input{width:60px;padding:4px 7px;font-size:.76rem;background:#fff;border:1px solid var(--border);border-radius:5px;text-align:right;color:var(--text);}
@@ -700,7 +659,7 @@ input.money-input{padding-left:24px !important;}
         <button class="cur-btn" id="curUSD" onclick="setCurrency('USD')">$ USD</button>
       </div>
       <button class="btn-ub" onclick="showQR()" style="padding:5px 10px;" title="QR">&#128248;</button>
-      <div class="badge">v4.12</div>
+      <div class="badge">v4.13</div>
     </div>
   </div>
 </header>
@@ -998,6 +957,15 @@ input.money-input{padding-left:24px !important;}
 </div>
 <!-- /tab_sim -->
 <div class="tab-content" id="tab_finans">
+<div class="main-grid">
+
+<!-- SOL PANEL: Form alanları -->
+<div class="panel">
+  <div class="panel-header">
+    <div class="panel-icon">💰</div>
+    <div class="panel-title" id="finPanelTitle">Finansal Analiz Parametreleri</div>
+  </div>
+  <div class="panel-body">
 
   <!-- Para Birimi & Yatırım -->
   <div class="fin-panel">
@@ -1168,7 +1136,23 @@ input.money-input{padding-left:24px !important;}
     <div id="finNote2" style="display:none;"></div>
   </div>
 
-<div id="finansResults"></div>
+  </div><!-- /panel-body -->
+</div><!-- /sol panel -->
+
+<!-- SAĞ PANEL: Hesaplama sonuçları -->
+<div class="panel" id="finResultsPanel">
+  <div id="finPlaceholder" class="panel-body">
+    <div class="results-placeholder">
+      <div class="placeholder-icon">💰</div>
+      <div class="placeholder-text">Parametreleri girin ve <strong>"Finansal Analiz Hesapla"</strong> butonuna tıklayın.</div>
+    </div>
+  </div>
+  <div id="finResultsBody" style="display:none;">
+    <div id="finansResults"></div>
+  </div>
+</div><!-- /sağ panel -->
+
+</div><!-- /main-grid -->
 </div><!-- /tab_finans -->
 
 <!-- ═══ TAB RAPOR ═══ -->
@@ -1321,6 +1305,49 @@ function hesapla() {
   var herd, params;
   var useSexedInek = cb('useSexedInek_' + activeScenario);
   var useSexedDuve = cb('useSexedDuve_' + activeScenario);
+
+  // UX-2: Akıllı form doğrulama
+  var warnBox = document.getElementById('warnBox');
+  var warnings = [];
+  var sc = activeScenario;
+  var crVal   = sc==='startup' ? g('s_crInek')   : g('crInek');
+  var refVal  = sc==='startup' ? g('s_reform')   : g('reform');
+  var olumVal = sc==='startup' ? g('s_olumInek') : g('olumInek');
+  var olumBuz = sc==='startup' ? g('s_olumBuz')  : g('olumBuz');
+  var vwpVal  = sc==='startup' ? g('s_vwpInek')  : g('vwpInek');
+  var kuruVal = sc==='startup' ? g('s_kuruGun')  : g('kuruGun');
+
+  if(crVal > 80)  warnings.push('⚠️ CR %'+crVal+' çok yüksek — gerçekçi aralık %45–%75.');
+  if(crVal < 20)  warnings.push('⚠️ CR %'+crVal+' çok düşük — işletme ineği tohumlamakta zorlanıyor.');
+  if(refVal > 35) warnings.push('⚠️ Reform %'+refVal+' çok yüksek — sürü hızla küçülür, max %25–%30 önerilir.');
+  if(olumVal > 8) warnings.push('⚠️ İnek ölüm %'+olumVal+' yüksek — normal aralık %2–%5.');
+  if(olumBuz > 15) warnings.push('⚠️ Buzağı ölüm %'+olumBuz+' yüksek — normal aralık %3–%8.');
+  if(vwpVal < 30) warnings.push('⚠️ VWP '+vwpVal+' gün çok kısa — doğum sonrası iyileşme için min 30–45 gün önerilir.');
+  if(kuruVal < 30) warnings.push('⚠️ Kuru dönem '+kuruVal+' gün çok kısa — sonraki laktasyon verimi düşer, min 45 gün önerilir.');
+  if(kuruVal > 100) warnings.push('⚠️ Kuru dönem '+kuruVal+' gün çok uzun — sürüde laktasyon oranı azalır, max 70 gün önerilir.');
+
+  if(warnBox) {
+    if(warnings.length > 0) {
+      warnBox.innerHTML = warnings.join('<br>');
+      warnBox.classList.add('show');
+    } else {
+      warnBox.classList.remove('show');
+    }
+  }
+
+  // Çok kritik hatada dur
+  if(crVal > 95 || refVal > 60 || olumVal > 25) {
+    if(btnEl) { btnEl.disabled=false; btnEl.style.opacity='1'; }
+    if(btn) btn.textContent = i('calcBtn');
+    showToast('Parametreler biyolojik sınırların dışında — lütfen kontrol edin.', true);
+    return;
+  }
+
+  // UX-1: Buton animasyonu
+  var btn = document.getElementById('calcBtnTxt');
+  var btnEl = btn ? btn.parentElement : null;
+  if(btnEl) { btnEl.disabled = true; btnEl.style.opacity = '0.7'; }
+  if(btn) btn.innerHTML = '<span class="ai-spin" style="display:inline-block;width:12px;height:12px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px;"></span> Hesaplanıyor...';
   if (activeScenario === 'startup') {
     var gd = g('s_gebeDuve');
     herd = {laktasyon:0,kuru:0,duveB:gd,buz02:0,buz36:0,dana714:0,boga:g('s_boga'),erkekDana:0,_startup:true};
@@ -1364,9 +1391,22 @@ function hesapla() {
   }
   var snaps = sim24(herd, params);
   projData = {snaps:snaps, params:params, initial:herd};
+
+  // UX-1: Butonu sıfırla
+  setTimeout(function(){
+    if(btnEl) { btnEl.disabled = false; btnEl.style.opacity = '1'; }
+    if(btn) btn.textContent = i('calcBtn');
+  }, 300);
+
   renderResults(snaps, herd, params);
   document.getElementById('placeholder').style.display = 'none';
   document.getElementById('results').style.display = 'block';
+
+  // UX-1: Sonuçlara kaydır
+  setTimeout(function(){
+    var results = document.getElementById('results');
+    if(results) results.scrollIntoView({behavior:'smooth', block:'start'});
+  }, 200);
 }
 
 // SIMULASYON GELECEK24 v1.1
@@ -2081,33 +2121,26 @@ function calcFinans(snaps, params){
     var buz02= snap.buz02||0;
     var top  = lak+kuru+buz02+(snap.buz36||0)+(snap.dana714||0)+(snap.duveB||0)+(snap.boga||0)+(snap.erkekDana||0);
 
-    // BUG-9: Enflasyon katsayilari — yem:%30 sut:%20 diger:%25 (yillik, gizli)
-    var yil = Math.floor(ay / 12);
-    var yemKat   = Math.pow(1.30, yil);
-    var sutKat   = Math.pow(1.20, yil);
-    var digerKat = Math.pow(1.25, yil);
-
+    // BUG-9 kaldırıldı: Enflasyon katsayıları devre dışı — mevcut fiyatlar sabit
     var mi=ay%6;
     var milkL=gfv("milkL"+mi)||28;
-    var milkP=(gfv("milkP"+mi)||18) * sutKat;
+    var milkP=gfv("milkP"+mi)||18;
 
     // ── GELİRLER ──
     var sutGelir     = lak*milkL*30*milkP;
-    var reformGelir  = ((snap.reformInek||0)+(snap.reformMaksLak||0)+(snap.reformMaksTohum||0))*reformKarkasGelir*sutKat;
-    var duveGelir    = (snap.satDuveAct||0)*duveFiyat*sutKat;
+    var reformGelir  = ((snap.reformInek||0)+(snap.reformMaksLak||0)+(snap.reformMaksTohum||0))*reformKarkasGelir;
+    var duveGelir    = (snap.satDuveAct||0)*duveFiyat;
 
     var erkekGelir=0, besiGelir=0, besiMaliyeti=0;
     if(!besiAktif){
-      erkekGelir = (snap.erkekBuzagi||0)*erkekFiy*sutKat;
+      erkekGelir = (snap.erkekBuzagi||0)*erkekFiy;
     } else {
-      // Besi: bu ay doğan erkekler besiSure ay sonra satılır
       var yeniErkek = snap.erkekBuzagi||0;
-      if(yeniErkek>0) besineBekleyen.push({bitisAy: ay+besiSure, sayi:yeniErkek, sutKatBitis: Math.pow(1.20, Math.floor((ay+besiSure)/12))});
-      // Bu ay biten besiler
+      if(yeniErkek>0) besineBekleyen.push({bitisAy: ay+besiSure, sayi:yeniErkek});
       for(var b=besineBekleyen.length-1;b>=0;b--){
         if(besineBekleyen[b].bitisAy===ay){
-          besiGelir += besineBekleyen[b].sayi*besiKarkasGelir*(besineBekleyen[b].sutKatBitis||sutKat);
-          var aylikBesiMal = besiAyMal>0 ? besiAyMal*yemKat : (konvFiy>0?konvFiy*yemKat*0.08:300*yemKat);
+          besiGelir += besineBekleyen[b].sayi*besiKarkasGelir;
+          var aylikBesiMal = besiAyMal>0 ? besiAyMal : (konvFiy>0?konvFiy*0.08:300);
           besiMaliyeti += besineBekleyen[b].sayi*besiSure*aylikBesiMal;
           besineBekleyen.splice(b,1);
         }
@@ -2136,10 +2169,8 @@ function calcFinans(snaps, params){
 
     var besleme;
     if(beslemeV > 0) {
-      // Kullanıcı laktasyon başına günlük değer girdi — ağırlıklı toplama uygula + enflasyon
-      besleme = beslemeV * agirlikliBasSay * 30 * yemKat;
+      besleme = beslemeV * agirlikliBasSay * 30;
     } else {
-      // Fallback: verime duyarlı elastikiyet ile besleme katsayısı
       var verimArtis = refL > 0 ? (milkL - refL) / refL : 0;
       var elastik;
       if(verimArtis <= 0) {
@@ -2151,27 +2182,24 @@ function calcFinans(snaps, params){
       }
       var beslemeKat = 0.694 * (1 + verimArtis * elastik);
       beslemeKat = Math.max(0.60, beslemeKat);
-      // milkP zaten sutKat ile büyütüldü — fallback enflasyonu otomatik yansıtır
       var beslemeGunluk = refL * milkP * beslemeKat;
       besleme = beslemeGunluk * agirlikliBasSay * 30;
     }
 
-    var iscilik  = iscV>0  ? iscV*top*digerKat   : toplamGelir*0.207;
-    var diger    = digerV>0? digerV*top*digerKat  : toplamGelir*0.083;
-    var ekipAmor = amortV>0? amortV*top*digerKat  : toplamGelir*0.015;
+    var iscilik  = iscV>0  ? iscV*top   : toplamGelir*0.207;
+    var diger    = digerV>0? digerV*top  : toplamGelir*0.083;
+    var ekipAmor = amortV>0? amortV*top  : toplamGelir*0.015;
 
-    // Sagmal amortisman — yem katsayısı ile büyütülür
-    var sagAmort = lak * calcSagmalAmortismanAylik(params||{}, snap) * yemKat;
+    var sagAmort = lak * calcSagmalAmortismanAylik(params||{}, snap);
 
-    // Sperma maliyeti — yem katsayısı ile büyütülür
     var topInekDoz = snap.toplamInekDoz||0;
     var topDuveDoz = snap.toplamDuveDoz||0;
-    var spermaMal  = (topInekDoz*konvFiy + topDuveDoz*konvFiy) * yemKat;
+    var spermaMal  = topInekDoz*konvFiy + topDuveDoz*konvFiy;
     var sexedInekDoz = (snap.sexedDozInekYil||0) + (snap.sexedOnceInekYil||0);
     var sexedDuveDoz = (snap.sexedDozDuveYil||0) + (snap.sexedOnceDuveYil||0);
-    spermaMal += (sexedInekDoz*(sexedFiy - konvFiy) + sexedDuveDoz*(sexedFiy - konvFiy)) * yemKat;
+    spermaMal += sexedInekDoz*(sexedFiy - konvFiy) + sexedDuveDoz*(sexedFiy - konvFiy);
 
-    // Hastalık maliyeti — yem/ilaç enflasyonu ile büyütülür
+    // Hastalık maliyeti
     var vetMal = 0;
     for(var ki=0;ki<COW_DIS_KEYS.length;ki++){
       var k=COW_DIS_KEYS[ki];
@@ -2183,7 +2211,6 @@ function calcFinans(snaps, params){
       var prev=(gfv(k)||DIS_DEFAULTS[k])/100;
       vetMal += buz02*prev*DIS_COSTS_USD[k]*rate/12;
     }
-    vetMal = vetMal * yemKat;
 
 
     var besiMalAy = besiAktif ? besiMaliyeti : 0;
@@ -3997,6 +4024,11 @@ function sifirlaFinans() {
   toggleBesi(false);
   var bc=document.getElementById("besiCheck");
   if(bc) bc.checked=false;
+  // Sağ paneli sıfırla
+  var ph = document.getElementById("finPlaceholder");
+  var rb = document.getElementById("finResultsBody");
+  if(ph) ph.style.display = "block";
+  if(rb) rb.style.display = "none";
   // Finansal sonuçları temizle
   var fr=document.getElementById("finansResults");
   if(fr) fr.innerHTML="";
@@ -4033,21 +4065,31 @@ function hesaplaFinans(){
   if(!projData.snaps || !projData.snaps.length){
     showToast(i("finHesaplaOnce"), true); return;
   }
-  // milkRows boşsa doldur
   var mr = document.getElementById("milkRows");
   if(mr && !mr.innerHTML) buildMilkRows();
+
+  // UX-1: Buton animasyonu
+  var finBtn = document.getElementById("finHesaplaBtn");
+  if(finBtn) { finBtn.disabled=true; finBtn.style.opacity='0.7'; finBtn.innerHTML='<span class="ai-spin" style="display:inline-block;width:12px;height:12px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px;"></span> Hesaplanıyor...'; }
+
   var p = typeof collectParams==="function" ? collectParams() : {};
   finansAcik = true;
   var finObj = calcFinans(projData.snaps, p);
-  if(finObj){ 
+  if(finObj){
     projData.finObj = finObj;
-    renderFinansResults(finObj); 
+    renderFinansResults(finObj);
+    var ph = document.getElementById("finPlaceholder");
+    var rb = document.getElementById("finResultsBody");
+    if(ph) ph.style.display = "none";
+    if(rb) rb.style.display = "block";
+    setTimeout(function(){ if(rb) rb.scrollIntoView({behavior:'smooth',block:'start'}); }, 200);
     showToast(i("finTamam"));
-    // Finansal sekmeye geç
-    switchMainTab("finans");
   } else {
     showToast("Finansal hesaplama başarısız. Lütfen süt fiyatı ve parametreleri kontrol edin.", true);
   }
+  setTimeout(function(){
+    if(finBtn){ finBtn.disabled=false; finBtn.style.opacity='1'; finBtn.innerHTML='&#128200; '+i('finHesapla'); }
+  }, 400);
 }
 
 
@@ -4077,6 +4119,10 @@ function downloadQR(){
       if(finObj){
         projData.finObj = finObj;
         renderFinansResults(finObj);
+        var ph = document.getElementById("finPlaceholder");
+        var rb = document.getElementById("finResultsBody");
+        if(ph) ph.style.display = "none";
+        if(rb) rb.style.display = "block";
       }
     }
   };
