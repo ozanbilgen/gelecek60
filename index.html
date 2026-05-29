@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!--Gelecek60 v4.10 — sim60 (24→60 ay) + finansal rapor i() vs loop-i cakismasi duzeltme + sekme gecisi-->
+<!--Gelecek60 v4.12 — BUG-1:60ay büyüme + BUG-2:SimFinBtn kaldır + BUG-3:SütTablosu + BUG-4:GiderNot + BUG-5:DiseaseCost + BUG-6:BeslemeElastikiyet(refL=6ayOrt,kat=0.694,elastik=0.15/0.18/0.25,altSinir=0.60,agirlikliDagitim)-->
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
@@ -530,6 +530,56 @@ input[type="checkbox"]{display:none;}
 .money-sym{position:absolute;left:10px;font-size:.85rem;font-weight:700;color:var(--muted);pointer-events:none;z-index:2;user-select:none;}
 .money-input{padding-left:24px !important;}
 input.money-input{padding-left:24px !important;}
+
+/* ═══ RAPOR SEKMESİ v4.11 ═══ */
+.main-tab.rapor-tab.active{color:var(--blue);border-bottom-color:var(--blue);}
+.rapor-section{background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:22px 24px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.rapor-section-title{font-family:"Barlow Condensed",sans-serif;font-size:.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid rgba(36,113,163,.15);display:flex;align-items:center;gap:8px;}
+.rapor-kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px;}
+@media(max-width:900px){.rapor-kpi-grid{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:600px){.rapor-kpi-grid{grid-template-columns:1fr 1fr;}}
+.rapor-kpi{background:#fafaf6;border:1.5px solid var(--border);border-radius:12px;padding:13px;text-align:center;}
+.rapor-kpi .rk-val{font-family:"Playfair Display",serif;font-size:1.35rem;font-weight:900;color:var(--blue);line-height:1;}
+.rapor-kpi .rk-val.green{color:var(--accent);}
+.rapor-kpi .rk-val.gold{color:var(--gold);}
+.rapor-kpi .rk-val.red{color:var(--danger);}
+.rapor-kpi .rk-lbl{font-size:.6rem;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-top:4px;}
+.rapor-2col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px;}
+@media(max-width:700px){.rapor-2col{grid-template-columns:1fr;}}
+.rapor-mini-card{background:#fafaf6;border:1px solid var(--border);border-radius:10px;padding:14px;}
+.rapor-mini-card h4{font-family:"Barlow Condensed",sans-serif;font-size:.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.rapor-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(0,0,0,.05);font-size:.76rem;}
+.rapor-row .rl{color:var(--muted);}
+.rapor-row .rv{font-weight:700;color:var(--text);}
+.rapor-row .rv.green{color:var(--accent);}
+.rapor-row .rv.gold{color:var(--gold);}
+.rapor-row .rv.red{color:var(--danger);}
+/* Duyarlılık grafiği */
+.sens-svg-wrap{overflow-x:auto;margin-top:10px;}
+.sens-svg-wrap svg{display:block;min-width:520px;}
+/* AI yorum kutusu */
+.ai-yorum-box{background:rgba(36,113,163,.04);border:1.5px solid rgba(36,113,163,.2);border-radius:12px;padding:18px 20px;font-size:.78rem;color:var(--text);line-height:1.9;position:relative;min-height:80px;}
+.ai-yorum-box .ai-label{font-family:"Barlow Condensed",sans-serif;font-size:.62rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.ai-yorum-box .ai-content{white-space:pre-wrap;}
+.ai-spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(36,113,163,.3);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.btn-rapor-pdf{display:flex;align-items:center;justify-content:center;gap:8px;background:rgba(36,113,163,.1);border:1.5px solid rgba(36,113,163,.35);border-radius:9px;color:var(--blue);font-family:"Barlow Condensed",sans-serif;font-size:.76rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:10px 22px;cursor:pointer;transition:all .2s;}
+.btn-rapor-pdf:hover{background:rgba(36,113,163,.2);}
+.btn-rapor-ai{display:flex;align-items:center;justify-content:center;gap:8px;background:rgba(45,122,58,.08);border:1.5px solid rgba(45,122,58,.3);border-radius:9px;color:var(--accent2);font-family:"Barlow Condensed",sans-serif;font-size:.76rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:10px 22px;cursor:pointer;transition:all .2s;margin-right:8px;}
+.btn-rapor-ai:hover{background:rgba(45,122,58,.18);}
+.sens-param-label{font-size:.7rem;color:var(--muted);text-anchor:end;dominant-baseline:middle;}
+.rapor-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:260px;gap:12px;color:var(--muted);text-align:center;}
+/* Print */
+@media print{
+  .auth-overlay,.admin-overlay,.modal-overlay,.user-bar,.main-tabs,.scenario-bar,.panel:first-child,
+  .btn-calc,.btn-reset,.btn-excel,.btn-rapor-pdf,.btn-rapor-ai,.toast,
+  #tab_sim,#tab_finans{display:none!important;}
+  #tab_rapor{display:block!important;}
+  body{background:#fff;font-size:11pt;}
+  .rapor-section{box-shadow:none;border:1px solid #ccc;break-inside:avoid;}
+  .rapor-kpi-grid{grid-template-columns:repeat(5,1fr);}
+  .rapor-2col{grid-template-columns:1fr 1fr;}
+}
 </style>
 </head>
 <body>
@@ -650,7 +700,7 @@ input.money-input{padding-left:24px !important;}
         <button class="cur-btn" id="curUSD" onclick="setCurrency('USD')">$ USD</button>
       </div>
       <button class="btn-ub" onclick="showQR()" style="padding:5px 10px;" title="QR">&#128248;</button>
-      <div class="badge">v4.10</div>
+      <div class="badge">v4.12</div>
     </div>
   </div>
 </header>
@@ -668,6 +718,7 @@ input.money-input{padding-left:24px !important;}
 <div class="main-tabs">
   <button class="main-tab active" data-tab="sim" id="tabBtnSim" onclick="switchMainTab('sim')">&#128290; S&#252;r&#252; Sim&#252;lasyonu</button>
   <button class="main-tab fin-tab" data-tab="finans" id="tabBtnFin" onclick="switchMainTab('finans')">&#128200; Finansal Analiz</button>
+  <button class="main-tab rapor-tab" data-tab="rapor" id="tabBtnRapor" onclick="switchMainTab('rapor')">&#128196; Rapor</button>
 </div>
 <div class="tab-content active" id="tab_sim">
 <div class="scenario-bar">
@@ -929,15 +980,6 @@ input.money-input{padding-left:24px !important;}
 </div>
 <!-- Finansal Sonuçlar -->
 
-<div style="margin:20px 0 10px;">
-  <button class="btn-calc" id="finSimHesaplaBtn" onclick="hesaplaSimVeFinans()" style="background:linear-gradient(135deg,var(--accent),#1a5c26);width:100%;">
-    🔗 <span id="birlikteBtn">Simülasyon + Finansal Analizi Birlikte Hesapla</span>
-  </button>
-</div>
-
-  </div>
-</div>
-
 <div class="panel" id="resultsPanel">
   <div id="placeholder" class="panel-body">
     <div class="results-placeholder">
@@ -982,7 +1024,7 @@ input.money-input{padding-left:24px !important;}
 
   <!-- Süt Geliri -->
   <div class="fin-panel">
-    <div class="fin-panel-title" id="finMilkTitle">🥛 Süt Geliri — 6 Aylık Fiyat Döngüsü</div>
+    <div class="fin-panel-title" id="finMilkTitle">🥛 Son 6 Aylık Süt ve Süt Fiyatı Döngüsü</div>
     <div style="font-size:.72rem;color:var(--muted);margin-bottom:10px;" id="finMilkDesc">
       Devlet desteği ve kalite primi dahil toplam alım fiyatını girin.
     </div>
@@ -1056,17 +1098,17 @@ input.money-input{padding-left:24px !important;}
       <div class="input-group">
         <label data-i18n="finBesleme">Besleme (<span class="cur-sym">₺</span>/baş/gün)</label>
         <input type="text" inputmode="numeric" id="finBesleme" class="money-input" data-money="true" placeholder="Opsiyonel" onfocus="this.select()">
-        <div class="fin-note-inline" id="finBeslemeNote">boş = Türkiye verisi: gelirin %67'si</div>
+        <div class="fin-note-inline" id="finBeslemeNote">boş = fallback: süt verimi × fiyat × %69.4 (PNL referans, elastikiyet kademeli)</div>
       </div>
       <div class="input-group">
         <label data-i18n="finIscilik">İşçilik (<span class="cur-sym">₺</span>/baş/ay)</label>
         <input type="text" inputmode="numeric" id="finIscilik" class="money-input" data-money="true" placeholder="Opsiyonel" onfocus="this.select()">
-        <div class="fin-note-inline" id="finIscNote">boş = Türkiye verisi: %23.5</div>
+        <div class="fin-note-inline" id="finIscNote">boş = fallback: toplam gelirin %20.7'si</div>
       </div>
       <div class="input-group">
         <label data-i18n="finDiger">Enerji+Bakım+İşletme (<span class="cur-sym">₺</span>/baş/ay)</label>
         <input type="text" inputmode="numeric" id="finDiger" class="money-input" data-money="true" placeholder="Opsiyonel" onfocus="this.select()">
-        <div class="fin-note-inline" id="finDigerNote">boş = Türkiye verisi: %9.4</div>
+        <div class="fin-note-inline" id="finDigerNote">boş = fallback: toplam gelirin %8.3'ü</div>
       </div>
       <div class="input-group">
         <label data-i18n="finAmort">Ekipman Amortismanı (<span class="cur-sym">₺</span>/baş/ay)</label>
@@ -1119,12 +1161,71 @@ input.money-input{padding-left:24px !important;}
     <button class="btn-reset" onclick="sifirlaFinans()" style="width:auto;padding:10px 20px;">↺ Finansal Sıfırla</button>
   </div>
   <div style="font-size:.72rem;color:var(--muted);margin-bottom:16px;line-height:1.8;">
-    <div id="finNote1">ⓘ <strong>Finansal Analiz Hesapla:</strong> Sadece finansal sonuçları günceller.</div>
-    <div id="finNote2">ⓘ <strong>Simülasyon + Finansal:</strong> Önce sürü simülasyonu çalışır, ardından finansal analiz eklenir.</div>
+    <div id="finNote1">ⓘ <strong>Finansal Analiz Hesapla:</strong> Önce simülasyon sekmesinde sürü hesaplaması yapın, ardından burada finansal sonuçları güncelleyin.</div>
+    <div id="finNote2" style="display:none;"></div>
   </div>
 
 <div id="finansResults"></div>
 </div><!-- /tab_finans -->
+
+<!-- ═══ TAB RAPOR ═══ -->
+<div class="tab-content" id="tab_rapor">
+<div id="raporPlaceholder" class="rapor-placeholder">
+  <div style="font-size:40px;opacity:.3;">&#128196;</div>
+  <div style="font-size:.84rem;max-width:280px;line-height:1.7;" id="raporPlaceholderTxt">Raporu görüntülemek için önce simülasyon hesaplaması yapın.</div>
+</div>
+<div id="raporBody" style="display:none;">
+  <!-- Butonlar -->
+  <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:20px;">
+    <button class="btn-rapor-ai" id="btnAIYorum" onclick="getAIYorum()">&#129302; AI Yorumu Al</button>
+    <button class="btn-rapor-pdf" onclick="window.print()">&#128424; PDF / Yazdır</button>
+    <div style="font-size:.68rem;color:var(--muted);margin-left:4px;" id="raporPdfNote">Print &rarr; PDF olarak kaydedin</div>
+  </div>
+
+  <!-- BÖLÜM 1: Mevcut Durum Özeti -->
+  <div class="rapor-section">
+    <div class="rapor-section-title">&#128200; <span id="raporSec1Title">Mevcut Durum Özeti</span></div>
+    <div class="rapor-kpi-grid" id="raporKpiGrid"></div>
+    <div class="rapor-2col">
+      <div class="rapor-mini-card">
+        <h4 id="raporSuruBasTitle">Sürü Hareketleri (60 Ay)</h4>
+        <div id="raporSuruRows"></div>
+      </div>
+      <div class="rapor-mini-card">
+        <h4 id="raporFinBasTitle">Finansal Özet (60 Ay)</h4>
+        <div id="raporFinRows"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BÖLÜM 2: Duyarlılık Analizi -->
+  <div class="rapor-section">
+    <div class="rapor-section-title">&#128200; <span id="raporSec2Title">Duyarlılık Analizi</span></div>
+    <div style="font-size:.73rem;color:var(--muted);margin-bottom:14px;line-height:1.7;" id="raporSensDesc">
+      6 temel parametre ±3 seviyede değiştirilerek 60. ay toplam inek sayısına etkisi hesaplanmaktadır.
+    </div>
+    <div class="sens-svg-wrap" id="raporSensSvg">
+      <div style="display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.76rem;padding:20px 0;">
+        <span class="ai-spin"></span> <span id="raporSensCalcTxt">Duyarlılık hesaplanıyor...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- BÖLÜM 3: AI Yorumu -->
+  <div class="rapor-section">
+    <div class="rapor-section-title">&#129302; <span id="raporSec3Title">AI Yorumu</span></div>
+    <div style="font-size:.7rem;color:var(--muted);margin-bottom:12px;" id="raporAiNote">
+      &#9888; Bu özellik internet bağlantısı gerektirir. Yorum Türkçe ve İngilizce olarak üretilir.
+    </div>
+    <div class="ai-yorum-box">
+      <div class="ai-label">&#129302; <span id="aiYorumLabel">Yapay Zeka Analizi</span></div>
+      <div class="ai-content" id="aiYorumContent" style="color:var(--muted);font-style:italic;">
+        "AI Yorumu Al" butonuna basarak işletme özelinde yorum alabilirsiniz.
+      </div>
+    </div>
+  </div>
+</div><!-- /raporBody -->
+</div><!-- /tab_rapor -->
 </div><!-- /container -->
 </div><!-- /mainApp -->
 
@@ -1515,7 +1616,7 @@ function renderResults(snaps, initial, p) {
   var html = '';
 
   html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">'
-    + '<span style="background:rgba(93,191,110,.15);color:var(--accent);font-size:.66rem;font-weight:700;padding:3px 10px;border-radius:20px;">🔬 Gelecek60 v4.1 · Aylık Sim · 60 Ay</span>'
+    + '<span style="background:rgba(93,191,110,.15);color:var(--accent);font-size:.66rem;font-weight:700;padding:3px 10px;border-radius:20px;">🔬 Gelecek60 v4.12 · Aylık Sim · 60 Ay</span>'
     + '<button class="btn-excel" onclick="exportExcel()">📥 Excele Aktar (.xlsx)</button></div>';
 
   // [FIX-9] Startup notu
@@ -1613,9 +1714,9 @@ function renderResults(snaps, initial, p) {
 }
 
 function generateReport(snaps, initial, p) {
-  var ay12=snaps[11]||{}, ay24=snaps[23]||{};
-  var initTotal=getTotal(initial), t24=getTotal(ay24);
-  var buyume24=(t24-initTotal)/Math.max(initTotal,1)*100;
+  var ay12=snaps[11]||{}, ay24=snaps[23]||{}, ay60=snaps[59]||snaps[snaps.length-1]||{};
+  var initTotal=getTotal(initial), t60=getTotal(ay60);
+  var buyume24=(t60-initTotal)/Math.max(initTotal,1)*100;
   var crInekPct=p.crInek*100, crDuvePct=p.crDuve*100;
   var vwp=p.vwpInek||50, bekAcik=vwp+(Math.max(1,p.spermaInek||2.2)-1)*21;
   var farkAcik=p.acikGunInek-bekAcik;
@@ -1646,9 +1747,9 @@ function generateReport(snaps, initial, p) {
   if(ba>=390&&ba<=410) items.push({cls:"ok",text:"Tahmini buzağılama aralığı: "+ba+" gün — Optimum."});
   else if(ba<390) items.push({cls:"warn",text:"Tahmini buzağılama aralığı: "+ba+" gün — Kısa (VWP veya CR gözden geçirin)."});
   else items.push({cls:"bad",text:"Tahmini buzağılama aralığı: "+ba+" gün — Uzun (açık gün veya CR sorunu)!"});
-  if(buyume24>10) items.push({cls:"ok",text:"24 aylık büyüme: %"+buyume24.toFixed(1)+" — Sağlıklı."});
-  else if(buyume24>0) items.push({cls:"warn",text:"24 aylık büyüme: %"+buyume24.toFixed(1)+" — Yavaş."});
-  else items.push({cls:"bad",text:"24 aylık büyüme: %"+buyume24.toFixed(1)+" — Sürü küçülüyor!"});
+  if(buyume24>10) items.push({cls:"ok",text:"60 aylık büyüme: %"+buyume24.toFixed(1)+" — Sağlıklı."});
+  else if(buyume24>0) items.push({cls:"warn",text:"60 aylık büyüme: %"+buyume24.toFixed(1)+" — Yavaş."});
+  else items.push({cls:"bad",text:"60 aylık büyüme: %"+buyume24.toFixed(1)+" — Sürü küçülüyor!"});
   var okC=0,wC=0,bC=0;
   for(var i=0;i<items.length;i++){if(items[i].cls==="ok")okC++;else if(items[i].cls==="warn")wC++;else if(items[i].cls==="bad")bC++;}
   var score=Math.round((okC/items.length)*100);
@@ -1694,7 +1795,7 @@ function exportExcel() {
     ["TOPLAM SPERMA","—"].concat(snaps.map(function(s){return Math.round((s.toplamInekDoz||0)+(s.toplamDuveDoz||0));}))
   ];
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(d3),"Sperma");
-  XLSX.writeFile(wb,"Gelecek60_v4.6.xlsx");
+  XLSX.writeFile(wb,"Gelecek60_v4.12.xlsx");
 }
 
 // SIFIRLA
@@ -1781,9 +1882,9 @@ function buildYorumAlani(rows, totGelir, totGider, totKar, totSut, totErkek, tot
 
 
 // ═══════════════════════════════════════════════════════
-// GELECEK60 v4.1 — Finansal Analiz Modülü
+// GELECEK60 v4.12 — Finansal Analiz Modülü
 // Kaynak: Türkiye işletmeleri finansal veriler ortalaması
-// Maliyet oranları: Besleme %67, İşçilik %23.5, EkipAmort %1.5, Diğer %9.4
+// Maliyet oranları (fallback): Besleme %55.8, İşçilik %20.7, EkipAmort %1.5, Diğer %8.3
 // Sağmal amortisman: simülasyon parametrelerinden otomatik
 // Hastalık maliyetleri: literatür bazlı USD → TL
 // ═══════════════════════════════════════════════════════
@@ -1792,8 +1893,17 @@ var currentCurrency = localStorage.getItem("g60cur") || "TL";
 var finansAcik = false;
 
 var DIS_COSTS_USD = {
-  dKet:289, dRet:389, dHipo:334, dLDA:432, dRDA:640,
-  dTop:333, dMet:386, dOvk:179, dBuzI:42, dBuzP:65
+  // Kaynak: Liang et al. 2017, J Dairy Sci | Raboisson et al. 2015, J Dairy Sci | Cha et al. 2010, J Dairy Sci
+  dKet:289,  // Klinik Ketozis — Raboisson et al. 2015 ($289/vaka, tedavi+verim kaybı)
+  dRet:389,  // Retensio Secundinarum — Liang et al. 2017 ($389/vaka)
+  dHipo:334, // Hipokalsemi — Liang et al. 2017 ($334/vaka)
+  dLDA:432,  // Sol Deplase Abomasus — Cha et al. 2010 ($432/vaka)
+  dRDA:640,  // Sağ Deplase Abomasus — Liang et al. 2017 ($640/vaka)
+  dTop:200,  // Klinik Topallık — Cha et al. 2010 ($177 güncellendi $200, tedavi+verim+üreme kaybı)
+  dMet:262,  // Klinik Metritis — Liang et al. 2017 ($262/vaka, multipar ort.)
+  dOvk:179,  // Ovaryum Kistleri — Liang et al. 2017 ($179/vaka)
+  dBuzI:42,  // Buzağı İshali — genel literatür ($42/vaka)
+  dBuzP:65   // Buzağı Pnömonisi — genel literatür ($65/vaka)
 };
 var DIS_DEFAULTS = {
   dKet:5, dRet:8, dHipo:5, dLDA:3, dRDA:0.5,
@@ -1831,14 +1941,14 @@ function toggleBesi(checked){
 
 function buildMilkRows(){
   var tbody=document.getElementById("milkRows"); if(!tbody) return;
-  var months=["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran"];
+  var months=["1. Ay","2. Ay","3. Ay","4. Ay","5. Ay","6. Ay"];
   var defL=[28,26,24,25,27,29];
   var defP=[18,18,18,18,18,18];
   var html="";
   for(var i=0;i<6;i++){
     html+="<tr><td style=\"font-weight:600;\">"+months[i]+"</td>"
-      +"<td><input type=\"number\" id=\"milkL"+i+"\" value=\""+defL[i]+"\" min=\"0\" step=\"0.5\"></td>"
-      +"<td><input type=\"number\" id=\"milkP"+i+"\" value=\""+defP[i]+"\" min=\"0\" step=\"0.1\"></td>"
+      +"<td><input type=\"number\" id=\"milkL"+i+"\" value=\""+defL[i]+"\" min=\"0\" step=\"0.5\" onfocus=\"this.select()\"></td>"
+      +"<td><input type=\"number\" id=\"milkP"+i+"\" value=\""+defP[i]+"\" min=\"0\" step=\"0.1\" onfocus=\"this.select()\"></td>"
       +"</tr>";
   }
   tbody.innerHTML=html;
@@ -1856,10 +1966,13 @@ function calcSagmalAmortismanAylik(params, snap){
   // 2. Gebelik süresi besleme (9 ay × baş/gün besleme)
   var beslemeGunluk = getMoneyValue("finBesleme") || 0;
   if(beslemeGunluk === 0){
-    // Otomatik: aylık süt gelirinin %67'si / 30 gün / laktasyon ineği başına
-    var aylikSutGelir = calcAylikSutGelir(snap, 0);
+    // Fallback: 6 aylık ortalama verim bazlı, %69.4 referans, elastikiyet 0.18 (orta verim)
+    var refLSag = 0;
+    for(var ri=0; ri<6; ri++) refLSag += (gfv("milkL"+ri)||28);
+    refLSag = refLSag / 6;
+    var milkPSag = gfv("milkP0")||18;
     var lakInek = snap.laktasyon||1;
-    beslemeGunluk = lakInek>0 ? (aylikSutGelir*0.558/30/lakInek) : 300;
+    beslemeGunluk = refLSag * milkPSag * 0.694;
   }
   var gebBesleme = 9*30*beslemeGunluk*0.7; // düve gebelikte %70 inek maliyeti
 
@@ -1909,9 +2022,14 @@ function calcFinans(snaps, params){
   var besiKarkasGelir   = besiAgir*0.55*karkasKg;
 
   var results = [];
-  var besineBekleyen = []; // {ay: besiBaslangicAy, sayi: n}
+  var besineBekleyen = [];
   var kumKar = 0;
   var geriDonumAy = -1;
+
+  // BUG-6 Final: 6 aylık ortalama verim — işletmenin referans verimi
+  var refLSum = 0;
+  for(var ri=0; ri<6; ri++) refLSum += (gfv("milkL"+ri)||28);
+  var refL = refLSum / 6;
 
   for(var ay=0;ay<snaps.length;ay++){
     var snap = snaps[ay]||{};
@@ -1956,7 +2074,39 @@ function calcFinans(snaps, params){
     var digerV   = getMoneyValue("finDiger");
     var amortV   = getMoneyValue("finAmort");
 
-    var besleme  = beslemeV>0 ? beslemeV*top*30 : toplamGelir*0.558;
+    // BUG-6 Final: Ağırlıklı baş/gün besleme — verime duyarlı elastikiyet
+    // Referans: PNL-3 Türkiye büyük işletme grubu, %69.4 süt geliri bazlı
+    // Katsayılar: lak×1.0, kuru×0.60, düve×0.50, dana×0.35, buz36×0.20, buz02×0.10
+    var lakN   = snap.laktasyon||0;
+    var kuruN  = snap.kuru||0;
+    var duveN  = snap.duveB||0;
+    var danaN  = snap.dana714||0;
+    var buz36N = snap.buz36||0;
+    var buz02N = snap.buz02||0;
+    var agirlikliBasSay = lakN*1.0 + kuruN*0.60 + duveN*0.50 + danaN*0.35 + buz36N*0.20 + buz02N*0.10;
+
+    var besleme;
+    if(beslemeV > 0) {
+      // Kullanıcı laktasyon başına günlük değer girdi — ağırlıklı toplama uygula
+      besleme = beslemeV * agirlikliBasSay * 30;
+    } else {
+      // Fallback: verime duyarlı elastikiyet ile besleme katsayısı
+      var verimArtis = refL > 0 ? (milkL - refL) / refL : 0;
+      var elastik;
+      if(verimArtis <= 0) {
+        elastik = 0.15;       // düşük/referans altı verim: maliyet yavaş düşer
+      } else if(milkL <= 32) {
+        elastik = 0.18;       // orta verim aralığı
+      } else {
+        elastik = 0.25;       // yüksek verim: azalan marjinal getiri devreye girer
+      }
+      var beslemeKat = 0.694 * (1 + verimArtis * elastik);
+      beslemeKat = Math.max(0.60, beslemeKat); // alt sınır %60 (biyolojik minimum)
+      // Laktasyon günlük maliyet → ağırlıklı tüm sürüye yansıt
+      var beslemeGunluk = refL * milkP * beslemeKat;
+      besleme = beslemeGunluk * agirlikliBasSay * 30;
+    }
+
     var iscilik  = iscV>0     ? iscV*top         : toplamGelir*0.207;
     var diger    = digerV>0   ? digerV*top        : toplamGelir*0.083;
     var ekipAmor = amortV>0   ? amortV*top        : toplamGelir*0.015;
@@ -1965,9 +2115,15 @@ function calcFinans(snaps, params){
     var sagAmort = lak * calcSagmalAmortismanAylik(params||{}, snap);
 
     // Sperma maliyeti
-    var konvDoz  = snap.toplamInekDoz||0;
-    var sexedDoz = snap.toplamSexedDoz||0;
-    var spermaMal= konvDoz*konvFiy + sexedDoz*sexedFiy;
+    // toplamInekDoz = konvDozInek + sexedDozInek + sexedOnceInek (inek tüm dozlar)
+    // toplamDuveDoz = konvDozDuve + sexedDozDuve + sexedOnceDuve (düve tüm dozlar)
+    var topInekDoz = snap.toplamInekDoz||0;
+    var topDuveDoz = snap.toplamDuveDoz||0;
+    var spermaMal  = topInekDoz*konvFiy + topDuveDoz*konvFiy;
+    // Sexed sperma: fiyat farkı — sexed dozlar için ek maliyet (sexedFiy - konvFiy)
+    var sexedInekDoz = (snap.sexedDozInekYil||0) + (snap.sexedOnceInekYil||0);
+    var sexedDuveDoz = (snap.sexedDozDuveYil||0) + (snap.sexedOnceDuveYil||0);
+    spermaMal += sexedInekDoz*(sexedFiy - konvFiy) + sexedDuveDoz*(sexedFiy - konvFiy);
 
     // Hastalık maliyeti
     var vetMal = 0;
@@ -2132,7 +2288,7 @@ function renderFinansResults(finObj){
   gelirKalemler.forEach(function(g){
     var pct=totGelir>0?g[1]/totGelir*100:0;
     html+="<div style=\"margin-bottom:8px;\"><div style=\"display:flex;justify-content:space-between;font-size:.72rem;margin-bottom:3px;\"><span>"+g[0]+"</span><span>%"+pct.toFixed(1)+" · "+fmtM(g[1])+"</span></div>"
-      +"<div style=\"background:#f0ece0;border-radius:4px;height:14px;\"><div style=\"width:"+Math.min(pct,100)+"%%;height:100%;border-radius:4px;background:"+g[2]+";transition:width .4s;\"></div></div></div>";
+      +"<div style=\"background:#f0ece0;border-radius:4px;height:14px;\"><div style=\"width:"+Math.min(pct,100)+"%"+" ;height:100%;border-radius:4px;background:"+g[2]+";transition:width .4s;\"></div></div></div>";
   });
   html+="</div>";
   // Gider dağılımı
@@ -2142,7 +2298,7 @@ function renderFinansResults(finObj){
   giderKalemler.forEach(function(g){
     var pct=totGider>0?g[1]/totGider*100:0;
     html+="<div style=\"margin-bottom:8px;\"><div style=\"display:flex;justify-content:space-between;font-size:.72rem;margin-bottom:3px;\"><span>"+g[0]+"</span><span>%"+pct.toFixed(1)+"</span></div>"
-      +"<div style=\"background:#f0ece0;border-radius:4px;height:14px;\"><div style=\"width:"+Math.min(pct,100)+"%%;height:100%;border-radius:4px;background:rgba(192,57,43,.5);\"></div></div></div>";
+      +"<div style=\"background:#f0ece0;border-radius:4px;height:14px;\"><div style=\"width:"+Math.min(pct,100)+"%"+" ;height:100%;border-radius:4px;background:rgba(192,57,43,.5);\"></div></div></div>";
   });
   html+="</div></div>";
 
@@ -2255,12 +2411,13 @@ function renderFinansResults(finObj){
 
   // Gider Detayı
   html+="<div id=\"finTGider\" style=\"display:none;overflow-x:auto;\"><table class=\"fin-table\"><thead><tr>"
-    +"<th>Ay</th><th>Besleme</th><th>İşçilik</th><th>Sğ.Amort</th><th>Ekip.Amort</th><th>Sperma</th><th>Veteriner</th><th>İlaç</th><th>Toplam</th>"
+    +"<th>Ay</th><th>Besleme</th><th>İşçilik</th><th>Sğ.Amort</th><th>Ekip.Amort</th><th>Sperma</th><th>Veteriner</th><th>Diğer</th><th>Toplam</th>"
     +"</tr></thead><tbody>";
   rows.forEach(function(r){
     html+="<tr><td>"+r.ay+"</td><td>"+fmtM(r.besleme)+"</td><td>"+fmtM(r.iscilik)+"</td>"
       +"<td>"+fmtM(r.sagAmort)+"</td><td>"+fmtM(r.ekipAmor)+"</td>"
       +"<td>"+fmtM(r.spermaMal)+"</td><td>"+fmtM(r.vetMal)+"</td>"
+      +"<td>"+fmtM(r.diger+r.besiMal+r.taksit)+"</td>"
       +"<td><strong>"+fmtM(r.toplamGider)+"</strong></td></tr>";
   });
   html+="</tbody></table></div>";
@@ -2290,7 +2447,7 @@ function finTab(tab,btn){
 </script>
 <script>
 // ═══════════════════════════════════════════════
-// GELECEK60 v4.3 — TAM İ18N SİSTEMİ
+// GELECEK60 v4.12 — TAM İ18N SİSTEMİ
 // Tüm metinler buradan yönetilir — TR/EN
 // ═══════════════════════════════════════════════
 
@@ -2376,7 +2533,7 @@ var I18N = {
     finUsdRate: "USD/TL Kur",
     finYatirim: "Toplam Yatırım",
     finTaksit: "Aylık Kredi Taksiti",
-    finMilkTitle: "Süt Geliri — 6 Aylık Fiyat Döngüsü",
+    finMilkTitle: "Son 6 Aylık Süt ve Süt Fiyatı Döngüsü",
     finMilkDesc: "Devlet desteği ve kalite primi dahil toplam alım fiyatını girin.",
     finMilkMonth: "Ay",
     finMilkLitre: "Süt (L/baş/gün)",
@@ -2392,11 +2549,11 @@ var I18N = {
     finGiderTitle: "Giderler",
     finGiderDesc: "Boş bırakılan kalemler Türkiye çiftlik verisi katsayılarıyla hesaplanır",
     finBesleme: "Besleme (baş/gün)",
-    finBeslemeNote: "boş = Türkiye verisi: gelirin %67'si",
+    finBeslemeNote: "boş = fallback: süt verimi × fiyat × %69.4 (PNL referans, elastikiyet kademeli)",
     finIscilik: "İşçilik (baş/ay)",
-    finIscNote: "boş = Türkiye verisi: %23.5",
+    finIscNote: "boş = fallback: toplam gelirin %20.7'si",
     finDiger: "Enerji+Bakım+İşletme (baş/ay)",
-    finDigerNote: "boş = Türkiye verisi: %9.4",
+    finDigerNote: "boş = fallback: toplam gelirin %8.3'ü",
     finAmort: "Ekipman Amortismanı (baş/ay)",
     finAmortNote: "boş = Türkiye verisi: %1.5",
     finKonvSperma: "Konvansiyonel Sperma (doz fiyatı)",
@@ -2566,6 +2723,48 @@ var I18N = {
     lblReformP: "Reform",
     lblMaksLakP: "Maks. Laktasyon",
     lblMaksTohumP: "Maks. Tohumlama",
+    // Rapor sekmesi
+    tabRapor: "Rapor",
+    raporPlaceholder: "Raporu görüntülemek için önce simülasyon hesaplaması yapın.",
+    raporSec1: "Mevcut Durum Özeti",
+    raporSec2: "Duyarlılık Analizi",
+    raporSec3: "AI Yorumu",
+    raporSuruBas: "Sürü Hareketleri (60 Ay)",
+    raporFinBas: "Finansal Özet (60 Ay)",
+    raporSensDesc: "6 temel parametre ±3 seviyede değiştirilerek 60. ay toplam inek sayısına etkisi hesaplanmaktadır.",
+    raporSensCalc: "Duyarlılık hesaplanıyor...",
+    raporAiNote: "⚠ Bu özellik internet bağlantısı gerektirir. Yorum Türkçe ve İngilizce olarak üretilir.",
+    raporAiLabel: "Yapay Zeka Analizi",
+    raporAiDefault: '"AI Yorumu Al" butonuna basarak işletme özelinde yorum alabilirsiniz.',
+    raporAiBtn: "AI Yorumu Al",
+    raporPdfBtn: "PDF / Yazdır",
+    raporPdfNote: "Print → PDF olarak kaydedin",
+    raporAiOnce: "Önce simülasyon hesaplaması yapın.",
+    raporAiHata: "AI yorumu alınamadı. İnternet bağlantınızı kontrol edin.",
+    raporKpiBasInek: "Başlangıç İnek",
+    raporKpiBitInek: "60.Ay İnek",
+    raporKpiToplam60: "60.Ay Toplam",
+    raporKpiBuzAralik: "Buzağılama Aralığı",
+    raporKpiCr: "Konsepsiyon Oranı",
+    raporKpiReform: "Yıllık Reform",
+    raporKpiNetKar: "60 Ay Net K/Z",
+    raporKpiRoi: "60 Ay ROI",
+    raporKpiBasabas: "Başabaş",
+    raporKpiMarj: "Ort. Net Marjı",
+    raporSuruBuzagilar: "Toplam Doğan Buzağı",
+    raporSuruDuveler: "Düveye Geçiş",
+    raporSuruReform: "Toplam Reform",
+    raporSuruOlum: "Toplam Ölüm",
+    raporSuruSperma: "Toplam Konv. Sperma",
+    raporSuruSexed: "Toplam Sexed Sperma",
+    raporFinSut: "Toplam Süt Geliri",
+    raporFinHayvan: "Toplam Hayvan Geliri",
+    raporFinGider: "Toplam Gider",
+    raporFinNet: "Net Kar/Zarar",
+    raporFinYatirim: "Toplam Yatırım",
+    raporSensEtki: "60.Ay Toplam İnek Etkisi",
+    raporSensBase: "Baz",
+    raporFinHesaplanmadi: "Finansal analiz henüz hesaplanmadı.",
   },
   en: {
     // Auth
@@ -2647,7 +2846,7 @@ var I18N = {
     finUsdRate: "USD/TRY Rate",
     finYatirim: "Total Investment",
     finTaksit: "Monthly Loan Payment",
-    finMilkTitle: "Milk Revenue — 6-Month Price Cycle",
+    finMilkTitle: "Last 6-Month Milk & Price Cycle",
     finMilkDesc: "Enter the total purchase price including government support and quality premium.",
     finMilkMonth: "Month",
     finMilkLitre: "Milk (L/cow/day)",
@@ -2663,11 +2862,11 @@ var I18N = {
     finGiderTitle: "Expenses",
     finGiderDesc: "Empty fields use Turkey farm data coefficients",
     finBesleme: "Feed (head/day)",
-    finBeslemeNote: "empty = Turkey data: 67% of revenue",
+    finBeslemeNote: "empty = fallback: milk yield × price × 69.4% (PNL reference, stepped elasticity)",
     finIscilik: "Labor (head/month)",
-    finIscNote: "empty = Turkey data: 23.5%",
+    finIscNote: "empty = fallback: 20.7% of total revenue",
     finDiger: "Energy+Maintenance+Operations (head/month)",
-    finDigerNote: "empty = Turkey data: 9.4%",
+    finDigerNote: "empty = fallback: 8.3% of total revenue",
     finAmort: "Equipment Depreciation (head/month)",
     finAmortNote: "empty = Turkey data: 1.5%",
     finKonvSperma: "Conventional Semen (per dose)",
@@ -2837,6 +3036,48 @@ var I18N = {
     lblReformP: "Culling",
     lblMaksLakP: "Max. Lactation",
     lblMaksTohumP: "Max. Services",
+    // Report tab
+    tabRapor: "Report",
+    raporPlaceholder: "Run a simulation first to view the report.",
+    raporSec1: "Current Status Summary",
+    raporSec2: "Sensitivity Analysis",
+    raporSec3: "AI Commentary",
+    raporSuruBas: "Herd Movements (60 Months)",
+    raporFinBas: "Financial Summary (60 Months)",
+    raporSensDesc: "6 key parameters varied ±3 levels; impact on 60-month total cow count shown.",
+    raporSensCalc: "Calculating sensitivity...",
+    raporAiNote: "⚠ This feature requires an internet connection. Commentary generated in TR and EN.",
+    raporAiLabel: "AI Analysis",
+    raporAiDefault: 'Click "Get AI Commentary" to receive a farm-specific analysis.',
+    raporAiBtn: "Get AI Commentary",
+    raporPdfBtn: "PDF / Print",
+    raporPdfNote: "Print → Save as PDF",
+    raporAiOnce: "Please run a simulation first.",
+    raporAiHata: "Could not fetch AI commentary. Check your internet connection.",
+    raporKpiBasInek: "Initial Cows",
+    raporKpiBitInek: "Month 60 Cows",
+    raporKpiToplam60: "Month 60 Total",
+    raporKpiBuzAralik: "Calving Interval",
+    raporKpiCr: "Conception Rate",
+    raporKpiReform: "Annual Culling",
+    raporKpiNetKar: "60-Mo Net P/L",
+    raporKpiRoi: "60-Mo ROI",
+    raporKpiBasabas: "Break-even",
+    raporKpiMarj: "Avg. Net Margin",
+    raporSuruBuzagilar: "Total Calves Born",
+    raporSuruDuveler: "Heifers Entered",
+    raporSuruReform: "Total Culled",
+    raporSuruOlum: "Total Mortality",
+    raporSuruSperma: "Total Conv. Semen",
+    raporSuruSexed: "Total Sexed Semen",
+    raporFinSut: "Total Milk Revenue",
+    raporFinHayvan: "Total Animal Revenue",
+    raporFinGider: "Total Expenses",
+    raporFinNet: "Net Profit/Loss",
+    raporFinYatirim: "Total Investment",
+    raporSensEtki: "Impact on 60-Mo Total Cows",
+    raporSensBase: "Base",
+    raporFinHesaplanmadi: "Financial analysis not yet calculated.",
   }
 };
 
@@ -2884,6 +3125,7 @@ function applyAllLang(lang) {
   // Main tabs
   var tbS = document.getElementById("tabBtnSim"); if(tbS) tbS.innerHTML = "&#128290; " + i("tabSim");
   var tbF = document.getElementById("tabBtnFin"); if(tbF) tbF.innerHTML = "&#128200; " + i("tabFin");
+  var tbR = document.getElementById("tabBtnRapor"); if(tbR) tbR.innerHTML = "&#128196; " + i("tabRapor");
   
   // Calc button
   var cbtn = document.getElementById("calcBtnTxt"); if(cbtn) cbtn.textContent = i("calcBtn");
@@ -2912,13 +3154,9 @@ function applyAllLang(lang) {
   // Finansal panel butonları
   var fb1 = document.getElementById("finHesaplaBtn");
   if(fb1) fb1.innerHTML = "&#128200; " + i("finHesapla");
-  var fb2 = document.getElementById("finSimHesaplaBtn");
-  if(fb2) fb2.innerHTML = "&#128290; " + i("finSimHesapla");
-  var fn1 = document.getElementById("finNote1"); if(fn1) fn1.innerHTML = "<strong>" + i("finHesapla") + ":</strong> " + i("finHesaplaNote1");
-  var fn2 = document.getElementById("finNote2"); if(fn2) fn2.innerHTML = "<strong>" + i("finSimHesapla") + ":</strong> " + i("finHesaplaNote2");
+  var fn1 = document.getElementById("finNote1"); if(fn1) fn1.innerHTML = "&#9432; <strong>" + i("finHesapla") + ":</strong> " + i("finHesaplaNote1");
   
   // Finansal panel başlıkları
-  var finTitleEl = document.getElementById("finToggleLabel"); if(finTitleEl) finTitleEl.textContent = i("finTitle");
   var finCurTitle = document.getElementById("finCurrencyTitle"); if(finCurTitle) finCurTitle.textContent = i("finCurrencyTitle");
   var finMilkT = document.getElementById("finMilkTitle"); if(finMilkT) finMilkT.textContent = i("finMilkTitle");
   var finMilkD = document.getElementById("finMilkDesc"); if(finMilkD) finMilkD.textContent = i("finMilkDesc");
@@ -2946,7 +3184,7 @@ function applyAllLang(lang) {
 
 
 // ═══════════════════════════════════════════════
-// GELECEK60 v4.0 — Firebase + i18n + Finans + Admin
+// GELECEK60 v4.12 — Firebase + i18n + Finans + Admin
 // ═══════════════════════════════════════════════
 var FB_CFG = {
   apiKey: "AIzaSyBX6W-0sSlhf8Bkw5zauFyEKD1cydWV0yI",
@@ -3736,6 +3974,9 @@ function switchMainTab(tab) {
     finansAcik = true;
     var mr = document.getElementById('milkRows');
     if(mr && !mr.innerHTML) buildMilkRows();
+  } else if(tab==='rapor') {
+    finansAcik = false;
+    renderRapor();
   } else {
     finansAcik = false;
   }
@@ -3762,14 +4003,6 @@ function hesaplaFinans(){
   }
 }
 
-function hesaplaSimVeFinans(){
-  var mr = document.getElementById("milkRows");
-  if(mr && !mr.innerHTML) buildMilkRows();
-  finansAcik = true;
-  hesapla();
-  // renderResults override zaten finansı çağırıyor
-  switchMainTab("finans");
-}
 
 function showQR(){
   var url = window.location.href.split("?")[0];
@@ -3807,6 +4040,389 @@ function toggleAuthModeNew(){
   toggleAuthMode();
   if(typeof applyAllLang==="function") applyAllLang(currentLang);
 }
+
+// ═══════════════════════════════════════
+// RAPOR SEKMESİ — v4.11
+// ═══════════════════════════════════════
+
+function renderRapor() {
+  var ph = document.getElementById('raporPlaceholder');
+  var bd = document.getElementById('raporBody');
+  if (!projData.snaps || !projData.snaps.length) {
+    if(ph) ph.style.display = 'flex';
+    if(bd) bd.style.display = 'none';
+    var pt = document.getElementById('raporPlaceholderTxt');
+    if(pt) pt.textContent = i('raporPlaceholder');
+    return;
+  }
+  if(ph) ph.style.display = 'none';
+  if(bd) bd.style.display = 'block';
+
+  // i18n statik metinler
+  var titles = {
+    raporSec1Title:'raporSec1', raporSec2Title:'raporSec2', raporSec3Title:'raporSec3',
+    raporSuruBasTitle:'raporSuruBas', raporFinBasTitle:'raporFinBas',
+    raporSensDesc:'raporSensDesc', raporSensCalcTxt:'raporSensCalc',
+    raporAiNote:'raporAiNote', aiYorumLabel:'raporAiLabel',
+    raporPdfNote:'raporPdfNote', raporPlaceholderTxt:'raporPlaceholder'
+  };
+  for(var elId in titles) {
+    var el = document.getElementById(elId);
+    if(el) el.textContent = i(titles[elId]);
+  }
+  var aiBtn = document.getElementById('btnAIYorum');
+  if(aiBtn) aiBtn.innerHTML = '&#129302; ' + i('raporAiBtn');
+  var pdfBtn = document.querySelector('.btn-rapor-pdf');
+  if(pdfBtn) pdfBtn.innerHTML = '&#128424; ' + i('raporPdfBtn');
+  var aiDef = document.getElementById('aiYorumContent');
+  if(aiDef && (aiDef.dataset.filled !== 'yes')) aiDef.textContent = i('raporAiDefault');
+
+  _renderRaporKpi();
+  _renderRaporRows();
+  _runSensitivitySvg();
+}
+
+function _renderRaporKpi() {
+  var snaps = projData.snaps;
+  var params = projData.params;
+  var ini = projData.initial;
+  var fin = projData.finObj;
+  var grid = document.getElementById('raporKpiGrid');
+  if(!grid) return;
+
+  var snap60 = snaps[59] || snaps[snaps.length-1] || {};
+
+  var basInek = (ini.laktasyon||0) + (ini.kuru||0);
+  var bitInek = Math.round((snap60.laktasyon||0) + (snap60.kuru||0));
+  var bitToplam = Math.round(getTotal(snap60));
+  var buzAralik = snap60.buzAraligiGun || Math.round((params.vwpInek||50) + (1/(params.crInek||0.6))*21 + 283);
+  var crPct = Math.round((params.crInek||0)*100);
+  var reformPct = Math.round((params.reform||0)*100);
+  var cur = (typeof currentCurrency !== 'undefined') ? currentCurrency : 'TL';
+  var sym = cur === 'USD' ? '$' : '₺';
+  var usdRate = getMoneyValue('finUSDrate') || 35;
+
+  function fmtPara(v) {
+    if(!v && v !== 0) return '—';
+    var disp = cur === 'USD' ? v / usdRate : v;
+    var abs = Math.abs(disp);
+    var str;
+    if(abs >= 1000000) str = (disp/1000000).toFixed(1) + 'M';
+    else if(abs >= 1000) str = Math.round(disp/1000) + 'K';
+    else str = Math.round(disp).toString();
+    return (disp < 0 ? '-' : '') + sym + str.replace('-','');
+  }
+
+  var kpis = [
+    {lbl:i('raporKpiBasInek'), val:basInek, cls:'green'},
+    {lbl:i('raporKpiBitInek'), val:bitInek, cls:'blue'},
+    {lbl:i('raporKpiToplam60'), val:bitToplam, cls:'blue'},
+    {lbl:i('raporKpiBuzAralik'), val:buzAralik+' gün', cls:'gold', raw:true},
+    {lbl:i('raporKpiCr'), val:'%'+crPct, cls:'green', raw:true},
+    {lbl:i('raporKpiReform'), val:'%'+reformPct, cls:(reformPct>20?'red':'gold'), raw:true}
+  ];
+
+  if(fin && fin.rows && fin.rows.length) {
+    var net60 = 0, gelir60 = 0;
+    for(var j=0; j<fin.rows.length; j++) {
+      net60 += fin.rows[j].netKar || 0;
+      gelir60 += fin.rows[j].toplamGelir || 0;
+    }
+    var marj = gelir60 > 0 ? Math.round(net60/gelir60*100) : 0;
+    // ROI
+    var roi = (fin.yatirim > 0) ? Math.round(net60/fin.yatirim*100) : null;
+    // Başabaş: ilk karlı ay
+    var bb = null;
+    for(var bi=0; bi<fin.rows.length; bi++) { if(fin.rows[bi].kumKar >= 0 && (fin.yatirim||0) === 0) { bb = bi+1; break; } }
+    if(fin.geriDonumAy > 0) bb = fin.geriDonumAy;
+
+    kpis.push({lbl:i('raporKpiNetKar'), val:fmtPara(net60), cls:net60>=0?'green':'red', raw:true});
+    kpis.push({lbl:i('raporKpiMarj'), val:'%'+marj, cls:marj>=0?'green':'red', raw:true});
+    if(roi !== null) kpis.push({lbl:i('raporKpiRoi'), val:'%'+roi, cls:roi>=0?'green':'red', raw:true});
+    if(bb) kpis.push({lbl:i('raporKpiBasabas'), val:bb+' '+i('finAyDonus'), cls:'gold', raw:true});
+  }
+
+  var html = '';
+  for(var ki=0; ki<kpis.length; ki++) {
+    var kp = kpis[ki];
+    var dispVal = kp.raw ? kp.val : kp.val.toString();
+    html += '<div class="rapor-kpi"><div class="rk-val '+kp.cls+'">'+dispVal+'</div><div class="rk-lbl">'+kp.lbl+'</div></div>';
+  }
+  grid.innerHTML = html;
+}
+
+function _renderRaporRows() {
+  var snaps = projData.snaps;
+  var fin = projData.finObj;
+  var cur = (typeof currentCurrency !== 'undefined') ? currentCurrency : 'TL';
+  var sym = cur === 'USD' ? '$' : '₺';
+  var usdRate = getMoneyValue('finUSDrate') || 35;
+
+  function fmtP(v) {
+    if(!v && v!==0) return '—';
+    var c = cur==='USD' ? v/usdRate : v;
+    var abs = Math.abs(c);
+    var s = abs>=1000000 ? (c/1000000).toFixed(1)+'M' : abs>=1000 ? Math.round(c/1000)+'K' : Math.round(c).toString();
+    return (c<0?'-':'') + sym + s.replace('-','');
+  }
+
+  // Sürü satırları — snap alanlarını doğru kullan
+  var topBuz=0, topReform=0, topOlum=0, topKonvDoz=0, topSexedDoz=0;
+  for(var k=0; k<snaps.length; k++) {
+    var s = snaps[k];
+    topBuz    += (s.buzagiSayisi||0);
+    topReform += (s.reformInek||0) + (s.reformMaksLak||0) + (s.reformMaksTohum||0);
+    topOlum   += (s.inekOlum||0);
+    topKonvDoz+= (s.konvDozInek||0) + (s.konvDozDuve||0);
+    topSexedDoz+=(s.sexedDozInekYil||0) + (s.sexedDozDuveYil||0);
+  }
+  // Düveye geçiş: ilk ay laktasyon - başlangıç laktasyon yaklaşımı yerine doğrudan buzagiSayisi dişi kısmı
+  var topDisiBuz = 0;
+  for(var k=0; k<snaps.length; k++) topDisiBuz += (snaps[k].disiBuzagi||0);
+
+  var suruRows = [
+    [i('raporSuruBuzagilar'), Math.round(topBuz), 'green'],
+    [i('raporSuruDuveler'), Math.round(topDisiBuz), 'blue'],
+    [i('raporSuruReform'), Math.round(topReform), 'gold'],
+    [i('raporSuruOlum'), Math.round(topOlum), 'red'],
+    [i('raporSuruSperma'), Math.round(topKonvDoz), ''],
+    [i('raporSuruSexed'), Math.round(topSexedDoz), 'purple']
+  ];
+  var suruHtml = '';
+  for(var ri=0; ri<suruRows.length; ri++) {
+    var r = suruRows[ri];
+    suruHtml += '<div class="rapor-row"><span class="rl">'+r[0]+'</span><span class="rv '+(r[2]||'')+'">'+r[1]+'</span></div>';
+  }
+  var srEl = document.getElementById('raporSuruRows');
+  if(srEl) srEl.innerHTML = suruHtml;
+
+  // Finansal satırlar — fin.rows kullan, doğru alan adları
+  var frEl = document.getElementById('raporFinRows');
+  if(!frEl) return;
+  if(!fin || !fin.rows || !fin.rows.length) {
+    frEl.innerHTML = '<div style="font-size:.74rem;color:var(--muted);font-style:italic;padding:10px 0;">'+i('raporFinHesaplanmadi')+'</div>';
+    return;
+  }
+  var fSut=0, fHay=0, fGider=0, fNet=0;
+  for(var fj=0; fj<fin.rows.length; fj++) {
+    var fa = fin.rows[fj];
+    fSut  += (fa.sutGelir||0);
+    fHay  += (fa.reformGelir||0) + (fa.erkekGelir||0) + (fa.duveGelir||0);
+    fGider+= (fa.toplamGider||0);
+    fNet  += (fa.netKar||0);
+  }
+  var fYat = fin.yatirim || 0;
+  var finRows = [
+    [i('raporFinSut'), fSut, 'green'],
+    [i('raporFinHayvan'), fHay, 'green'],
+    [i('raporFinGider'), fGider, 'red'],
+    [i('raporFinNet'), fNet, fNet>=0?'green':'red'],
+    [i('raporFinYatirim'), fYat, 'gold']
+  ];
+  var finHtml = '';
+  for(var fri=0; fri<finRows.length; fri++) {
+    var fr2 = finRows[fri];
+    finHtml += '<div class="rapor-row"><span class="rl">'+fr2[0]+'</span><span class="rv '+fr2[2]+'">'+fmtP(fr2[1])+'</span></div>';
+  }
+  frEl.innerHTML = finHtml;
+}
+
+function _runSensitivitySvg() {
+  var svgWrap = document.getElementById('raporSensSvg');
+  if(!svgWrap) return;
+  if(!projData.snaps || !projData.snaps.length || typeof sim24 === 'undefined') {
+    svgWrap.innerHTML = '<div style="font-size:.74rem;color:var(--muted);font-style:italic;padding:14px 0;">Simülasyon motoru bulunamadı.</div>';
+    return;
+  }
+  svgWrap.innerHTML = '<div style="display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.76rem;padding:20px 0;"><span class="ai-spin"></span> <span>'+i('raporSensCalc')+'</span></div>';
+
+  // Async olarak hesapla (UI'ı bloke etme)
+  setTimeout(function() {
+    var p0 = projData.params;
+    var ini = projData.initial;
+
+    // Baz: 60. ay laktasyon + kuru
+    function baseLak60(p, h) {
+      try {
+        var snaps = sim24(h, p);
+        var s60 = null;
+        for(var k=snaps.length-1; k>=0; k--) { if(snaps[k].ay<=60){s60=snaps[k];break;} }
+        if(!s60) s60 = snaps[snaps.length-1]||{};
+        return Math.round((s60.laktasyon||0) + (s60.kuru||0));
+      } catch(e) { return 0; }
+    }
+
+    var base = baseLak60(p0, ini);
+
+    // 6 parametre tanımı — delta oransal
+    var params6 = [
+      {key:'crInek', label:'CR İnek', deltas:[-0.15,-0.10,-0.05,0,0.05,0.10,0.15], fmt:function(v){return '%'+Math.round(v*100);}},
+      {key:'reform', label:'Reform', deltas:[-0.05,-0.03,-0.01,0,0.01,0.03,0.05], fmt:function(v){return '%'+Math.round(v*100);}},
+      {key:'olumInek', label:'İnek Ölüm', deltas:[-0.02,-0.01,-0.005,0,0.005,0.01,0.02], fmt:function(v){return '%'+Math.round(v*100);}},
+      {key:'olumBuz', label:'Buzağı Ölüm', deltas:[-0.05,-0.03,-0.01,0,0.01,0.03,0.05], fmt:function(v){return '%'+Math.round(v*100);}},
+      {key:'kuruGun', label:'Kuru Gün', deltas:[-20,-10,-5,0,5,10,20], fmt:function(v){return Math.round(v)+' gün';}},
+      {key:'vwpInek', label:'VWP', deltas:[-15,-10,-5,0,5,10,15], fmt:function(v){return Math.round(v)+' gün';}}
+    ];
+
+    var results = [];
+    for(var pi=0; pi<params6.length; pi++) {
+      var pd = params6[pi];
+      var row = {label: pd.label, key: pd.key, points: []};
+      for(var di=0; di<pd.deltas.length; di++) {
+        var delta = pd.deltas[di];
+        var pCopy = {};
+        for(var kk in p0) pCopy[kk] = p0[kk];
+        var newVal = (p0[pd.key]||0) + delta;
+        if(pd.key === 'crInek') newVal = Math.max(0.05, Math.min(0.99, newVal));
+        if(pd.key === 'reform') newVal = Math.max(0.01, Math.min(0.50, newVal));
+        if(pd.key === 'olumInek') newVal = Math.max(0, Math.min(0.30, newVal));
+        if(pd.key === 'olumBuz') newVal = Math.max(0, Math.min(0.50, newVal));
+        if(pd.key === 'kuruGun') newVal = Math.max(20, Math.min(120, newVal));
+        if(pd.key === 'vwpInek') newVal = Math.max(20, Math.min(150, newVal));
+        pCopy[pd.key] = newVal;
+        var val = baseLak60(pCopy, ini);
+        row.points.push({delta: delta, val: val, diff: val - base, label: pd.fmt ? pd.fmt(newVal) : String(newVal)});
+      }
+      results.push(row);
+    }
+
+    // SVG çiz — tornado chart
+    var W = 700, H = 36 * results.length + 60, PAD_L = 100, PAD_R = 20, BAR_H = 20;
+    var allDiffs = [];
+    for(var ri=0; ri<results.length; ri++) {
+      for(var di2=0; di2<results[ri].points.length; di2++) allDiffs.push(results[ri].points[di2].diff);
+    }
+    var maxAbs = Math.max(1, Math.max.apply(null, allDiffs.map(function(d){return Math.abs(d);})));
+    var barW = W - PAD_L - PAD_R;
+    var midX = PAD_L + barW / 2;
+
+    var svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" style="font-family:Barlow,sans-serif;">';
+    // Başlık
+    svg += '<text x="'+midX+'" y="18" text-anchor="middle" font-size="10" fill="#6b6448" font-weight="700" letter-spacing="1">'+i('raporSensEtki')+'</text>';
+    // Orta çizgi
+    svg += '<line x1="'+midX+'" y1="28" x2="'+midX+'" y2="'+(H-10)+'" stroke="#d8cfb8" stroke-width="1"/>';
+    // Baz etiketi
+    svg += '<text x="'+midX+'" y="'+( H-2 )+'" text-anchor="middle" font-size="9" fill="#6b6448">'+i('raporSensBase')+': '+base+'</text>';
+
+    for(var ri2=0; ri2<results.length; ri2++) {
+      var row2 = results[ri2];
+      var y = 34 + ri2 * 36;
+      // Parametre etiketi
+      svg += '<text x="'+(PAD_L-6)+'" y="'+(y+BAR_H/2)+'" text-anchor="end" dominant-baseline="middle" font-size="10" fill="#6b6448">'+row2.label+'</text>';
+
+      // Her nokta için küçük çubuk
+      var pts = row2.points;
+      for(var pi2=0; pi2<pts.length; pi2++) {
+        var pt = pts[pi2];
+        if(pt.delta === 0) continue; // baz noktası — sadece çizgi
+        var bx = midX + (pt.diff / maxAbs) * (barW/2);
+        var x1 = Math.min(midX, bx), barLen = Math.abs(bx - midX);
+        var clr = pt.diff >= 0 ? '#2d7a3a' : '#c0392b';
+        var alpha = Math.min(1, 0.3 + 0.7 * Math.abs(pt.diff) / maxAbs);
+        var opacity = Math.round(alpha * 10) / 10;
+        svg += '<rect x="'+x1.toFixed(1)+'" y="'+y+'" width="'+Math.max(1, barLen).toFixed(1)+'" height="'+BAR_H+'" fill="'+clr+'" opacity="'+opacity+'" rx="2"/>';
+      }
+      // Baz noktası işareti
+      svg += '<line x1="'+midX+'" y1="'+y+'" x2="'+midX+'" y2="'+(y+BAR_H)+'" stroke="#b8860b" stroke-width="2"/>';
+
+      // Min/Max değer etiketi
+      var minPt = pts[0], maxPt = pts[pts.length-1];
+      var leftDiff = minPt.diff, rightDiff = maxPt.diff;
+      if(leftDiff !== 0) {
+        var lx = midX + (leftDiff/maxAbs)*(barW/2);
+        svg += '<text x="'+(Math.min(lx,midX)-3).toFixed(0)+'" y="'+(y+BAR_H/2)+'" text-anchor="end" dominant-baseline="middle" font-size="8.5" fill="'+(leftDiff>=0?'#2d7a3a':'#c0392b')+'">'+(leftDiff>0?'+':'')+leftDiff+'</text>';
+      }
+      if(rightDiff !== 0) {
+        var rx = midX + (rightDiff/maxAbs)*(barW/2);
+        svg += '<text x="'+(Math.max(rx,midX)+3).toFixed(0)+'" y="'+(y+BAR_H/2)+'" text-anchor="start" dominant-baseline="middle" font-size="8.5" fill="'+(rightDiff>=0?'#2d7a3a':'#c0392b')+'">'+(rightDiff>0?'+':'')+rightDiff+'</text>';
+      }
+    }
+    svg += '</svg>';
+    svgWrap.innerHTML = svg;
+  }, 50);
+}
+
+function getAIYorum() {
+  if(!projData.snaps || !projData.snaps.length) {
+    showToast(i('raporAiOnce'), true); return;
+  }
+  var contentEl = document.getElementById('aiYorumContent');
+  var btnEl = document.getElementById('btnAIYorum');
+  if(!contentEl) return;
+
+  if(btnEl) { btnEl.disabled = true; btnEl.innerHTML = '<span class="ai-spin"></span> Yükleniyor...'; }
+  contentEl.innerHTML = '<span class="ai-spin"></span> AI analizi hazırlanıyor...';
+
+  var p = projData.params;
+  var ini = projData.initial;
+  var fin = projData.finObj;
+  var snaps = projData.snaps;
+
+  // 60. ay özet
+  var snap60 = null;
+  for(var k=snaps.length-1; k>=0; k--) { if(snaps[k].ay<=60){snap60=snaps[k];break;} }
+  if(!snap60) snap60 = snaps[snaps.length-1]||{};
+
+  var buzAralik = Math.round((p.vwpInek||50) + (1/(p.crInek||0.6))*21 + 283);
+  var net60 = 0, gelir60 = 0;
+  if(fin && fin.rows) { for(var j2=0; j2<fin.rows.length; j2++) { net60+=fin.rows[j2].netKar||0; gelir60+=fin.rows[j2].toplamGelir||0; } }
+  var marj = gelir60>0 ? Math.round(net60/gelir60*100) : null;
+
+  var lang = (typeof currentLang !== 'undefined') ? currentLang : 'tr';
+  var langNote = lang === 'en' ? 'Respond in English.' : 'Yanıtı Türkçe ver.';
+
+  var prompt = langNote + '\n\n' +
+    'Aşağıdaki süt sığırcılığı işletmesinin 60 aylık simülasyon sonuçlarını analiz et ve yöneticiye kısa, net, uygulanabilir yorumlar yaz:\n\n' +
+    '- Senaryo: ' + (ini._startup ? 'Sıfırdan Kuruluş' : 'Mevcut İşletme') + '\n' +
+    '- Başlangıç inek: ' + ((ini.laktasyon||0)+(ini.kuru||0)) + ' baş\n' +
+    '- 60. ay inek: ' + Math.round((snap60.laktasyon||0)+(snap60.kuru||0)) + ' baş\n' +
+    '- 60. ay toplam hayvan: ' + Math.round(getTotal(snap60)) + ' baş\n' +
+    '- CR (inek): %' + Math.round((p.crInek||0)*100) + '\n' +
+    '- VWP: ' + (p.vwpInek||50) + ' gün\n' +
+    '- Buzağılama aralığı: ' + buzAralik + ' gün\n' +
+    '- Reform oranı: %' + Math.round((p.reform||0)*100) + '\n' +
+    '- Ölüm (inek): %' + Math.round((p.olumInek||0)*100) + '\n' +
+    '- Ölüm (buzağı): %' + Math.round((p.olumBuz||0)*100) + '\n' +
+    (fin ? '- 60 ay toplam gelir: ' + Math.round(gelir60).toLocaleString('tr-TR') + ' TL\n' : '') +
+    (fin ? '- 60 ay net K/Z: ' + Math.round(net60).toLocaleString('tr-TR') + ' TL\n' : '') +
+    (marj !== null ? '- Ortalama net marj: %' + marj + '\n' : '') +
+    '\nLütfen şu başlıklarda analiz yaz (her biri 2-3 cümle):\n' +
+    '1. Sürü Büyümesi Değerlendirmesi\n' +
+    '2. Üreme Performansı\n' +
+    '3. Risk Faktörleri\n' +
+    '4. Öncelikli İyileştirme Önerileri\n' +
+    (fin ? '5. Finansal Görünüm\n' : '') +
+    '\nTon: Uzman veteriner ekonomisti gibi — teknik ama anlaşılır.';
+
+  fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      messages: [{role:'user', content: prompt}]
+    })
+  }).then(function(resp) {
+    return resp.json();
+  }).then(function(data) {
+    var text = '';
+    if(data.content && data.content.length) {
+      for(var ci=0; ci<data.content.length; ci++) {
+        if(data.content[ci].type === 'text') text += data.content[ci].text;
+      }
+    }
+    if(!text) text = i('raporAiHata');
+    contentEl.textContent = text;
+    contentEl.dataset.filled = 'yes';
+    if(btnEl) { btnEl.disabled = false; btnEl.innerHTML = '&#129302; ' + i('raporAiBtn'); }
+  }).catch(function() {
+    contentEl.textContent = i('raporAiHata');
+    contentEl.style.color = 'var(--danger)';
+    if(btnEl) { btnEl.disabled = false; btnEl.innerHTML = '&#129302; ' + i('raporAiBtn'); }
+  });
+}
+
+
 
 </script>
 
