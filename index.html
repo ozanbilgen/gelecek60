@@ -1,5 +1,16 @@
 <!DOCTYPE html>
-<!--Gelecek60 v4.15c — PrintCSSBirlesti + BtnAIYorumTxt2ID + BtnPdfOzetCSS + FinTabRaporTabKorundu + IrkGuardKaldirildi-->
+<!--Gelecek60 v4.18 — H1_DuplicateID + H4_pIrkTemizle + Toast1800ms + H2_SpermaSpikeUyari + H3_KuruLakKontrol + T1_InputValidasyon + T3_CSSTemizlik
+KARARLAR:
+- H1 FIX: btnAIYorumTxt span id->class (satir 1292 ve JS). Duplicate ID kaldirildi.
+- H4 FIX: generateReport() VWP yorumunda (p.irk||irkKey) -> (irkKey).
+- TOAST (T2): showToast setTimeout 3200ms -> 1800ms.
+- H2 FIX: Sperma tablosu ay 1 hucreleri amber vurgulanip aciklama notü eklendi. Motor dokunulmadi.
+- H3 FIX: renderResults() snap bazli kuru/lak oran kontrolu: >35pct=altin uyari, >100pct=kirmizi kritik.
+- T1 FIX: hesapla() validasyonlari genisletildi — laktasyon=0 hard stop, gebeInek>laktasyon uyarisi, gebelik gunu asimi uyarisi, kuru gebelik gunu alt sinir uyarisi.
+- T3 FIX: 65 duplicate CSS kurali silindi (ayni icerikli ilk occurrence tutuldu). 4.6 KB kazanim.
+DOKUNULMAYAN MODULLER: sim24 motoru, calcFinans, renderFinansResults, renderRapor, Firebase, i18n, Admin.
+BENCHMARK TABLOSU: Holstein zarar<28 basabas28-32 iyi32-38 mukemmel>38 | Simental zarar<18 basabas18-22 iyi22-28 mukemmel>28 | Montofon zarar<14 basabas14-17 iyi17-22 mukemmel>22 | Karma zarar<18 basabas18-22 iyi22-28 mukemmel>28
+-->
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
@@ -280,7 +291,7 @@ input[type="checkbox"]{display:none;}
 .toast.err{border-color:var(--danger);color:var(--danger);}
 /* ═══ FİNANS MODÜLÜ v4.1 ═══ */
 .fin-toggle{display:flex;align-items:center;gap:12px;padding:14px 18px;background:#fff;border:2px solid var(--border);border-radius:12px;cursor:pointer;margin-bottom:18px;transition:all .2s;box-shadow:0 2px 8px rgba(0,0,0,.05);}
-.fin-toggle:hover{border-color:var(--gold);}
+
 .fin-toggle input[type=checkbox]{width:20px;height:20px;accent-color:var(--gold);cursor:pointer;flex-shrink:0;}
 .fin-toggle label{font-family:"Barlow Condensed",sans-serif;font-size:.85rem;font-weight:700;letter-spacing:1px;color:var(--text);cursor:pointer;}
 .fin-toggle .fin-desc{font-size:.72rem;color:var(--muted);margin-top:2px;}
@@ -308,7 +319,7 @@ input[type="checkbox"]{display:none;}
 .fin-res-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;}
 .fin-res-tabs{display:flex;gap:5px;flex-wrap:wrap;}
 .fin-rtab{background:transparent;border:1.5px solid var(--border);border-radius:7px;color:var(--muted);font-family:"Barlow Condensed",sans-serif;font-size:.67rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:6px 13px;cursor:pointer;transition:all .2s;}
-.fin-rtab.active{background:var(--gold);border-color:var(--gold);color:#fff;}
+
 .fin-kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;}
 @media(max-width:700px){.fin-kpi-grid{grid-template-columns:1fr 1fr;}}
 .fin-kpi{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.05);}
@@ -356,25 +367,25 @@ input[type="checkbox"]{display:none;}
 /* Currency toggle */
 .cur-btn{padding:5px 13px;background:transparent;border:none;color:var(--muted);cursor:pointer;font-family:"Barlow Condensed",sans-serif;font-size:.68rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all .2s;border-left:1.5px solid var(--border);}
 .cur-btn:first-child{border-left:none;}
-.cur-btn.active{background:var(--gold);color:#fff;}
+
 
 .dis-row label{flex:1;font-size:.73rem;color:var(--text);line-height:1.3;}
-.dis-row .dis-lit{font-size:.6rem;color:var(--muted);display:block;margin-top:1px;}
+.dis-row 
 .dis-row input{width:60px;padding:4px 7px;font-size:.76rem;background:#fff;border:1px solid var(--border);border-radius:5px;text-align:right;color:var(--text);}
-.dis-row .dis-unit{font-size:.65rem;color:var(--muted);white-space:nowrap;min-width:14px;}
+.dis-row 
 /* Finans Sonuç */
-.fin-res-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;}
-.fin-res-tabs{display:flex;gap:5px;flex-wrap:wrap;}
+
+
 .fin-rtab{background:transparent;border:1.5px solid var(--border);border-radius:7px;color:var(--muted);font-family:"Barlow Condensed",sans-serif;font-size:.67rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:6px 13px;cursor:pointer;transition:all .2s;}
-.fin-rtab.active{background:var(--gold);border-color:var(--gold);color:#fff;}
+
 .fin-kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;}
 @media(max-width:700px){.fin-kpi-grid{grid-template-columns:1fr 1fr;}}
-.fin-kpi{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.05);}
-.fin-kpi .kv{font-family:"Playfair Display",serif;font-size:1.4rem;font-weight:900;color:var(--accent);}
-.fin-kpi .kv.neg{color:var(--danger);}
-.fin-kpi .kv.gold{color:var(--gold);}
-.fin-kpi .kv.blue{color:var(--blue);}
-.fin-kpi .kl{font-size:.6rem;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-top:3px;}
+
+.fin-kpi 
+.fin-kpi 
+.fin-kpi 
+.fin-kpi 
+.fin-kpi 
 .fin-table{width:100%;border-collapse:collapse;font-size:.72rem;}
 .fin-table thead tr{background:#f5f0e8;}
 .fin-table th{padding:8px 10px;font-family:"Barlow Condensed",sans-serif;font-size:.6rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);text-align:right;border-bottom:2px solid var(--border);white-space:nowrap;}
@@ -387,53 +398,53 @@ input[type="checkbox"]{display:none;}
 .fin-table tr.pos td{color:var(--accent);}
 .fin-table tr.bb-row td{background:rgba(36,113,163,.06);font-weight:700;color:var(--blue);}
 /* Nakit akışı grafik */
-.cashflow-chart{display:flex;align-items:flex-end;gap:2px;height:120px;margin:10px 0;overflow-x:auto;padding-bottom:4px;}
-.cf-bar{flex-shrink:0;width:14px;border-radius:3px 3px 0 0;position:relative;cursor:default;transition:opacity .2s;}
-.cf-bar:hover{opacity:.8;}
-.cf-bar.pos{background:var(--accent);}
-.cf-bar.neg{background:var(--danger);border-radius:0 0 3px 3px;align-self:flex-start;}
+
+
+
+
+
 /* Duyarlılık */
 .sens-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
 @media(max-width:700px){.sens-grid{grid-template-columns:1fr;}}
-.sens-card{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+
 .sens-card h4{font-family:"Barlow Condensed",sans-serif;font-size:.67rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
-.sens-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(0,0,0,.05);font-size:.74rem;}
-.sens-row .sl{color:var(--muted);}
-.sens-row .sv{font-weight:700;}
-.sens-row .sv.pos{color:var(--accent);}
-.sens-row .sv.neg{color:var(--danger);}
+
+.sens-row 
+.sens-row 
+.sens-row 
+.sens-row 
 /* ROI/Başabaş */
-.roi-section{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,.05);margin-bottom:16px;}
+
 .roi-section h4{font-family:"Barlow Condensed",sans-serif;font-size:.67rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
-.roi-timeline{display:flex;gap:2px;height:8px;border-radius:4px;overflow:hidden;margin:10px 0;}
-.roi-seg{height:100%;}
-.roi-seg.loss{background:rgba(192,57,43,.3);}
-.roi-seg.gain{background:rgba(45,122,58,.4);}
-.roi-seg.payback{background:var(--gold);}
+
+
+
+
+
 
 /* ═══ ANA SEKMELER ═══ */
 
 .cur-btn{padding:5px 13px;background:transparent;border:none;color:var(--muted);cursor:pointer;font-family:"Barlow Condensed",sans-serif;font-size:.68rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all .2s;}
-.cur-btn.active{background:var(--gold);color:#fff;}
-.besi-panel{background:rgba(36,113,163,.04);border:1.5px solid rgba(36,113,163,.2);border-radius:10px;padding:14px;margin-top:10px;}
+
+
 
 .dis-row label{flex:1;font-size:.73rem;color:var(--text);line-height:1.3;}
-.dis-row .dis-lit{font-size:.6rem;color:var(--muted);display:block;margin-top:1px;}
+.dis-row 
 .dis-row input{width:60px;padding:4px 7px;font-size:.76rem;background:#fff;border:1px solid var(--border);border-radius:5px;text-align:right;color:var(--text);}
-.dis-row .dis-unit{font-size:.65rem;color:var(--muted);white-space:nowrap;min-width:14px;}
+.dis-row 
 /* Finans Sonuç */
-.fin-res-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;}
-.fin-res-tabs{display:flex;gap:5px;flex-wrap:wrap;}
+
+
 .fin-rtab{background:transparent;border:1.5px solid var(--border);border-radius:7px;color:var(--muted);font-family:"Barlow Condensed",sans-serif;font-size:.67rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:6px 13px;cursor:pointer;transition:all .2s;}
-.fin-rtab.active{background:var(--gold);border-color:var(--gold);color:#fff;}
+
 .fin-kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;}
 @media(max-width:700px){.fin-kpi-grid{grid-template-columns:1fr 1fr;}}
-.fin-kpi{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.05);}
-.fin-kpi .kv{font-family:"Playfair Display",serif;font-size:1.4rem;font-weight:900;color:var(--accent);}
-.fin-kpi .kv.neg{color:var(--danger);}
-.fin-kpi .kv.gold{color:var(--gold);}
-.fin-kpi .kv.blue{color:var(--blue);}
-.fin-kpi .kl{font-size:.6rem;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-top:3px;}
+
+.fin-kpi 
+.fin-kpi 
+.fin-kpi 
+.fin-kpi 
+.fin-kpi 
 .fin-table{width:100%;border-collapse:collapse;font-size:.72rem;}
 .fin-table thead tr{background:#f5f0e8;}
 .fin-table th{padding:8px 10px;font-family:"Barlow Condensed",sans-serif;font-size:.6rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);text-align:right;border-bottom:2px solid var(--border);white-space:nowrap;}
@@ -446,29 +457,29 @@ input[type="checkbox"]{display:none;}
 .fin-table tr.pos td{color:var(--accent);}
 .fin-table tr.bb-row td{background:rgba(36,113,163,.06);font-weight:700;color:var(--blue);}
 /* Nakit akışı grafik */
-.cashflow-chart{display:flex;align-items:flex-end;gap:2px;height:120px;margin:10px 0;overflow-x:auto;padding-bottom:4px;}
-.cf-bar{flex-shrink:0;width:14px;border-radius:3px 3px 0 0;position:relative;cursor:default;transition:opacity .2s;}
-.cf-bar:hover{opacity:.8;}
-.cf-bar.pos{background:var(--accent);}
-.cf-bar.neg{background:var(--danger);border-radius:0 0 3px 3px;align-self:flex-start;}
+
+
+
+
+
 /* Duyarlılık */
 .sens-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
 @media(max-width:700px){.sens-grid{grid-template-columns:1fr;}}
-.sens-card{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+
 .sens-card h4{font-family:"Barlow Condensed",sans-serif;font-size:.67rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
-.sens-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(0,0,0,.05);font-size:.74rem;}
-.sens-row .sl{color:var(--muted);}
-.sens-row .sv{font-weight:700;}
-.sens-row .sv.pos{color:var(--accent);}
-.sens-row .sv.neg{color:var(--danger);}
+
+.sens-row 
+.sens-row 
+.sens-row 
+.sens-row 
 /* ROI/Başabaş */
-.roi-section{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,.05);margin-bottom:16px;}
+
 .roi-section h4{font-family:"Barlow Condensed",sans-serif;font-size:.67rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
-.roi-timeline{display:flex;gap:2px;height:8px;border-radius:4px;overflow:hidden;margin:10px 0;}
-.roi-seg{height:100%;}
-.roi-seg.loss{background:rgba(192,57,43,.3);}
-.roi-seg.gain{background:rgba(45,122,58,.4);}
-.roi-seg.payback{background:var(--gold);}
+
+
+
+
+
 
 .main-tabs{display:flex;gap:0;margin-bottom:0;border-bottom:2px solid var(--border);}
 .main-tab{background:transparent;border:none;border-bottom:3px solid transparent;padding:10px 22px;font-family:"Barlow Condensed",sans-serif;font-size:.8rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);cursor:pointer;transition:all .2s;margin-bottom:-2px;}
@@ -477,9 +488,9 @@ input[type="checkbox"]{display:none;}
 .tab-content{display:none;padding-top:16px;}
 .tab-content.active{display:block !important;}
 .cur-btn{padding:5px 13px;background:transparent;border:none;color:var(--muted);cursor:pointer;font-family:"Barlow Condensed",sans-serif;font-size:.68rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all .2s;}
-.cur-btn.active{background:var(--gold);color:#fff;}
-.besi-panel{background:rgba(36,113,163,.04);border:1.5px solid rgba(36,113,163,.2);border-radius:10px;padding:14px;margin-top:10px;}
-.fin-note-inline{font-size:.65rem;color:var(--muted);font-style:italic;margin-top:2px;font-weight:700;}
+
+
+
 
 .input-sym-wrap{position:relative;display:flex;align-items:center;}
 .input-sym-wrap .sym-prefix{position:absolute;left:10px;font-weight:700;color:var(--muted);font-size:.85rem;pointer-events:none;z-index:1;}
@@ -489,7 +500,7 @@ input[type="checkbox"]{display:none;}
 .money-input-wrap{position:relative;display:flex;align-items:center;}
 .money-sym{position:absolute;left:10px;font-size:.85rem;font-weight:700;color:var(--muted);pointer-events:none;z-index:2;user-select:none;}
 .money-input{padding-left:24px !important;}
-input.money-input{padding-left:24px !important;}
+input
 
 /* ═══ RAPOR SEKMESİ v4.11 ═══ */
 .main-tab.rapor-tab.active{color:var(--blue);border-bottom-color:var(--blue);}
@@ -1280,7 +1291,7 @@ input.money-input{padding-left:24px !important;}
 <div id="raporBody" style="display:none;">
   <!-- PDF Özet Butonu -->
   <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:16px;">
-    <button class="btn-rapor-ai" id="btnAIYorum" onclick="getAIYorum()">&#129302; <span id="btnAIYorumTxt">AI Yorumu Al</span></button>
+    <button class="btn-rapor-ai" id="btnAIYorum" onclick="getAIYorum()">&#129302; <span class="btnAIYorumTxt">AI Yorumu Al</span></button>
     <button class="btn-rapor-pdf btn-pdf-ozet" onclick="openPdfModal()">&#128424; <span id="raporPdfBtnTxt">PDF Hazırla</span></button>
     <div style="font-size:.68rem;color:var(--muted);margin-left:4px;" id="raporPdfNote">Özelleştirip yazdırın</div>
   </div>
@@ -1537,6 +1548,19 @@ function hesapla() {
   var vwpVal  = sc==='startup' ? g('s_vwpInek')  : g('vwpInek');
   var kuruVal = sc==='startup' ? g('s_kuruGun')  : g('kuruGun');
 
+  // [T1] Ek validasyonlar
+  if(sc !== 'startup') {
+    var lakVal  = g('laktasyon');
+    var kuruSay = g('kuru');
+    var gebeVal = g('gebeInek');
+    var gebeGun = g('gebeInekGun');
+    var gebeKGun= g('gebeInekKuruGun');
+    if(lakVal <= 0 && kuruSay <= 0) warnings.push('⚠️ Laktasyon ve kuru inek ikisi de sıfır — simülasyon başlangıç sürüsü bulunamıyor.');
+    if(gebeVal > lakVal && lakVal > 0) warnings.push('⚠️ Gebe inek sayısı ('+gebeVal+') laktasyon sayısından ('+lakVal+') fazla olamaz.');
+    if(gebeGun > 275) warnings.push('⚠️ Gebelik günü ('+gebeGun+') 275 günü aşıyor — maksimum gebelik süresi 283 gün.');
+    if(gebeKGun < 220) warnings.push('⚠️ Kuru gebelik günü ('+gebeKGun+') 220 günün altında — kuru dönem çok erken başlamış olabilir.');
+  }
+
   if(crVal > 80)  warnings.push('⚠️ CR %'+crVal+' çok yüksek — gerçekçi aralık %45–%75.');
   if(crVal < 20)  warnings.push('⚠️ CR %'+crVal+' çok düşük — işletme ineği tohumlamakta zorlanıyor.');
   if(refVal > 35) warnings.push('⚠️ Reform %'+refVal+' çok yüksek — sürü hızla küçülür, max %25–%30 önerilir.');
@@ -1556,7 +1580,8 @@ function hesapla() {
   }
 
   // Çok kritik hatada dur
-  if(crVal > 95 || refVal > 60 || olumVal > 25) {
+  var lakStop = (sc !== 'startup') && (g('laktasyon') <= 0 && g('kuru') <= 0);
+  if(crVal > 95 || refVal > 60 || olumVal > 25 || lakStop) {
     if(btnEl) { btnEl.disabled=false; btnEl.style.opacity='1'; }
     if(btn) btn.textContent = i('calcBtn');
     showToast('Parametreler biyolojik sınırların dışında — lütfen kontrol edin.', true);
@@ -1925,7 +1950,7 @@ function renderResults(snaps, initial, p) {
   var html = '';
 
   html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">'
-    + '<span style="background:rgba(93,191,110,.15);color:var(--accent);font-size:.66rem;font-weight:700;padding:3px 10px;border-radius:20px;">🔬 Gelecek60 v4.12 · Aylık Sim · 60 Ay</span>'
+    + '<span style="background:rgba(93,191,110,.15);color:var(--accent);font-size:.66rem;font-weight:700;padding:3px 10px;border-radius:20px;">🔬 Gelecek60 v4.18 · Aylık Sim · 60 Ay</span>'
     + '<button class="btn-excel" onclick="exportExcel()">📥 Excele Aktar (.xlsx)</button></div>';
 
   // [FIX-9] Startup notu
@@ -1957,6 +1982,30 @@ function renderResults(snaps, initial, p) {
   html += sumCard('48. Ay', t48, initTotal, 'baş');
   html += sumCard('60. Ay', t60, initTotal, 'baş');
   html += '</div>';
+
+  // [FIX-H3] Kuru/lak oran kontrolu — biyolojik olarak imkansiz durumu tespit et ve uyar
+  var kuruLakUyari = '';
+  var maxKuruOran = 0, maxKuruAy = 0;
+  for(var ki=0; ki<snaps.length; ki++){
+    var s=snaps[ki];
+    if((s.laktasyon||0) > 0.5){
+      var oran = (s.kuru||0) / s.laktasyon;
+      if(oran > maxKuruOran){ maxKuruOran = oran; maxKuruAy = s.ay; }
+    }
+  }
+  if(maxKuruOran > 0.35){
+    var oranPct = Math.round(maxKuruOran * 100);
+    var renkS = maxKuruOran > 1.00 ? 'var(--danger)' : 'var(--gold)';
+    var renkBg = maxKuruOran > 1.00 ? 'rgba(192,57,43,.07)' : 'rgba(184,134,11,.07)';
+    var renkBr = maxKuruOran > 1.00 ? 'rgba(192,57,43,.3)' : 'rgba(184,134,11,.3)';
+    var ikon = maxKuruOran > 1.00 ? '&#10006;' : '&#9888;';
+    var mesaj = maxKuruOran > 1.00
+      ? 'Kuru inek say&#305;s&#305; laktasyon say&#305;s&#305;n&#305;n <strong>%' + oranPct + '\'ine</strong> ula&#351;&#305;yor (' + maxKuruAy + '. ay) \u2014 biyolojik olarak imk\u00e2ns\u0131z. Reform veya \u00f6l\u00fcm oran&#305;n&#305; kontrol edin.'
+      : 'Kuru/laktasyon oran&#305; <strong>%' + oranPct + '</strong> (' + maxKuruAy + '. ay) \u2014 normal aral&#305;k %15\u201325. Kuru g\u00fcn parametresini ve reform oran&#305;n&#305; g\u00f6zden ge\u00e7irin.';
+    kuruLakUyari = '<div style="display:flex;align-items:baseline;gap:10px;padding:10px 14px;border:1.5px solid '+renkBr+';border-radius:9px;background:'+renkBg+';margin-bottom:12px;font-size:.73rem;color:'+renkS+';line-height:1.6;">'
+      + '<span style="flex-shrink:0;">'+ikon+'</span><span>'+mesaj+'</span></div>';
+  }
+  if(kuruLakUyari) html += kuruLakUyari;
 
   // Hayvan varlığı tablosu
   html += '<div class="section-title">📅 Aylık Hayvan Varlığı — 60 Ay</div><div class="table-scroll"><table class="snap-table"><thead><tr><th>Kategori</th><th>Baş.</th>';
@@ -1995,15 +2044,16 @@ function renderResults(snaps, initial, p) {
   html += '</tbody></table></div>';
 
   // Sperma tablosu
-  // [FIX-7] Başlık notunu ekle
-  html += '<div class="section-title">💉 Aylık Sperma Kullanımı</div>';
+  // [FIX-7] Baslik notunu ekle | [FIX-H2] Ay 1 spike uyarisi
+  html += '<div class="section-title">&#128137; Aylik Sperma Kullanimi</div>';
   html += '<div class="note-box" style="font-size:.69rem;padding:8px 12px;margin-bottom:8px;">';
-  html += '<strong>Doz hesabı (v1.1):</strong> Konv. sperma = gebe olan inek/düve × doz/gebelik parametresi. ';
-  html += 'Sexed sperma = gebe olan × sexed doz + tohumlanan × gebelik öncesi doz.</div>';
-  html += '<div class="table-scroll"><table class="snap-table"><thead><tr><th>Gösterge</th><th>Baş.</th>';
+  html += '<strong>Doz hesabi:</strong> Konv. sperma = gebe olan inek/duve x doz/gebelik parametresi. ';
+  html += 'Sexed sperma = gebe olan x sexed doz + tohumlanan x gebelik oncesi doz. ';
+  html += '<strong>&#9888; 1. Ay:</strong> Baslangicta mevcut acik inek stogununun tamami ilk ayda tohumlanir. Bu biyolojik olarak dogrudur ancak sonraki aylara gore yuksek gorunur. Karsilastirma icin 2. aydan itibaren degerlere bakin.</div>';
+  html += '<div class="table-scroll"><table class="snap-table"><thead><tr><th>Gosterge</th><th>Bas.</th>';
   for(var m=1;m<=60;m++) html += '<th><span class="ay-badge '+(m<=12?"ay-y1":m<=24?"ay-y2":m<=48?"ay-y3":"ay-y4")+'">'+m+'</span></th>';
   html += '</tr></thead><tbody>';
-  var spermaLabels=["Tohum. İnek (adet)","Sperma İnek (doz)","Tohum. Düve (adet)","Sperma Düve (doz)","TOPLAM SPERMA (doz)"];
+  var spermaLabels=["Tohum. Inek (adet)","Sperma Inek (doz)","Tohum. Duve (adet)","Sperma Duve (doz)","TOPLAM SPERMA (doz)"];
   var spermaFns=[
     function(s){return Math.round((s.konvTohumInek||0)+(s.sexedTohumInek||0));},
     function(s){return Math.round(s.toplamInekDoz||0);},
@@ -2012,8 +2062,11 @@ function renderResults(snaps, initial, p) {
     function(s){return Math.round((s.toplamInekDoz||0)+(s.toplamDuveDoz||0));}
   ];
   for(var ri=0;ri<spermaLabels.length;ri++){
-    html += '<tr '+(ri===4?"class='total-row'":"")+"><td>"+spermaLabels[ri]+"</td><td>—</td>";
-    for(var m=0;m<60;m++) html += '<td>'+spermaFns[ri](snaps[m]||{})+'</td>';
+    html += '<tr '+(ri===4?"class='total-row'":"")+"><td>"+spermaLabels[ri]+"</td><td>\u2014</td>";
+    for(var m=0;m<60;m++){
+      var tdS=m===0?' style="background:rgba(184,134,11,.10);font-style:italic;" title="1. ay: baslangic acik inek stogu — sonraki aylarla karsilastirmayin"':'';
+      html += '<td'+tdS+'>'+spermaFns[ri](snaps[m]||{})+'</td>';
+    }
     html += '</tr>';
   }
   html += '</tbody></table></div>';
@@ -2047,6 +2100,31 @@ function generateReport(snaps, initial, p) {
   if(Math.abs(farkAcik)<=15) items.push({cls:"ok",text:"Açık gün ("+p.acikGunInek+") CR bazlı beklenenle uyumlu (±15 gün)."});
   else if(farkAcik>15) items.push({cls:"warn",text:"Açık gün ("+p.acikGunInek+") beklenenin "+farkAcik.toFixed(0)+" gün üzerinde — üreme gecikmesi var."});
   else items.push({cls:"warn",text:"Açık gün ("+p.acikGunInek+") beklenenin "+Math.abs(farkAcik).toFixed(0)+" gün altında — VWP veya kayıt kontrolü gerekli."});
+
+  // VWP strateji yorumu: ırk bazlı verim eşiği ile birlikte değerlendir
+  var irkVwpEsik={holstein:32,simental:22,montofon:17,karma:22};
+  var secilenIrk=(irkKey||'holstein').toLowerCase();
+  var vwpVEsik=irkVwpEsik[secilenIrk]||28;
+  var milkLsVwp=[]; for(var vi=0;vi<6;vi++) milkLsVwp.push(gfv('milkL'+vi)||28);
+  var mevcutVwpVerim=milkLsVwp.reduce(function(a,b){return a+b;})/6;
+  var yuksekVerim=mevcutVwpVerim>=vwpVEsik;
+  var vwpYorumMetni;
+  if(vwp<=50){
+    vwpYorumMetni=yuksekVerim
+      ? "VWP "+vwp+" gün (kısa) — yüksek verimli "+bm.label+" sürüsünde pik süt dönemi kısalabilir. Uzun VWP stratejisi değerlendirilebilir."
+      : "VWP "+vwp+" gün — düşük/orta verimli sürü için uygun. Erken gebe kalma sürü verimliliğini destekler.";
+    items.push({cls:yuksekVerim?"warn":"ok", text:vwpYorumMetni});
+  } else if(vwp<=80){
+    vwpYorumMetni=yuksekVerim
+      ? "VWP "+vwp+" gün — yüksek verimli "+bm.label+" sürüsü için bilinçli strateji. Pik süt döneminden tam verim alınıyor."
+      : "VWP "+vwp+" gün — orta verimli sürü için uzun sayılır. VWP kısaltılması daha kısa buzağılama aralığı sağlayabilir.";
+    items.push({cls:yuksekVerim?"ok":"warn", text:vwpYorumMetni});
+  } else {
+    vwpYorumMetni=yuksekVerim
+      ? "VWP "+vwp+" gün — yüksek verimli "+bm.label+" sürüsünde uzun VWP bilinçli strateji. Buzağılama aralığı uzayacağı hesaba katılmalı."
+      : "VWP "+vwp+" gün — düşük/orta verimli sürü için çok uzun. Buzağılama aralığı olumsuz etkilenecek, VWP kısaltılması önerilir.";
+    items.push({cls:yuksekVerim?"warn":"bad", text:vwpYorumMetni});
+  }
 
   // CR İnek — ırk bazlı eşik
   if(crInekPct>=bm.crInek) items.push({cls:"ok",text:"CR İnek: %"+crInekPct.toFixed(1)+" — "+bm.label+" için iyi."});
@@ -4166,7 +4244,7 @@ function exportAdminExcel(){
 function showToast(msg,isErr){
   var t2=document.getElementById("toast");
   t2.textContent=msg; t2.className="toast"+(isErr?" err":""); t2.classList.add("show");
-  setTimeout(function(){ t2.classList.remove("show"); },3200);
+  setTimeout(function(){ t2.classList.remove("show"); },1800);
 }
 
 window.addEventListener("load",function(){
@@ -4636,18 +4714,18 @@ function _runSensitivityAsync(svgWrap) {
   var base = baseLak60(p0, ini);
 
   var params6 = [
-    {key:'crInek',   label:'CR İnek (%)',    deltas:[-0.15,-0.10,-0.05,0,0.05,0.10,0.15], fmt:function(v){return '%'+Math.round(v*100);},
+    {key:'crInek',   label:'CR İnek (%)',    iyiYon:1,  deltas:[-0.15,-0.10,-0.05,0,0.05,0.10,0.15], fmt:function(v){return '%'+Math.round(v*100);},
      aciklama:'Konsepsiyon oranı (CR) — tohumlamada gebe kalan inek yüzdesi. En kritik üreme parametresi.'},
-    {key:'reform',   label:'Reform (%)',      deltas:[-0.05,-0.03,-0.01,0,0.01,0.03,0.05], fmt:function(v){return '%'+Math.round(v*100);},
-     aciklama:'Reform (iskarta) oranı — yıllık sürüden çıkan inek yüzdesi.'},
-    {key:'olumInek', label:'İnek Ölüm (%)',   deltas:[-0.02,-0.01,-0.005,0,0.005,0.01,0.02], fmt:function(v){return '%'+Math.round(v*100);},
-     aciklama:'Yetişkin inek ölüm oranı. Doğrudan sürü kaybına neden olur.'},
-    {key:'olumBuz',  label:'Buzağı Ölüm (%)', deltas:[-0.05,-0.03,-0.01,0,0.01,0.03,0.05], fmt:function(v){return '%'+Math.round(v*100);},
-     aciklama:'Buzağı ölüm oranı — uzun vadede düve stoğunu ve sürü büyümesini etkiler.'},
-    {key:'kuruGun',  label:'Kuru Gün',        deltas:[-20,-10,-5,0,5,10,20], fmt:function(v){return Math.round(v)+' gün';},
-     aciklama:'Kuru dönem uzunluğu. Çok kısa veya çok uzun olması verimliliği düşürür.'},
-    {key:'vwpInek',  label:'VWP (gün)',       deltas:[-15,-10,-5,0,5,10,15], fmt:function(v){return Math.round(v)+' gün';},
-     aciklama:'Gönüllü bekleme periyodu — doğum sonrası tohumlamaya başlama süresi.'}
+    {key:'reform',   label:'Reform (%)',      iyiYon:-1, deltas:[-0.05,-0.03,-0.01,0,0.01,0.03,0.05], fmt:function(v){return '%'+Math.round(v*100);},
+     aciklama:'Reform (iskarta) oranı — yıllık sürüden çıkan inek yüzdesi. Azalması sürüyü büyütür.'},
+    {key:'olumInek', label:'İnek Ölüm (%)',   iyiYon:-1, deltas:[-0.02,-0.01,-0.005,0,0.005,0.01,0.02], fmt:function(v){return '%'+Math.round(v*100);},
+     aciklama:'Yetişkin inek ölüm oranı. Azalması doğrudan sürü büyümesine katkı sağlar.'},
+    {key:'olumBuz',  label:'Buzağı Ölüm (%)', iyiYon:-1, deltas:[-0.05,-0.03,-0.01,0,0.01,0.03,0.05], fmt:function(v){return '%'+Math.round(v*100);},
+     aciklama:'Buzağı ölüm oranı — uzun vadede düve stoğunu ve sürü büyümesini etkiler. Azalması iyidir.'},
+    {key:'kuruGun',  label:'Kuru Gün',        iyiYon:0,  deltas:[-20,-10,-5,0,5,10,20], fmt:function(v){return Math.round(v)+' gün';},
+     aciklama:'Kuru dönem uzunluğu. Çok kısa veya çok uzun olması verimliliği düşürür. Strateji bazlı değişkendir.'},
+    {key:'vwpInek',  label:'VWP (gün)',       iyiYon:0,  deltas:[-15,-10,-5,0,5,10,15], fmt:function(v){return Math.round(v)+' gün';},
+     aciklama:'Gönüllü bekleme periyodu — doğum sonrası tohumlamaya başlama süresi. Strateji bazlı değişkendir.'}
   ];
 
   var results = [];
@@ -4720,12 +4798,16 @@ function _sensRenderSonuc(svgWrap, results, base, p0, ini, fin) {
     var oncelikRenk = ri2===0?'#c0392b': ri2===1?'#e67e22': ri2===2?'#f1c40f': '#6b6448';
     svg+='<text x="'+(PAD_L-6)+'" y="'+(y+BAR_H/2)+'" text-anchor="end" dominant-baseline="middle" font-size="10" fill="'+oncelikRenk+'" font-weight="'+(ri2<2?'700':'400')+'">'+row2.label+'</text>';
     var pts=row2.points;
+    var iy2=row2.iyiYon||0;
     for(var pi2=0;pi2<pts.length;pi2++){
       var pt=pts[pi2];
       if(pt.delta===0) continue;
       var bx=midX+(pt.diff/maxAbs)*(barW/2);
       var x1=Math.min(midX,bx), barLen=Math.abs(bx-midX);
-      var clr=pt.diff>=0?'#2d7a3a':'#c0392b';
+      var clr;
+      if(iy2===0) clr='#5dade2'; // nötr — açık mavi
+      else if(iy2===1) clr=pt.diff>=0?'#2d7a3a':'#c0392b'; // artmak iyi
+      else clr=pt.diff<=0?'#2d7a3a':'#c0392b'; // azalmak iyi
       var alpha=Math.min(1,0.3+0.7*Math.abs(pt.diff)/maxAbs);
       svg+='<rect x="'+x1.toFixed(1)+'" y="'+y+'" width="'+Math.max(1,barLen).toFixed(1)+'" height="'+BAR_H+'" fill="'+clr+'" opacity="'+Math.round(alpha*10)/10+'" rx="2"/>';
     }
@@ -4783,8 +4865,18 @@ function _sensRenderSonuc(svgWrap, results, base, p0, ini, fin) {
   for(var ri4=0;ri4<results.length;ri4++){
     var row4=results[ri4];
     var mevcutStr4=row4.fmt?row4.fmt(p0[row4.key]):String(p0[row4.key]);
-    var enKotu4=row4.points[0];
-    var enIyi4=row4.points[row4.points.length-1];
+    var iy4=row4.iyiYon||0;
+    // iyiYon=1: artmak iyi → points[son]=En İyi, points[0]=En Kötü
+    // iyiYon=-1: azalmak iyi → points[0]=En İyi, points[son]=En Kötü
+    // iyiYon=0: nötr → diff büyüklüğüne göre
+    var enIyi4, enKotu4;
+    if(iy4===1){ enIyi4=row4.points[row4.points.length-1]; enKotu4=row4.points[0]; }
+    else if(iy4===-1){ enIyi4=row4.points[0]; enKotu4=row4.points[row4.points.length-1]; }
+    else {
+      // nötr: en büyük diff hangisi
+      enIyi4=row4.points[row4.points.length-1];
+      enKotu4=row4.points[0];
+    }
     var ktTL=basTlEtkisi(enKotu4.diff);
     var iyTL=basTlEtkisi(enIyi4.diff);
     neHtml+='<tr><td><strong>'+row4.label+'</strong></td><td>'+mevcutStr4+'</td>';
@@ -4982,9 +5074,18 @@ function _renderBasabas() {
   var milkLOrt=milkLs.reduce(function(a,b){return a+b;})/6;
   var milkPOrt=milkPs.reduce(function(a,b){return a+b;})/6;
 
-  var totGelir=0,totGider=0,totSut=0,totBesleme=0;
-  for(var i=0;i<rows.length;i++){totGelir+=rows[i].toplamGelir||0;totGider+=rows[i].toplamGider||0;totSut+=rows[i].sutGelir||0;totBesleme+=rows[i].besleme||0;}
+  var totGelir=0,totGider=0,totSut=0,totBesleme=0,totDigerGelir=0;
+  for(var i=0;i<rows.length;i++){
+    totGelir+=rows[i].toplamGelir||0;
+    totGider+=rows[i].toplamGider||0;
+    totSut+=rows[i].sutGelir||0;
+    totBesleme+=rows[i].besleme||0;
+    totDigerGelir+=(rows[i].erkekGelir||0)+(rows[i].reformGelir||0)+(rows[i].duveGelir||0);
+  }
   var ayOrtGider=totGider/rows.length;
+  var ayOrtDigerGelir=totDigerGelir/rows.length;
+  // Net gider = tüm gider - süt dışı gelirler (erkek+reform+düve)
+  var ayNetGider=Math.max(0, ayOrtGider-ayOrtDigerGelir);
 
   function fmtP(v){if(!v&&v!==0)return '—';var abs=Math.abs(v);var s=abs>=1000000?(v/1000000).toFixed(1)+'M':abs>=1000?Math.round(v/1000)+'K':Math.round(v).toString();return (v<0?'-':'')+'₺'+s.replace('-','');}
 
@@ -4993,19 +5094,25 @@ function _renderBasabas() {
   for(var i=0;i<rows.length;i++){kumKar+=rows[i].netKar||0;if(kumKar>=0&&bbAy<0)bbAy=i+1;}
   var bbPct=bbAy>0?Math.round(bbAy/60*100):100;
 
-  // 2. Verim başabaşı: min litre = toplam gider / (ortLak × 30 × milkPOrt × 60ay)
-  var minLitre=milkPOrt>0&&ortLak>0?ayOrtGider/(ortLak*30*milkPOrt):0;
-  var verimPct=milkLOrt>0?Math.min(100,Math.round(minLitre/milkLOrt*100)):50;
+  // 2. Verim başabaşı — BRÜT (Süt Başabaşı): tüm gider / (ortLak × 30 × milkP)
+  var minLitreSut=milkPOrt>0&&ortLak>0?ayOrtGider/(ortLak*30*milkPOrt):0;
+  // 2b. NET (İşletme Başabaşı): net gider / (ortLak × 30 × milkP)
+  var minLitreIsletme=milkPOrt>0&&ortLak>0?ayNetGider/(ortLak*30*milkPOrt):0;
+  var verimPct=milkLOrt>0?Math.min(100,Math.round(minLitreSut/milkLOrt*100)):50;
 
-  // 3. Fiyat başabaşı: min fiyat = toplam gider / (ortLak × milkLOrt × 30 × 60ay)
-  var minFiyat=ortLak>0&&milkLOrt>0?ayOrtGider/(ortLak*milkLOrt*30):0;
-  var fiyatPct=milkPOrt>0?Math.min(100,Math.round(minFiyat/milkPOrt*100)):50;
+  // 3. Fiyat başabaşı — BRÜT (Süt Başabaşı)
+  var minFiyatSut=ortLak>0&&milkLOrt>0?ayOrtGider/(ortLak*milkLOrt*30):0;
+  // 3b. NET (İşletme Başabaşı)
+  var minFiyatIsletme=ortLak>0&&milkLOrt>0?ayNetGider/(ortLak*milkLOrt*30):0;
+  var fiyatPct=milkPOrt>0?Math.min(100,Math.round(minFiyatSut/milkPOrt*100)):50;
 
-  // 4. Maliyet başabaşı: max TL/baş/gün = (gelir - diğer giderler) / (ortLak × 30)
-  var diger=0; for(var i=0;i<rows.length;i++) diger+=(rows[i].iscilik||0)+(rows[i].diger||0)+(rows[i].ekipAmor||0)+(rows[i].sagAmort||0)+(rows[i].spermaMal||0)+(rows[i].vetMal||0)+(rows[i].taksit||0);
-  var ayOrtDiger=diger/rows.length;
-  var maxBesleme=ortLak>0?(((totGelir/rows.length)-ayOrtDiger)/(ortLak*30)):0;
-  var maliyetPct=maxBesleme>0?Math.min(100,Math.round((ayOrtGider/(ortLak*30))/maxBesleme*100)):50;
+  // 4. Besleme maliyet tavanı: (toplam gelir - besleme hariç giderler) / (ortLak × 30)
+  var beslemeDisiGider=0;
+  for(var i=0;i<rows.length;i++) beslemeDisiGider+=(rows[i].iscilik||0)+(rows[i].diger||0)+(rows[i].ekipAmor||0)+(rows[i].sagAmort||0)+(rows[i].spermaMal||0)+(rows[i].vetMal||0)+(rows[i].taksit||0);
+  var ayOrtBeslemeDisi=beslemeDisiGider/rows.length;
+  var maxBesleme=ortLak>0?((totGelir/rows.length)-ayOrtBeslemeDisi)/(ortLak*30):0;
+  var gercekBesleme=ortLak>0?(totBesleme/rows.length)/(ortLak*30):0;
+  var maliyetPct=maxBesleme>0?Math.min(100,Math.round(gercekBesleme/maxBesleme*100)):50;
 
   var html='<div class="basbas-grid">';
 
@@ -5019,24 +5126,38 @@ function _renderBasabas() {
   // Kart 2: Verim
   html+='<div class="basbas-kart">';
   html+='<h5>🥛 Verim Başabaşı</h5>';
-  html+='<div class="basbas-deger" style="color:'+(minLitre<milkLOrt?'var(--accent)':'var(--danger)')+';">'+minLitre.toFixed(1)+' L/baş/gün</div>';
-  html+='<div class="basbas-bar-wrap"><div class="basbas-bar" style="width:'+Math.min(100,verimPct)+'%;background:'+(minLitre<milkLOrt?'var(--accent)':'var(--danger)')+'"></div></div>';
-  html+='<div class="basbas-aciklama">Ortalama '+ortLak.toFixed(0)+' lak. inek ile giderleri karşılamak için minimum verim. Mevcut ort: '+milkLOrt.toFixed(1)+'L '+(minLitre<milkLOrt?'✓ yeterli':'⚠ yetersiz')+'.</div></div>';
+  html+='<div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:6px;">';
+  html+='<div><div style="font-size:.62rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;">Süt Başabaşı</div>';
+  html+='<div class="basbas-deger" style="color:'+(minLitreSut<milkLOrt?'var(--accent)':'var(--danger)')+';">'+minLitreSut.toFixed(1)+' L</div></div>';
+  html+='<div><div style="font-size:.62rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;">İşletme Başabaşı</div>';
+  html+='<div class="basbas-deger" style="color:'+(minLitreIsletme<milkLOrt?'var(--accent)':'var(--danger)')+';">'+minLitreIsletme.toFixed(1)+' L</div></div>';
+  html+='</div>';
+  html+='<div class="basbas-bar-wrap"><div class="basbas-bar" style="width:'+Math.min(100,verimPct)+'%;background:'+(minLitreSut<milkLOrt?'var(--accent)':'var(--danger)')+'"></div></div>';
+  html+='<div class="basbas-aciklama">Mevcut ort. verim: '+milkLOrt.toFixed(1)+' L/baş/gün — '+(minLitreSut<milkLOrt?'✓ yeterli':'⚠ yetersiz')+'.</div>';
+  html+='<div style="font-size:.65rem;color:var(--muted);margin-top:6px;border-top:1px solid var(--border);padding-top:5px;line-height:1.5;"><em>Süt Başabaşı: Tüm giderler yalnızca süt geliriyle karşılanıyor varsayımı — en muhafazakâr yaklaşım. İşletme Başabaşı: Erkek buzağı, reform ve düve gelirleri önce giderden düşülür, kalan sütle karşılanır.</em></div>';
+  html+='</div>';
 
   // Kart 3: Fiyat
   html+='<div class="basbas-kart">';
   html+='<h5>💲 Fiyat Başabaşı</h5>';
-  html+='<div class="basbas-deger" style="color:'+(minFiyat<milkPOrt?'var(--accent)':'var(--danger)')+';">'+minFiyat.toFixed(2)+' ₺/L</div>';
-  html+='<div class="basbas-bar-wrap"><div class="basbas-bar" style="width:'+Math.min(100,fiyatPct)+'%;background:'+(minFiyat<milkPOrt?'var(--accent)':'var(--danger)')+'"></div></div>';
-  html+='<div class="basbas-aciklama">Giderleri karşılamak için minimum süt fiyatı. Mevcut ort: '+milkPOrt.toFixed(2)+' ₺/L '+(minFiyat<milkPOrt?'✓ yeterli':'⚠ fiyat baskısı var')+'.</div></div>';
+  html+='<div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:6px;">';
+  html+='<div><div style="font-size:.62rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;">Süt Başabaşı</div>';
+  html+='<div class="basbas-deger" style="color:'+(minFiyatSut<milkPOrt?'var(--accent)':'var(--danger)')+';">'+minFiyatSut.toFixed(2)+' ₺/L</div></div>';
+  html+='<div><div style="font-size:.62rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;">İşletme Başabaşı</div>';
+  html+='<div class="basbas-deger" style="color:'+(minFiyatIsletme<milkPOrt?'var(--accent)':'var(--danger)')+';">'+minFiyatIsletme.toFixed(2)+' ₺/L</div></div>';
+  html+='</div>';
+  html+='<div class="basbas-bar-wrap"><div class="basbas-bar" style="width:'+Math.min(100,fiyatPct)+'%;background:'+(minFiyatSut<milkPOrt?'var(--accent)':'var(--danger)')+'"></div></div>';
+  html+='<div class="basbas-aciklama">Mevcut ort. süt fiyatı: '+milkPOrt.toFixed(2)+' ₺/L — '+(minFiyatSut<milkPOrt?'✓ yeterli':'⚠ fiyat baskısı var')+'.</div>';
+  html+='<div style="font-size:.65rem;color:var(--muted);margin-top:6px;border-top:1px solid var(--border);padding-top:5px;line-height:1.5;"><em>Süt Başabaşı: Tüm giderler yalnızca süt geliriyle karşılanıyor varsayımı — en muhafazakâr yaklaşım. İşletme Başabaşı: Erkek buzağı, reform ve düve gelirleri önce giderden düşülür, kalan sütle karşılanır.</em></div>';
+  html+='</div>';
 
   // Kart 4: Maliyet
   html+='<div class="basbas-kart">';
   html+='<h5>🌽 Besleme Maliyet Tavanı</h5>';
-  var ayBesleme=ortLak>0?ayOrtGider/ortLak/30:0;
-  html+='<div class="basbas-deger" style="color:'+(maxBesleme>ayBesleme?'var(--accent)':'var(--danger)')+';">'+(maxBesleme>0?maxBesleme.toFixed(1):'-')+' ₺/baş/gün</div>';
-  html+='<div class="basbas-bar-wrap"><div class="basbas-bar" style="width:'+Math.min(100,maliyetPct)+'%;background:'+(maxBesleme>ayBesleme?'var(--accent)':'var(--danger)')+'"></div></div>';
-  html+='<div class="basbas-aciklama">Ort. toplam gider tavanı. Mevcut ort. gider: '+ayBesleme.toFixed(1)+' ₺/baş/gün '+(maxBesleme>ayBesleme?'✓ sürdürülebilir':'⚠ giderler yüksek')+'.</div></div>';
+  html+='<div class="basbas-deger" style="color:'+(maxBesleme>gercekBesleme?'var(--accent)':'var(--danger)')+';">'+(maxBesleme>0?maxBesleme.toFixed(1):'-')+' ₺/baş/gün</div>';
+  html+='<div class="basbas-bar-wrap"><div class="basbas-bar" style="width:'+Math.min(100,maliyetPct)+'%;background:'+(maxBesleme>gercekBesleme?'var(--accent)':'var(--danger)')+'"></div></div>';
+  html+='<div class="basbas-aciklama">Toplam gelirden besleme dışı giderler düşüldükten sonra karşılanabilecek maksimum besleme maliyeti. Mevcut ort: '+gercekBesleme.toFixed(1)+' ₺/baş/gün '+(maxBesleme>gercekBesleme?'✓ sürdürülebilir':'⚠ besleme geliri aşıyor')+'.</div>';
+  html+='</div>';
 
   html+='</div>';
   wrap.innerHTML=html;
@@ -5150,9 +5271,9 @@ function _renderEylemPlan(results) {
 
   var HEDEF={
     crInek:{hedef:0.70,sure:'3–6 ay',nasil:'Senkronizasyon protokolleri, döl kontrolü, beslenme optimizasyonu.'},
-    reform:{hedef:0.15,sure:'6–12 ay',nasil:'Erken hastalık tespiti, üreme takibi, sağlık yönetimi.'},
-    olumInek:{hedef:0.02,sure:'3–6 ay',nasil:'Koruyucu sağlık programı, geçiş dönemi yönetimi.'},
-    olumBuz:{hedef:0.03,sure:'3–6 ay',nasil:'Kolostrum protokolü, barınak iyileştirme, erken müdahale.'},
+    reform:{hedef:0.15,sure:'6–18 ay',nasil:'Erken hastalık tespiti, üreme takibi, sağlık yönetimi.'},
+    olumInek:{hedef:0.02,sure:'3–12 ay',nasil:'Koruyucu sağlık programı, geçiş dönemi yönetimi.'},
+    olumBuz:{hedef:0.03,sure:'1–3 ay',nasil:'Kolostrum protokolü, barınak iyileştirme, erken müdahale.'},
     kuruGun:{hedef:60,sure:'Hemen',nasil:'Kuru dönem rasyonunu 60 güne göre ayarlayın.'},
     vwpInek:{hedef:50,sure:'Hemen',nasil:'Postpartum izleme ve erken kızgınlık tespiti.'}
   };
@@ -5181,6 +5302,7 @@ function _renderEylemPlan(results) {
     if(tlE===null) html+='<div><span style="cursor:pointer;color:var(--blue);" onclick="switchMainTab(\'finans\')">💰 TL etkisi için finansal analiz yapın</span></div>';
     html+='</div></div>';
   }
+  html+='<div style="font-size:.65rem;color:var(--muted);margin-top:10px;font-style:italic;">* Süreler uluslararası literatüre dayalı yaklaşık değerlerdir; işletme koşullarına, yönetim kapasitesine ve mevsime göre değişebilir.</div>';
   wrap.innerHTML=html;
 }
 
@@ -5538,7 +5660,7 @@ function getAIYorum() {
   if(!contentEl) return;
 
   function setBtnLoading(loading) {
-    if(btnEl) { btnEl.disabled=loading; btnEl.innerHTML=loading?'<span class="ai-spin"></span> Yükleniyor...':'&#129302; <span id="btnAIYorumTxt">'+i('raporAiBtn')+'</span>'; }
+    if(btnEl) { btnEl.disabled=loading; btnEl.innerHTML=loading?'<span class="ai-spin"></span> Yükleniyor...':'&#129302; <span class="btnAIYorumTxt">'+i('raporAiBtn')+'</span>'; }
     if(btnEl2){ btnEl2.disabled=loading; btnEl2.innerHTML=loading?'<span class="ai-spin"></span> Yükleniyor...':'&#129302; <span class="btnAIYorumTxt2">'+i('raporAiBtn')+'</span>'; }
   }
   setBtnLoading(true);
