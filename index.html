@@ -1,19 +1,60 @@
 <!DOCTYPE html>
-<!--Gelecek60 v4.20 — FiyatPopup
-KARARLAR:
-- Fiyat popup: Her acilista zorunlu, gec butonu yok. Tamam (dolu/degisiklik yok) veya Guncelle (degistirip kaydet).
-- 8 fiyat alani: sut, erkekBuz(0-2ay), disiBuz(0-2ay), besiKarkas, inekKarkas, duveKarkas, gebeDuve, bosDuve.
-- Validasyon: Tum alanlar dolu olmadan Tamam/Guncelle calismaz. Eksik alan kirmizi cerceve.
-- localStorage g60fiyatlar key ile saklanir.
-- gFiyat global objesi tum moduller icin erisimde.
-- fiyatlariFinansaAktar(): sut->milkP, inekKarkas->finKarkasKg, gebeDuve->finDuveFiyat (userModified flag ile kullanici degisikligi korunur).
-- Header'a altin renk Fiyatlar butonu eklendi.
-- window.load'da 400ms delay ile popup acilir (Firebase init sonrasi).
-DOKUNULMAYAN MODULLER: sim24, calcFinans, renderFinansResults, rapor, Firebase, i18n, Admin.
-SIRADAKI: Kapasite formu (sim sekmesi ustu, her iki senaryo), kapasite ozet (sim alti), kapasite raporu (rapor sekmesi detay).
+<!--Gelecek60 v4.21 — G1G2G3G4G5G6G7G8G9+Mimari
+YAPILAN:
+- v4.20: Fiyat popup 8 alan, localStorage, gFiyat objesi, fiyatlariFinansaAktar(), Fiyatlar butonu.
+- G1-FIX: Ikinci breadcrumb blogu acilmamis comment olarak kalmisti — eksik <!-- eklendi.
+- G2-FIX: Fiyat popup inputlarinda binlik ayrac — blur'da format, focus'ta raw.
+- G3-FIX: fp_erkekBuz -> finErkekFiyat aktarimi fiyatlariFinansaAktar() icine eklendi.
+- G4-FIX: fmtKPI() fonksiyonu — tam deger + Milyar/Milyon alt etiketi. KPI grid guncellendi.
+- G5-FIX: Nakit akisi grafigi title yerine JS tooltip overlay (mouseenter/mouseleave).
+- G6-FIX: _renderBasabas() milkP staleness — gFiyat.fp_sut fallback eklendi.
+- G7-FIX: NeOlursa TL etiketi "tahmini sut geliri etkisi" olarak duzeltildi.
+- G8-FIX: FIYAT_KEYS 11 alana cikti. Popup'a fp_sutMiktar, fp_konvSperma, fp_sexedSperma eklendi.
+- G9-FIX: sifirlaFinans() sonunda fiyatlariFinansaAktar() cagrisi eklendi.
+- MIMARI: FIN_READONLY_IDS listesi, initFinReadonly() — finans form alanlari popup yon.
+- MIMARI: fp_sutMiktar, fp_konvSperma, fp_sexedSperma fiyatlariFinansaAktar()'a eklendi.
+- MIMARI: sifirlaFinans() readonly alanlari temizlemiyor — popup degerlerini koruyor.
+
+BEKLEYEN (v4.22+):
+- Kapasite modulu (breadcrumb'da tanimli)
+- CSS duplikasyon temizligi (~400 satir)
+- Enflasyon modu toggle (opsiyonel)
+
+BUYUK MIMARI KARAR (v4.21):
+- Popup'a 2 yeni alan: "Son 6 aylik ort. sut miktari (L/bas/gun)" + "Son 6 aylik ort. sut fiyati (TL/L)"
+- Finansal analizde 6 satirlik sut tablosu -> tek satir gri readonly gorunum
+- Tum finansal form alanlari readonly + gri stil
+- Tiklanirsa toast: "Fiyatlari degistirmek icin Fiyatlar menusu kullanin"
+- calcFinans() icinde gfv("milkL"+mi) dongusu -> tek gFiyat.fp_sutMiktar degeri
+- sifirlaFinans() readonly alanlari temizlemeyecek, popup degerlerini koruyacak
+
+KAPASITE MODULU KARARLARI (v4.22+):
+- Kapasite formu sim sekmesinde EN USTE, her iki senaryoda
+- Kategoriler: Sagilan inek, Kuru inek, Buzagi kulubesi (0-2ay disi+erkek)
+- Erkek yonetim modeli: Model1=kulubeden cikista sat, Model2=3-6ay sat, Model3=besi ahiri
+- Disi buyutme: 7-14ay duve, 15-24ay duve
+- Besi suresi: ust limit 24ay gizli, asimda uyari
+- Kapasite raporu: Sim alti kisa ozet (trafik isigi) + Rapor sekmesi detay (sunum formati)
+- Sistem otomatik karar vermez — ne zaman ne kadar fazla var gosterir, karar kullanicida
+- Fiyat popup ile entegre: Disi buzagi, erkek buzagi, duve fiyatlari zaten var
+
+FIYAT LISTESI (kesinlesik 10 alan):
+1. Cig sut (TL/L) — popup'ta "son 6 aylik ort. fiyat" olarak
+2. Son 6 aylik ort. sut miktari (L/bas/gun) — YENI
+3. Erkek buzagi 0-2ay (TL/bas)
+4. Disi buzagi 0-2ay (TL/bas)
+5. Erkek besi karkas (TL/kg)
+6. Inek karkas (TL/kg)
+7. Duve karkas (TL/kg)
+8. Gebe duve (TL/bas)
+9. Bos duve (TL/bas)
+10. Konv. sperma (TL/doz) — YENI
+11. Sexed sperma (TL/doz) — YENI
+
 BENCHMARK: Holstein zarar<28 basabas28-32 iyi32-38 mukemmel>38 | Simental zarar<18 basabas18-22 iyi22-28 mukemmel>28 | Montofon zarar<14 basabas14-17 iyi17-22 mukemmel>22 | Karma zarar<18 basabas18-22 iyi22-28 mukemmel>28
 -->
-KARARLAR:
+<!--KARARLAR:
+- v4.21: G1 breadcrumb fix. G3: fp_erkekBuz->finErkekFiyat. G9: sifirlaFinans+fiyatlariFinansaAktar.
 - F1: onIrkDegis() uyari toast. G1: Badge v4.19. G2: TL sembol font fix. G3: Turkce karakter.
 - S1: Skor neu item payda disi. S2: VWP yorum finansal bagimsiz.
 - D4: kuruGun analiz ve tablodan cikarildi. D1: CR sol bar fix. D2: Tornado bold. D3: Delta araliklari.
@@ -453,6 +494,11 @@ input[type="checkbox"]{display:none;}
 
 
 
+/* [MIMARI] Finans form readonly alanları */
+.fin-readonly-input{background:#f5f0e8!important;color:var(--muted)!important;cursor:pointer!important;border-color:var(--border)!important;}
+.fin-readonly-input:focus{outline:none!important;border-color:var(--border)!important;background:#f5f0e8!important;}
+.fin-readonly-wrap{position:relative;}
+.fin-readonly-note{font-size:.62rem;color:var(--muted);font-style:italic;margin-top:2px;}
 /* ═══ ANA SEKMELER ═══ */
 
 .cur-btn{padding:5px 13px;background:transparent;border:none;color:var(--muted);cursor:pointer;font-family:"Barlow Condensed",sans-serif;font-size:.68rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all .2s;}
@@ -695,10 +741,15 @@ input
     <div class="fiyat-modal-sub" id="fiyatPopupSub">Simülasyon, finansal analiz ve kapasite raporları için güncel fiyatları girin. Tüm alanlar zorunludur.</div>
     <div class="fiyat-grid">
       <!-- Süt -->
-      <div class="fiyat-section-label">&#128011; Süt Fiyatı</div>
-      <div class="fiyat-group" style="grid-column:1/-1;">
+      <div class="fiyat-section-label">&#128011; Süt</div>
+      <div class="fiyat-group">
         <label>Çiğ Süt Satış Fiyatı — tüm desteklemeler dahil (₺/L)</label>
         <input type="text" inputmode="decimal" id="fp_sut" placeholder="ör. 26.00" onfocus="this.select()" oninput="fiyatInputTemizle(this)">
+        <span class="fiyat-hata-msg">Bu alan zorunludur</span>
+      </div>
+      <div class="fiyat-group">
+        <label>Son 6 Aylık Ort. Süt Miktarı (L/baş/gün)</label>
+        <input type="text" inputmode="decimal" id="fp_sutMiktar" placeholder="ör. 28" onfocus="this.select()" oninput="fiyatInputTemizle(this)">
         <span class="fiyat-hata-msg">Bu alan zorunludur</span>
       </div>
       <!-- Buzağı -->
@@ -740,6 +791,18 @@ input
       <div class="fiyat-group">
         <label>Boş Düve (₺/baş)</label>
         <input type="text" inputmode="decimal" id="fp_bosDuve" placeholder="ör. 70000" onfocus="this.select()" oninput="fiyatInputTemizle(this)">
+        <span class="fiyat-hata-msg">Bu alan zorunludur</span>
+      </div>
+      <!-- Sperma -->
+      <div class="fiyat-section-label">&#129514; Sperma Fiyatları</div>
+      <div class="fiyat-group">
+        <label>Konvansiyonel Sperma (₺/doz)</label>
+        <input type="text" inputmode="decimal" id="fp_konvSperma" placeholder="ör. 300" onfocus="this.select()" oninput="fiyatInputTemizle(this)">
+        <span class="fiyat-hata-msg">Bu alan zorunludur</span>
+      </div>
+      <div class="fiyat-group">
+        <label>Sexed Sperma (₺/doz)</label>
+        <input type="text" inputmode="decimal" id="fp_sexedSperma" placeholder="ör. 1200" onfocus="this.select()" oninput="fiyatInputTemizle(this)">
         <span class="fiyat-hata-msg">Bu alan zorunludur</span>
       </div>
     </div>
@@ -867,7 +930,7 @@ input
       </div>
       <button class="btn-ub" onclick="showQR()" style="padding:5px 10px;" title="QR">&#128248;</button>
       <button onclick="openFiyatPopup(true)" style="background:var(--gold);color:#fff;border:none;border-radius:8px;padding:5px 12px;font-family:'Barlow Condensed',sans-serif;font-size:.70rem;font-weight:700;letter-spacing:1px;cursor:pointer;" title="Fiyatları Güncelle">&#128176; Fiyatlar</button>
-      <div class="badge">v4.20</div>
+      <div class="badge">v4.21</div>
     </div>
   </div>
 </header>
@@ -2073,7 +2136,7 @@ function renderResults(snaps, initial, p) {
   var html = '';
 
   html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">'
-    + '<span style="background:rgba(93,191,110,.15);color:var(--accent);font-size:.66rem;font-weight:700;padding:3px 10px;border-radius:20px;">🔬 Gelecek60 v4.19 · Aylık Sim · 60 Ay</span>'
+    + '<span style="background:rgba(93,191,110,.15);color:var(--accent);font-size:.66rem;font-weight:700;padding:3px 10px;border-radius:20px;">🔬 Gelecek60 v4.21 · Aylık Sim · 60 Ay</span>'
     + '<button class="btn-excel" onclick="exportExcel()">📥 Excele Aktar (.xlsx)</button></div>';
 
   // [FIX-9] Startup notu
@@ -2359,7 +2422,7 @@ function exportExcel() {
     ["TOPLAM SPERMA","—"].concat(snaps.map(function(s){return Math.round((s.toplamInekDoz||0)+(s.toplamDuveDoz||0));}))
   ];
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(d3),"Sperma");
-  XLSX.writeFile(wb,"Gelecek60_v4.19.xlsx");
+  XLSX.writeFile(wb,"Gelecek60_v4.21.xlsx");
 }
 
 // SIFIRLA
@@ -2727,6 +2790,20 @@ function fmtM(v){
   else formatted = Math.round(abs).toLocaleString(currentCurrency==="TL"?"tr-TR":"en-US");
   return (neg?"-":"")+'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:.85em;">'+sym+'</span>'+formatted;
 }
+// [G4-FIX] KPI kartları için tam değer + alt etiket (Milyar/Milyon)
+function fmtKPI(v){
+  var sym=currentCurrency==="TL"?"\u20BA":"$";
+  var neg = v < 0;
+  var abs = Math.abs(v);
+  var locale = currentCurrency==="TL"?"tr-TR":"en-US";
+  var tamDeger = (neg?"-":"")+'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:.82em;">'+sym+'</span>'+Math.round(abs).toLocaleString(locale);
+  var altEtiket = "";
+  if(abs>=1000000000) altEtiket = (neg?"-":"")+(abs/1000000000).toFixed(2)+" Milyar";
+  else if(abs>=1000000) altEtiket = (neg?"-":"")+(abs/1000000).toFixed(2)+" Milyon";
+  else if(abs>=1000) altEtiket = "";
+  var altHtml = altEtiket ? '<div style="font-size:.58rem;color:var(--muted);margin-top:2px;font-family:\'Barlow Condensed\',sans-serif;">'+altEtiket+'</div>' : '';
+  return tamDeger + altHtml;
+}
 function fmtFull(v){
   var sym=currentCurrency==="TL"?"\u20BA":"$";
   var neg = v < 0;
@@ -2763,11 +2840,11 @@ function renderFinansResults(finObj){
   // ── KPI KARTLARI ──
   html+="<div style=\"font-family:'Barlow Condensed',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);border-bottom:2px solid rgba(184,134,11,.15);padding-bottom:7px;margin-bottom:14px;\">💰 60 Aylık Finansal Özet</div>";
   html+="<div class=\"fin-kpi-grid\">"
-    +"<div class=\"fin-kpi\"><div class=\"kv gold\">"+fmtM(totGelir)+"</div><div class=\"kl\">Toplam Gelir</div></div>"
-    +"<div class=\"fin-kpi\"><div class=\"kv neg\">"+fmtM(totGider)+"</div><div class=\"kl\">Toplam Gider</div></div>"
-    +"<div class=\"fin-kpi\"><div class=\"kv "+(totKar>=0?"":"neg")+"\">"+fmtM(totKar)+"</div><div class=\"kl\">Net Kâr/Zarar</div></div>"
+    +"<div class=\"fin-kpi\"><div class=\"kv gold\">"+fmtKPI(totGelir)+"</div><div class=\"kl\">Toplam Gelir</div></div>"
+    +"<div class=\"fin-kpi\"><div class=\"kv neg\">"+fmtKPI(totGider)+"</div><div class=\"kl\">Toplam Gider</div></div>"
+    +"<div class=\"fin-kpi\"><div class=\"kv "+(totKar>=0?"":"neg")+"\">"+fmtKPI(totKar)+"</div><div class=\"kl\">Net Kâr/Zarar</div></div>"
     +"<div class=\"fin-kpi\"><div class=\"kv "+(marj>=0?"":"neg")+"\">%"+marj.toFixed(1)+"</div><div class=\"kl\">Net Marj</div></div>"
-    +"<div class=\"fin-kpi\"><div class=\"kv "+(avgKar>=0?"":"neg")+"\">"+fmtM(avgKar)+"</div><div class=\"kl\">Aylık Ort. K/Z</div></div>"
+    +"<div class=\"fin-kpi\"><div class=\"kv "+(avgKar>=0?"":"neg")+"\">"+fmtKPI(avgKar)+"</div><div class=\"kl\">Aylık Ort. K/Z</div></div>"
     +"<div class=\"fin-kpi\"><div class=\"kv blue\">%"+erkekKatki.toFixed(1)+"</div><div class=\"kl\">Erkek Hayvan Katkısı</div></div>"
     +"<div class=\"fin-kpi\"><div class=\"kv\">"+karliAy+"</div><div class=\"kl\">Karlı Ay</div></div>"
     +"<div class=\"fin-kpi\"><div class=\"kv "+(zararliAy>0?"neg":"")+"\">"+zararliAy+"</div><div class=\"kl\">Zararlı Ay</div></div>"
@@ -2820,18 +2897,21 @@ function renderFinansResults(finObj){
   html+="<span style=\"font-size:.6rem;color:var(--muted);\">0</span>";
   html+="<span style=\"font-size:.6rem;color:var(--danger);\">"+fmtM(-maxAbs)+"</span>";
   html+="</div>";
-  html+="<div style=\"flex:1;overflow-x:auto;\"><div style=\"display:flex;align-items:center;gap:1px;height:120px;min-width:"+Math.max(rows.length*8,300)+"px;position:relative;\">";
+  html+="<div style=\"flex:1;overflow-x:auto;\"><div id=\"nakitGrafik\" style=\"display:flex;align-items:center;gap:1px;height:120px;min-width:"+Math.max(rows.length*8,300)+"px;position:relative;\">";
   html+="<div style=\"position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(0,0,0,.1);\"></div>";
   rows.forEach(function(r){
     var h=maxAbs>0?Math.round(Math.abs(r.netKar)/maxAbs*58):0;
     var pos=r.netKar>=0;
-    html+="<div style=\"flex:1;display:flex;flex-direction:column;align-items:center;height:120px;justify-content:center;\">"
-      +(pos?"<div style=\"height:"+h+"px;width:100%;max-width:14px;background:var(--accent);border-radius:2px 2px 0 0;margin-top:auto;\" title=\""+r.ay+". ay: "+fmtFull(r.netKar)+"\"></div><div style=\"height:58px;\"></div>"
-           :"<div style=\"height:58px;\"></div><div style=\"height:"+h+"px;width:100%;max-width:14px;background:var(--danger);border-radius:0 0 2px 2px;margin-bottom:auto;\" title=\""+r.ay+". ay: "+fmtFull(r.netKar)+"\"></div>")
+    var lbl=r.ay+". ay: "+fmtFull(r.netKar).replace(/<[^>]+>/g,'');
+    html+="<div style=\"flex:1;display:flex;flex-direction:column;align-items:center;height:120px;justify-content:center;cursor:pointer;\""
+      +" onmouseenter=\"nakitTooltip(this,'"+r.ay+" ay: "+r.netKar.toFixed(0)+"')\" onmouseleave=\"nakitTooltipGizle()\">"
+      +(pos?"<div style=\"height:"+h+"px;width:100%;max-width:14px;background:var(--accent);border-radius:2px 2px 0 0;margin-top:auto;\"></div><div style=\"height:58px;\"></div>"
+           :"<div style=\"height:58px;\"></div><div style=\"height:"+h+"px;width:100%;max-width:14px;background:var(--danger);border-radius:0 0 2px 2px;margin-bottom:auto;\"></div>")
       +"</div>";
   });
   html+="</div></div></div>";
-  html+="<div style=\"font-size:.65rem;color:var(--muted);margin-bottom:14px;\">Yeşil=karlı ay, Kırmızı=zararlı ay. Her çubuk üzerine gelin.</div>";
+  html+="<div id=\"nakitTip\" style=\"display:none;position:fixed;background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:5px 10px;font-size:.72rem;color:var(--text);z-index:9999;pointer-events:none;box-shadow:0 4px 14px rgba(0,0,0,.1);\"></div>";
+  html+="<div style=\"font-size:.65rem;color:var(--muted);margin-bottom:14px;\">Yeşil=karlı ay, Kırmızı=zararlı ay. Çubuk üzerine gelin → değer gösterilir.</div>";
 
   // ── GELİR DAĞILIMI ──
   html+="<div style=\"font-family:'Barlow Condensed',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);border-bottom:2px solid rgba(184,134,11,.15);padding-bottom:7px;margin-bottom:12px;\">📋 Gelir & Gider Dağılımı (60 Ay Toplam)</div>";
@@ -4383,6 +4463,31 @@ function exportAdminExcel(){
   });
 }
 
+// [G5-FIX] Nakit akışı grafik tooltip — fare konumuna göre
+function nakitTooltip(el, lbl) {
+  var tip = document.getElementById('nakitTip');
+  if(!tip) return;
+  var sym = (typeof currentCurrency!=='undefined'&&currentCurrency==='USD')?'$':'₺';
+  var parts = lbl.split(': ');
+  var ayTxt = parts[0] || '';
+  var val = parseFloat(parts[1]) || 0;
+  var neg = val < 0;
+  var formatted = Math.round(Math.abs(val)).toLocaleString(typeof currentCurrency!=='undefined'&&currentCurrency==='USD'?'en-US':'tr-TR');
+  tip.innerHTML = '<span style="color:var(--muted);font-size:.65rem;">'+ayTxt+'</span><br>'
+    +'<strong style="color:'+(neg?'var(--danger)':'var(--accent)')+';">'+(neg?'-':'')+sym+formatted+'</strong>';
+  tip.style.display = 'block';
+  document.addEventListener('mousemove', _nakitTipMove);
+}
+function _nakitTipMove(e) {
+  var tip = document.getElementById('nakitTip');
+  if(tip) { tip.style.left=(e.clientX+14)+'px'; tip.style.top=(e.clientY-32)+'px'; }
+}
+function nakitTooltipGizle() {
+  var tip = document.getElementById('nakitTip');
+  if(tip) tip.style.display = 'none';
+  document.removeEventListener('mousemove', _nakitTipMove);
+}
+
 function showToast(msg,isErr){
   var t2=document.getElementById("toast");
   t2.textContent=msg; t2.className="toast"+(isErr?" err":""); t2.classList.add("show");
@@ -4394,6 +4499,8 @@ window.addEventListener("load",function(){
   initFirebase();
   loadApiKey();
   fiyatlariYukle();
+  // [MIMARI] Finans readonly alanları
+  setTimeout(function(){ initFinReadonly(); }, 600);
   // Tab başlangıç
   document.querySelectorAll('.tab-content').forEach(function(el){
     el.style.display = el.classList.contains('active') ? 'block' : 'none';
@@ -4467,6 +4574,26 @@ function initMoneyInputs(){
   });
 }
 
+// [MIMARI] Finans form alanlarını readonly yap — popup üzerinden yönetilir
+var FIN_READONLY_IDS = [
+  'finKarkasKg','finDuveFiyat','finErkekFiyat','finKonvSperma','finSexedSperma'
+];
+function initFinReadonly() {
+  FIN_READONLY_IDS.forEach(function(id) {
+    var el = document.getElementById(id);
+    if(!el) return;
+    el.readOnly = true;
+    el.classList.add('fin-readonly-input');
+    el.addEventListener('click', function() {
+      showToast('Fiyatları değiştirmek için ★ Fiyatlar menüsünü kullanın.');
+    });
+    el.addEventListener('focus', function() {
+      this.blur();
+      showToast('Fiyatları değiştirmek için ★ Fiyatlar menüsünü kullanın.');
+    });
+  });
+}
+
 // setCurrency para sembollerini güncelle — override YOK, doğrudan çağır
 function updateMoneySymbols(cur){
   document.querySelectorAll('.cur-money-sym').forEach(function(el){
@@ -4495,10 +4622,10 @@ document.addEventListener('DOMContentLoaded', function(){
 
 // ═══ SEKME & FİNANS YÖNETİMİ ═══
 function sifirlaFinans() {
-  // Tüm finans input'larını temizle
-  var finIds = ["finUSDrate","finToplYatirim","finAylikTaksit","finKarkasKg",
-    "finDuveFiyat","finErkekFiyat","besiSure","besiAylikMaliyet","besiAgirlik",
-    "finBesleme","finIscilik","finDiger","finAmort","finKonvSperma","finSexedSperma",
+  // Popup tarafından yönetilen readonly alanlar (finKarkasKg, finDuveFiyat, finErkekFiyat, finKonvSperma, finSexedSperma) temizlenmez
+  var finIds = ["finUSDrate","finToplYatirim","finAylikTaksit",
+    "besiSure","besiAylikMaliyet","besiAgirlik",
+    "finBesleme","finIscilik","finDiger","finAmort",
     "dKet","dRet","dHipo","dLDA","dRDA","dTop","dMet","dOvk","dBuzI","dBuzP"];
   for(var i=0;i<finIds.length;i++){
     var el=document.getElementById(finIds[i]);
@@ -4526,6 +4653,8 @@ function sifirlaFinans() {
   switchMainTab("sim");
   // Milk rows sıfırla
   buildMilkRows();
+  // [G9-FIX] Popup fiyatlarını forma yeniden yükle
+  fiyatlariFinansaAktar();
   showToast("Finansal analiz sıfırlandı.");
 }
 
@@ -5252,9 +5381,13 @@ function _renderBasabas() {
   var ortLak=rows.length>0?topLak/rows.length:100;
   if(ortLak<1) ortLak=1;
 
-  // milkP ve milkL ortalaması
+  // milkP ve milkL ortalaması — [G6-FIX] gFiyat popup değerleri fallback
   var milkLs=[],milkPs=[];
-  for(var ri=0;ri<6;ri++){milkLs.push(gfv('milkL'+ri)||28);milkPs.push(gfv('milkP'+ri)||18);}
+  var fpSutFiyat = (typeof gFiyat!=='undefined'&&gFiyat.fp_sut) ? gFiyat.fp_sut : 0;
+  for(var ri=0;ri<6;ri++){
+    milkLs.push(gfv('milkL'+ri)||28);
+    milkPs.push(gfv('milkP'+ri)||(fpSutFiyat||18));
+  }
   var milkLOrt=milkLs.reduce(function(a,b){return a+b;})/6;
   var milkPOrt=milkPs.reduce(function(a,b){return a+b;})/6;
 
@@ -5662,7 +5795,7 @@ function _renderSenaryolar(results) {
     html+='<div style="background:'+(son?'rgba(36,113,163,.05)':'rgba(45,122,58,.04)')+';border:1.5px solid '+(son?'rgba(36,113,163,.2)':'rgba(45,122,58,.18)')+';border-radius:12px;padding:15px 17px;margin-bottom:10px;">';
     html+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;flex-wrap:wrap;gap:6px;">';
     html+='<span style="font-size:.78rem;font-weight:700;">'+sn.ikon+' '+sn.baslik+'</span>';
-    if(ekKar!==null) html+='<span style="font-size:.76rem;font-weight:700;color:'+(ekKar>=0?'var(--accent)':'var(--danger)')+';">60 ay ek: '+fmtTL(ekKar)+'</span>';
+    if(ekKar!==null) html+='<span style="font-size:.76rem;font-weight:700;color:'+(ekKar>=0?'var(--accent)':'var(--danger)')+';">60 ay tahmini süt geliri etkisi: '+fmtTL(ekKar)+'</span>';
     else html+='<span class="neolursa-chip hesapla" onclick="switchMainTab(\'finans\')">💰 Finansal Analiz</span>';
     html+='</div>';
     html+='<div style="font-size:.73rem;color:var(--muted);margin-bottom:5px;">'+sn.aciklama+'</div>';
@@ -5847,7 +5980,7 @@ function guncelleClaAiOzet() {
 }
 
 // ── FİYAT POPUP ──────────────────────────────────────────────────────────────
-var FIYAT_KEYS = ['fp_sut','fp_erkekBuz','fp_disiBuz','fp_besiKarkas','fp_inekKarkas','fp_duveKarkas','fp_gebeDuve','fp_bosDuve'];
+var FIYAT_KEYS = ['fp_sut','fp_sutMiktar','fp_erkekBuz','fp_disiBuz','fp_besiKarkas','fp_inekKarkas','fp_duveKarkas','fp_gebeDuve','fp_bosDuve','fp_konvSperma','fp_sexedSperma'];
 var gFiyat = {}; // Global fiyat objesi — tüm modüllere açık
 
 function openFiyatPopup(guncellemeModu) {
@@ -5883,11 +6016,41 @@ function openFiyatPopup(guncellemeModu) {
     btnGuncelle.style.display = 'none';
     sub.textContent = 'Simülasyon, finansal analiz ve kapasite raporları için güncel fiyatları girin. Tüm alanlar zorunludur.';
   }
+  // [G2-FIX] Binlik ayraç event listener'ları ekle, kayıtlı değerleri formatla
+  initFiyatInputFormat();
+  FIYAT_KEYS.forEach(function(k) {
+    var el = document.getElementById(k);
+    if(!el || !el.value) return;
+    var raw = el.value.replace(/\./g,'').replace(',','.').trim();
+    var num = parseFloat(raw);
+    if(!isNaN(num) && num > 0) { el.dataset.rawVal = num; el.value = num.toLocaleString('tr-TR'); }
+  });
   overlay.classList.add('open');
 }
 
 function fiyatInputTemizle(el) {
   el.classList.remove('hata');
+}
+
+// [G2-FIX] Fiyat popup inputlarına binlik ayraç — blur'da format, focus'ta raw
+function initFiyatInputFormat() {
+  FIYAT_KEYS.forEach(function(k) {
+    var el = document.getElementById(k);
+    if(!el) return;
+    el.addEventListener('blur', function() {
+      var raw = this.value.replace(/\./g,'').replace(',','.').trim();
+      var num = parseFloat(raw);
+      if(!isNaN(num) && num > 0) {
+        this.dataset.rawVal = num;
+        this.value = num.toLocaleString('tr-TR');
+      }
+    });
+    el.addEventListener('focus', function() {
+      var raw = this.dataset.rawVal || this.value.replace(/\./g,'').replace(',','.').trim();
+      this.value = raw;
+      this.select();
+    });
+  });
 }
 
 function fiyatKaydet(guncelle) {
@@ -5939,6 +6102,13 @@ function fiyatlariFinansaAktar() {
       if(el && !el.dataset.userModified) el.value = gFiyat.fp_sut;
     }
   }
+  // [G8] Süt miktarı → milkL alanlarına
+  if(gFiyat.fp_sutMiktar) {
+    for(var m=0;m<6;m++) {
+      var el = document.getElementById('milkL'+m);
+      if(el && !el.dataset.userModified) el.value = gFiyat.fp_sutMiktar;
+    }
+  }
   // İnek karkas → finKarkasKg
   if(gFiyat.fp_inekKarkas) {
     var kark = document.getElementById('finKarkasKg');
@@ -5953,6 +6123,30 @@ function fiyatlariFinansaAktar() {
     if(duve && !duve.dataset.userModified) {
       duve.value = gFiyat.fp_gebeDuve;
       if(typeof updateMoneyDisplay==='function') updateMoneyDisplay(duve);
+    }
+  }
+  // [G3-FIX] Erkek buzağı → finErkekFiyat
+  if(gFiyat.fp_erkekBuz) {
+    var erkek = document.getElementById('finErkekFiyat');
+    if(erkek && !erkek.dataset.userModified) {
+      erkek.value = gFiyat.fp_erkekBuz;
+      if(typeof updateMoneyDisplay==='function') updateMoneyDisplay(erkek);
+    }
+  }
+  // [G8] Konv. sperma → finKonvSperma
+  if(gFiyat.fp_konvSperma) {
+    var ks = document.getElementById('finKonvSperma');
+    if(ks && !ks.dataset.userModified) {
+      ks.value = gFiyat.fp_konvSperma;
+      if(typeof updateMoneyDisplay==='function') updateMoneyDisplay(ks);
+    }
+  }
+  // [G8] Sexed sperma → finSexedSperma
+  if(gFiyat.fp_sexedSperma) {
+    var ss = document.getElementById('finSexedSperma');
+    if(ss && !ss.dataset.userModified) {
+      ss.value = gFiyat.fp_sexedSperma;
+      if(typeof updateMoneyDisplay==='function') updateMoneyDisplay(ss);
     }
   }
 }
