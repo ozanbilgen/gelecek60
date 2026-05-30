@@ -14,6 +14,8 @@ YAPILAN:
 - MIMARI: FIN_READONLY_IDS listesi, initFinReadonly() — finans form alanlari popup yon.
 - MIMARI: fp_sutMiktar, fp_konvSperma, fp_sexedSperma fiyatlariFinansaAktar()'a eklendi.
 - MIMARI: sifirlaFinans() readonly alanlari temizlemiyor — popup degerlerini koruyor.
+- IRK-POPUP: fp_irk select popup'a eklendi. openFiyatPopup irkSec->fp_irk sync. fiyatKaydet fp_irk->irkSec+localStorage. fiyatlariYukle g60irk yukluyor. popupIrkSenkron() onchange.
+- ISIM: Popup basligi "Suru ve Fiyat Bilgileri", header butonu "Suru & Fiyat".
 
 BEKLEYEN (v4.22+):
 - Kapasite modulu (breadcrumb'da tanimli)
@@ -737,9 +739,20 @@ input
 <!-- FİYAT POPUP -->
 <div class="fiyat-overlay" id="fiyatOverlay">
   <div class="fiyat-modal">
-    <div class="fiyat-modal-title">&#128176; Güncel Piyasa Fiyatları</div>
+    <div class="fiyat-modal-title">&#128004; Sürü ve Fiyat Bilgileri</div>
     <div class="fiyat-modal-sub" id="fiyatPopupSub">Simülasyon, finansal analiz ve kapasite raporları için güncel fiyatları girin. Tüm alanlar zorunludur.</div>
     <div class="fiyat-grid">
+      <!-- Sürü Irkı -->
+      <div class="fiyat-section-label" style="grid-column:1/-1;">&#128004; Sürü Irkı</div>
+      <div class="fiyat-group" style="grid-column:1/-1;">
+        <label>Hakim Irk — verim benchmarkı ve sürdürülebilirlik skoru için</label>
+        <select id="fp_irk" class="irk-select" onchange="popupIrkSenkron()" style="background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:8px 10px;font-size:.82rem;font-family:'Barlow',sans-serif;color:var(--text);cursor:pointer;width:100%;">
+          <option value="holstein">Holstein</option>
+          <option value="simental">Simental</option>
+          <option value="montofon">Montofon</option>
+          <option value="karma">Karma / Diğer</option>
+        </select>
+      </div>
       <!-- Süt -->
       <div class="fiyat-section-label">&#128011; Süt</div>
       <div class="fiyat-group">
@@ -929,7 +942,7 @@ input
         <button class="cur-btn" id="curUSD" onclick="setCurrency('USD')">$ USD</button>
       </div>
       <button class="btn-ub" onclick="showQR()" style="padding:5px 10px;" title="QR">&#128248;</button>
-      <button onclick="openFiyatPopup(true)" style="background:var(--gold);color:#fff;border:none;border-radius:8px;padding:5px 12px;font-family:'Barlow Condensed',sans-serif;font-size:.70rem;font-weight:700;letter-spacing:1px;cursor:pointer;" title="Fiyatları Güncelle">&#128176; Fiyatlar</button>
+      <button onclick="openFiyatPopup(true)" style="background:var(--gold);color:#fff;border:none;border-radius:8px;padding:5px 12px;font-family:'Barlow Condensed',sans-serif;font-size:.70rem;font-weight:700;letter-spacing:1px;cursor:pointer;" title="Sürü ve Fiyat Bilgileri">&#128004; Sürü &amp; Fiyat</button>
       <div class="badge">v4.21</div>
     </div>
   </div>
@@ -4585,11 +4598,11 @@ function initFinReadonly() {
     el.readOnly = true;
     el.classList.add('fin-readonly-input');
     el.addEventListener('click', function() {
-      showToast('Fiyatları değiştirmek için ★ Fiyatlar menüsünü kullanın.');
+      showToast('Fiyat ve ırk bilgilerini değiştirmek için ★ Sürü & Fiyat menüsünü kullanın.');
     });
     el.addEventListener('focus', function() {
       this.blur();
-      showToast('Fiyatları değiştirmek için ★ Fiyatlar menüsünü kullanın.');
+      showToast('Fiyat ve ırk bilgilerini değiştirmek için ★ Sürü & Fiyat menüsünü kullanın.');
     });
   });
 }
@@ -6002,6 +6015,10 @@ function openFiyatPopup(guncellemeModu) {
       });
     } catch(e) {}
   }
+  // Irk senkron: irkSec → fp_irk
+  var fpIrk = document.getElementById('fp_irk');
+  var irkSec = document.getElementById('irkSec');
+  if(fpIrk && irkSec) fpIrk.value = irkSec.value;
   // Buton görünümü
   if(guncellemeModu || varMi) {
     btnTamam.style.display = varMi && !guncellemeModu ? 'block' : 'none';
@@ -6078,10 +6095,25 @@ function fiyatKaydet(guncelle) {
   });
   localStorage.setItem('g60fiyatlar', JSON.stringify(obj));
   gFiyat = obj;
+  // Irk senkron: fp_irk → irkSec + localStorage
+  var fpIrk = document.getElementById('fp_irk');
+  var irkSec = document.getElementById('irkSec');
+  if(fpIrk && irkSec && fpIrk.value) {
+    irkSec.value = fpIrk.value;
+    localStorage.setItem('g60irk', fpIrk.value);
+    if(projData.snaps && projData.snaps.length) onIrkDegis();
+  }
   // Finansal modüle aktar
   fiyatlariFinansaAktar();
   document.getElementById('fiyatOverlay').classList.remove('open');
-  showToast(guncelle ? 'Fiyatlar güncellendi.' : 'Fiyatlar kaydedildi.');
+  showToast(guncelle ? 'Bilgiler güncellendi.' : 'Bilgiler kaydedildi.');
+}
+
+// Popup irk select → form irkSec anlık senkron (onchange)
+function popupIrkSenkron() {
+  var fpIrk = document.getElementById('fp_irk');
+  var irkSec = document.getElementById('irkSec');
+  if(fpIrk && irkSec) irkSec.value = fpIrk.value;
 }
 
 function fiyatlariYukle() {
@@ -6091,6 +6123,12 @@ function fiyatlariYukle() {
       gFiyat = JSON.parse(kayitli);
       fiyatlariFinansaAktar();
     } catch(e) {}
+  }
+  // Kayıtlı ırk yükle
+  var kayitliIrk = localStorage.getItem('g60irk');
+  if(kayitliIrk) {
+    var irkSec = document.getElementById('irkSec');
+    if(irkSec) irkSec.value = kayitliIrk;
   }
 }
 
