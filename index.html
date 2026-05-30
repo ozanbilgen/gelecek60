@@ -1,15 +1,27 @@
 <!DOCTYPE html>
-<!--Gelecek60 v4.18 — H1_DuplicateID + H4_pIrkTemizle + Toast1800ms + H2_SpermaSpikeUyari + H3_KuruLakKontrol + T1_InputValidasyon + T3_CSSTemizlik
+<!--Gelecek60 v4.20 — FiyatPopup
 KARARLAR:
-- H1 FIX: btnAIYorumTxt span id->class (satir 1292 ve JS). Duplicate ID kaldirildi.
-- H4 FIX: generateReport() VWP yorumunda (p.irk||irkKey) -> (irkKey).
-- TOAST (T2): showToast setTimeout 3200ms -> 1800ms.
-- H2 FIX: Sperma tablosu ay 1 hucreleri amber vurgulanip aciklama notü eklendi. Motor dokunulmadi.
-- H3 FIX: renderResults() snap bazli kuru/lak oran kontrolu: >35pct=altin uyari, >100pct=kirmizi kritik.
-- T1 FIX: hesapla() validasyonlari genisletildi — laktasyon=0 hard stop, gebeInek>laktasyon uyarisi, gebelik gunu asimi uyarisi, kuru gebelik gunu alt sinir uyarisi.
-- T3 FIX: 65 duplicate CSS kurali silindi (ayni icerikli ilk occurrence tutuldu). 4.6 KB kazanim.
-DOKUNULMAYAN MODULLER: sim24 motoru, calcFinans, renderFinansResults, renderRapor, Firebase, i18n, Admin.
-BENCHMARK TABLOSU: Holstein zarar<28 basabas28-32 iyi32-38 mukemmel>38 | Simental zarar<18 basabas18-22 iyi22-28 mukemmel>28 | Montofon zarar<14 basabas14-17 iyi17-22 mukemmel>22 | Karma zarar<18 basabas18-22 iyi22-28 mukemmel>28
+- Fiyat popup: Her acilista zorunlu, gec butonu yok. Tamam (dolu/degisiklik yok) veya Guncelle (degistirip kaydet).
+- 8 fiyat alani: sut, erkekBuz(0-2ay), disiBuz(0-2ay), besiKarkas, inekKarkas, duveKarkas, gebeDuve, bosDuve.
+- Validasyon: Tum alanlar dolu olmadan Tamam/Guncelle calismaz. Eksik alan kirmizi cerceve.
+- localStorage g60fiyatlar key ile saklanir.
+- gFiyat global objesi tum moduller icin erisimde.
+- fiyatlariFinansaAktar(): sut->milkP, inekKarkas->finKarkasKg, gebeDuve->finDuveFiyat (userModified flag ile kullanici degisikligi korunur).
+- Header'a altin renk Fiyatlar butonu eklendi.
+- window.load'da 400ms delay ile popup acilir (Firebase init sonrasi).
+DOKUNULMAYAN MODULLER: sim24, calcFinans, renderFinansResults, rapor, Firebase, i18n, Admin.
+SIRADAKI: Kapasite formu (sim sekmesi ustu, her iki senaryo), kapasite ozet (sim alti), kapasite raporu (rapor sekmesi detay).
+BENCHMARK: Holstein zarar<28 basabas28-32 iyi32-38 mukemmel>38 | Simental zarar<18 basabas18-22 iyi22-28 mukemmel>28 | Montofon zarar<14 basabas14-17 iyi17-22 mukemmel>22 | Karma zarar<18 basabas18-22 iyi22-28 mukemmel>28
+-->
+KARARLAR:
+- F1: onIrkDegis() uyari toast. G1: Badge v4.19. G2: TL sembol font fix. G3: Turkce karakter.
+- S1: Skor neu item payda disi. S2: VWP yorum finansal bagimsiz.
+- D4: kuruGun analiz ve tablodan cikarildi. D1: CR sol bar fix. D2: Tornado bold. D3: Delta araliklari.
+- D5: Parametre kartlari trafik isigi. D6: Birim ayrimi (buzagi/inek). D7: Zengin aciklama formati.
+- A1: Ucret uyarisi eklendi (sorgu basi ~$0.01-0.03). A2: Iki secenek yan yana panel — API(ucretli/kapsamli) vs Claude.ai(ucretsiz/genel). kopyalaClaudeAiOzet() + guncelleClaAiOzet() eklendi. Hesaplama sonrasi ozet otomatik guncelleniyor.
+- G22: Duve Satis Fiyati alanina invisible fin-note-inline eklendi — Karkas ile ayni hizaya geldi.
+DOKUNULMAYAN MODULLER: sim24, calcFinans, renderFinansResults, Firebase, i18n, Admin.
+BENCHMARK: Holstein zarar<28 basabas28-32 iyi32-38 mukemmel>38 | Simental zarar<18 basabas18-22 iyi22-28 mukemmel>28 | Montofon zarar<14 basabas14-17 iyi17-22 mukemmel>22 | Karma zarar<18 basabas18-22 iyi22-28 mukemmel>28
 -->
 <html lang="tr">
 <head>
@@ -213,6 +225,25 @@ input[type="checkbox"]{display:none;}
 /* Modals */
 .modal-overlay{position:fixed;inset:0;background:rgba(150,140,120,.6);backdrop-filter:blur(4px);z-index:9000;display:none;align-items:flex-start;justify-content:center;padding-top:50px;}
 .modal-overlay.open{display:flex;}
+/* Fiyat Popup */
+.fiyat-overlay{position:fixed;inset:0;background:rgba(20,18,12,.75);backdrop-filter:blur(6px);z-index:9800;display:none;align-items:center;justify-content:center;padding:20px;}
+.fiyat-overlay.open{display:flex;}
+.fiyat-modal{background:var(--bg);border:1.5px solid var(--border);border-radius:16px;padding:28px 30px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25);}
+.fiyat-modal-title{font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:700;letter-spacing:1px;color:var(--text);margin-bottom:4px;}
+.fiyat-modal-sub{font-size:.72rem;color:var(--muted);margin-bottom:20px;line-height:1.6;}
+.fiyat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.fiyat-group{display:flex;flex-direction:column;gap:4px;}
+.fiyat-group label{font-size:.68rem;font-weight:500;color:var(--muted);letter-spacing:.3px;}
+.fiyat-group input{background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:8px 10px;font-size:.82rem;font-family:'Barlow',sans-serif;color:var(--text);transition:border-color .2s;}
+.fiyat-group input:focus{outline:none;border-color:var(--accent);}
+.fiyat-group input.hata{border-color:var(--danger);}
+.fiyat-group .fiyat-hata-msg{font-size:.62rem;color:var(--danger);display:none;}
+.fiyat-group input.hata + .fiyat-hata-msg{display:block;}
+.fiyat-modal-footer{display:flex;gap:10px;justify-content:flex-end;padding-top:16px;border-top:1px solid var(--border);}
+.fiyat-modal-footer button{font-family:'Barlow Condensed',sans-serif;font-size:.78rem;font-weight:700;letter-spacing:1px;padding:9px 24px;border-radius:8px;cursor:pointer;border:none;}
+.btn-fiyat-tamam{background:var(--accent);color:#fff;}
+.btn-fiyat-guncelle{background:var(--blue);color:#fff;}
+.fiyat-section-label{font-family:'Barlow Condensed',sans-serif;font-size:.62rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin:14px 0 8px;grid-column:1/-1;}
 .modal-box{background:#fff;border:1px solid var(--border);border-radius:18px;padding:28px;width:680px;max-width:96vw;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.12);}
 .modal-box h3{font-family:"Playfair Display",serif;font-size:1.15rem;color:var(--text);margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border);}
 .save-item{background:#fafaf6;border:1.5px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:8px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .2s;}
@@ -657,6 +688,68 @@ input
 </head>
 <body>
 
+<!-- FİYAT POPUP -->
+<div class="fiyat-overlay" id="fiyatOverlay">
+  <div class="fiyat-modal">
+    <div class="fiyat-modal-title">&#128176; Güncel Piyasa Fiyatları</div>
+    <div class="fiyat-modal-sub" id="fiyatPopupSub">Simülasyon, finansal analiz ve kapasite raporları için güncel fiyatları girin. Tüm alanlar zorunludur.</div>
+    <div class="fiyat-grid">
+      <!-- Süt -->
+      <div class="fiyat-section-label">&#128011; Süt Fiyatı</div>
+      <div class="fiyat-group" style="grid-column:1/-1;">
+        <label>Çiğ Süt Satış Fiyatı — tüm desteklemeler dahil (₺/L)</label>
+        <input type="text" inputmode="decimal" id="fp_sut" placeholder="ör. 26.00" onfocus="this.select()" oninput="fiyatInputTemizle(this)">
+        <span class="fiyat-hata-msg">Bu alan zorunludur</span>
+      </div>
+      <!-- Buzağı -->
+      <div class="fiyat-section-label">&#128004; Buzağı Satış Fiyatları (0–2 ay)</div>
+      <div class="fiyat-group">
+        <label>Erkek Buzağı (₺/baş)</label>
+        <input type="text" inputmode="decimal" id="fp_erkekBuz" placeholder="ör. 8500" onfocus="this.select()" oninput="fiyatInputTemizle(this)">
+        <span class="fiyat-hata-msg">Bu alan zorunludur</span>
+      </div>
+      <div class="fiyat-group">
+        <label>Dişi Buzağı (₺/baş)</label>
+        <input type="text" inputmode="decimal" id="fp_disiBuz" placeholder="ör. 12000" onfocus="this.select()" oninput="fiyatInputTemizle(this)">
+        <span class="fiyat-hata-msg">Bu alan zorunludur</span>
+      </div>
+      <!-- Karkas -->
+      <div class="fiyat-section-label">&#128288; Karkas Et Fiyatları (₺/kg)</div>
+      <div class="fiyat-group">
+        <label>Erkek Besi Karkas (₺/kg)</label>
+        <input type="text" inputmode="decimal" id="fp_besiKarkas" placeholder="ör. 650" onfocus="this.select()" oninput="fiyatInputTemizle(this)">
+        <span class="fiyat-hata-msg">Bu alan zorunludur</span>
+      </div>
+      <div class="fiyat-group">
+        <label>İnek Karkas (₺/kg)</label>
+        <input type="text" inputmode="decimal" id="fp_inekKarkas" placeholder="ör. 580" onfocus="this.select()" oninput="fiyatInputTemizle(this)">
+        <span class="fiyat-hata-msg">Bu alan zorunludur</span>
+      </div>
+      <div class="fiyat-group">
+        <label>Düve Karkas (₺/kg)</label>
+        <input type="text" inputmode="decimal" id="fp_duveKarkas" placeholder="ör. 620" onfocus="this.select()" oninput="fiyatInputTemizle(this)">
+        <span class="fiyat-hata-msg">Bu alan zorunludur</span>
+      </div>
+      <!-- Düve Satış -->
+      <div class="fiyat-section-label">&#9792; Düve Satış Fiyatları</div>
+      <div class="fiyat-group">
+        <label>Gebe Düve (₺/baş)</label>
+        <input type="text" inputmode="decimal" id="fp_gebeDuve" placeholder="ör. 95000" onfocus="this.select()" oninput="fiyatInputTemizle(this)">
+        <span class="fiyat-hata-msg">Bu alan zorunludur</span>
+      </div>
+      <div class="fiyat-group">
+        <label>Boş Düve (₺/baş)</label>
+        <input type="text" inputmode="decimal" id="fp_bosDuve" placeholder="ör. 70000" onfocus="this.select()" oninput="fiyatInputTemizle(this)">
+        <span class="fiyat-hata-msg">Bu alan zorunludur</span>
+      </div>
+    </div>
+    <div class="fiyat-modal-footer">
+      <button class="btn-fiyat-tamam" id="btnFiyatTamam" onclick="fiyatKaydet(false)">&#10003; Tamam</button>
+      <button class="btn-fiyat-guncelle" id="btnFiyatGuncelle" style="display:none;" onclick="fiyatKaydet(true)">&#8635; Güncelle</button>
+    </div>
+  </div>
+</div>
+
 <div class="auth-overlay" id="authOverlay">
   <div class="auth-modal">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
@@ -773,7 +866,8 @@ input
         <button class="cur-btn" id="curUSD" onclick="setCurrency('USD')">$ USD</button>
       </div>
       <button class="btn-ub" onclick="showQR()" style="padding:5px 10px;" title="QR">&#128248;</button>
-      <div class="badge">v4.13</div>
+      <button onclick="openFiyatPopup(true)" style="background:var(--gold);color:#fff;border:none;border-radius:8px;padding:5px 12px;font-family:'Barlow Condensed',sans-serif;font-size:.70rem;font-weight:700;letter-spacing:1px;cursor:pointer;" title="Fiyatları Güncelle">&#128176; Fiyatlar</button>
+      <div class="badge">v4.20</div>
     </div>
   </div>
 </header>
@@ -1150,6 +1244,7 @@ input
       <div class="input-group">
         <label>Düve Satış Fiyatı (<span class="cur-sym">₺</span>/baş) <span style="color:var(--muted);font-size:.65rem;">(boş=0)</span></label>
         <input type="text" inputmode="numeric" id="finDuveFiyat" class="money-input" data-money="true" placeholder="Opsiyonel" onfocus="this.select()">
+        <div class="fin-note-inline" style="visibility:hidden;">—</div>
       </div>
     </div>
     <!-- Erkek Buzağı -->
@@ -1377,42 +1472,70 @@ input
   <div class="rapor-section" id="secAI">
     <div class="rapor-section-title">&#129302; <span id="raporSec3Title">AI Yorumu</span></div>
     <!-- API Key Rehberi -->
-    <div id="apiKeyRehber" style="background:#fafaf6;border:1.5px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:16px;">
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:14px;">&#128273; API Key Kurulum Rehberi</div>
-      <div style="font-size:.76rem;color:var(--text);line-height:2.0;">
-        <div style="display:flex;gap:10px;margin-bottom:10px;">
-          <div style="min-width:22px;height:22px;background:var(--blue);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;flex-shrink:0;">1</div>
-          <div>Aşağıdaki bağlantıya tıklayarak Anthropic hesabı oluşturun:<br>
-            <a href="https://console.anthropic.com/login" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none;">&#8594; console.anthropic.com/login</a>
+    <!-- AI YORUM MODÜLÜ — İKİ SEÇENEK -->
+    <div style="background:#fafaf6;border:1.5px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:16px;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:14px;">&#129302; AI Yorumu — Seçenekler</div>
+
+      <!-- İki seçenek yan yana -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+
+        <!-- Seçenek A: API ile Ücretli -->
+        <div style="background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:14px;">
+          <div style="font-size:.72rem;font-weight:700;color:var(--blue);margin-bottom:6px;">&#128273; Seçenek A — API ile <span style="background:#FFF8E1;color:#7B5800;font-size:.62rem;padding:2px 7px;border-radius:10px;margin-left:4px;">Ücretli</span></div>
+          <div style="font-size:.69rem;color:var(--muted);line-height:1.7;margin-bottom:10px;">
+            Tüm simülasyon verisi otomatik hazırlanır. Uygulama içinde tek tıkla kapsamlı yorum.<br>
+            <strong style="color:var(--text);">Avantaj:</strong> Tüm 60 aylık veri dahil — daha spesifik.<br>
+            <strong style="color:var(--danger);">&#9888; Ücret:</strong> Sorgu başına ~$0.01–0.03 (Anthropic API).<br>
+            <strong style="color:var(--text);">Gerekli:</strong> Anthropic API key (console.anthropic.com).
+          </div>
+          <!-- API Key kurulum -->
+          <div id="apiKeyRehber" style="font-size:.72rem;color:var(--text);line-height:1.8;">
+            <div style="display:flex;gap:8px;margin-bottom:6px;align-items:flex-start;">
+              <div style="min-width:18px;height:18px;background:var(--blue);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.58rem;font-weight:700;flex-shrink:0;margin-top:2px;">1</div>
+              <div><a href="https://console.anthropic.com/login" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none;">console.anthropic.com</a> → hesap aç → API Keys → Create Key</div>
+            </div>
+            <div style="display:flex;gap:8px;margin-bottom:10px;align-items:flex-start;">
+              <div style="min-width:18px;height:18px;background:var(--blue);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.58rem;font-weight:700;flex-shrink:0;margin-top:2px;">2</div>
+              <div>Key'i aşağıya yapıştır ve kaydet.</div>
+            </div>
+            <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+              <input type="password" id="anthropicApiKey" placeholder="sk-ant-..."
+                style="flex:1;min-width:160px;background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:7px 10px;font-size:.76rem;font-family:'Barlow',sans-serif;color:var(--text);"
+                onfocus="this.select()">
+              <button onclick="saveApiKey()" style="background:var(--blue);color:#fff;border:none;border-radius:8px;padding:7px 14px;font-family:'Barlow Condensed',sans-serif;font-size:.70rem;font-weight:700;letter-spacing:1px;cursor:pointer;">&#128190; Kaydet</button>
+              <button onclick="toggleApiKeyVisible()" style="background:transparent;border:1.5px solid var(--border);border-radius:8px;padding:7px 10px;font-size:.70rem;cursor:pointer;color:var(--muted);">&#128065;</button>
+            </div>
+            <div id="apiKeySaveMsg" style="font-size:.65rem;margin-top:5px;display:none;"></div>
+            <div style="font-size:.63rem;color:var(--muted);margin-top:6px;">&#128274; Key yalnızca bu cihazda saklanır.</div>
+          </div>
+          <button class="btn-rapor-ai" id="btnAIYorum2" onclick="getAIYorum()" style="margin-top:12px;width:100%;">&#129302; <span class="btnAIYorumTxt2">AI Yorumu Al</span></button>
+        </div>
+
+        <!-- Seçenek B: Claude.ai ile Ücretsiz -->
+        <div style="background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:14px;">
+          <div style="font-size:.72rem;font-weight:700;color:var(--accent);margin-bottom:6px;">&#127760; Seçenek B — Claude.ai ile <span style="background:#EAF3DE;color:#27500A;font-size:.62rem;padding:2px 7px;border-radius:10px;margin-left:4px;">Ücretsiz</span></div>
+          <div style="font-size:.69rem;color:var(--muted);line-height:1.7;margin-bottom:10px;">
+            Simülasyon özeti panoya kopyalanır, claude.ai yeni sekmede açılır, yapıştırıp yorum alırsınız.<br>
+            <strong style="color:var(--text);">Avantaj:</strong> API key gerekmez, tamamen ücretsiz.<br>
+            <strong style="color:var(--muted);">Fark:</strong> Özet veri — yorum daha genel olur.<br>
+            <strong style="color:var(--text);">Adımlar:</strong> Kopyala → claude.ai → yapıştır → gönder.
+          </div>
+          <div style="background:#f5f5f0;border-radius:8px;padding:10px 12px;font-size:.68rem;color:var(--muted);line-height:1.6;margin-bottom:10px;min-height:60px;" id="claudeAiOzetBox">
+            Önce simülasyonu hesaplayın.
+          </div>
+          <div style="display:flex;gap:6px;">
+            <button onclick="kopyalaClaudeAiOzet()" style="flex:1;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:7px 10px;font-family:'Barlow Condensed',sans-serif;font-size:.70rem;font-weight:700;letter-spacing:1px;cursor:pointer;">&#128203; Kopyala</button>
+            <a href="https://claude.ai" target="_blank" style="flex:1;background:transparent;border:1.5px solid var(--accent);color:var(--accent);border-radius:8px;padding:7px 10px;font-family:'Barlow Condensed',sans-serif;font-size:.70rem;font-weight:700;letter-spacing:1px;cursor:pointer;text-decoration:none;text-align:center;display:flex;align-items:center;justify-content:center;">&#127760; claude.ai'yi Aç</a>
           </div>
         </div>
-        <div style="display:flex;gap:10px;margin-bottom:10px;">
-          <div style="min-width:22px;height:22px;background:var(--blue);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;flex-shrink:0;">2</div>
-          <div>Sol menüden <strong>API Keys</strong> seçin.</div>
-        </div>
-        <div style="display:flex;gap:10px;margin-bottom:10px;">
-          <div style="min-width:22px;height:22px;background:var(--blue);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;flex-shrink:0;">3</div>
-          <div><strong>Create Key</strong> butonuna tıklayın, key'i kopyalayın.</div>
-        </div>
-        <div style="display:flex;gap:10px;margin-bottom:14px;">
-          <div style="min-width:22px;height:22px;background:var(--blue);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;flex-shrink:0;">4</div>
-          <div>Aşağıya yapıştırın ve <strong>Kaydet</strong>'e basın.</div>
-        </div>
-        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-          <input type="password" id="anthropicApiKey" placeholder="sk-ant-..."
-            style="flex:1;min-width:220px;background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;font-size:.8rem;font-family:'Barlow',sans-serif;color:var(--text);"
-            onfocus="this.select()">
-          <button onclick="saveApiKey()" style="background:var(--blue);color:#fff;border:none;border-radius:8px;padding:8px 18px;font-family:'Barlow Condensed',sans-serif;font-size:.74rem;font-weight:700;letter-spacing:1px;cursor:pointer;">&#128190; Kaydet</button>
-          <button onclick="toggleApiKeyVisible()" style="background:transparent;border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;font-size:.74rem;cursor:pointer;color:var(--muted);">&#128065;</button>
-        </div>
-        <div id="apiKeySaveMsg" style="font-size:.68rem;margin-top:6px;display:none;"></div>
-        <div style="font-size:.65rem;color:var(--muted);margin-top:8px;">&#128274; Key yalnızca bu cihazda saklanır.</div>
+      </div>
+
+      <!-- Uyarı notu -->
+      <div style="font-size:.65rem;color:var(--muted);border-top:1px solid var(--border);padding-top:10px;">
+        &#9888; Her iki seçenek de internet bağlantısı gerektirir. Seçenek A için API key Anthropic hesabınıza aittir — kullanım ücretleri Anthropic tarafından faturalandırılır.
       </div>
     </div>
-    <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px;">
-      <button class="btn-rapor-ai" id="btnAIYorum2" onclick="getAIYorum()">&#129302; <span class="btnAIYorumTxt2">AI Yorumu Al</span></button>
-      <div style="font-size:.68rem;color:var(--muted);" id="raporAiNote">&#9888; İnternet bağlantısı gerektirir.</div>
-    </div>
+
     <div class="ai-yorum-box">
       <div class="ai-label">&#129302; <span id="aiYorumLabel">Yapay Zeka Analizi</span></div>
       <div class="ai-content" id="aiYorumContent" style="color:var(--muted);font-style:italic;">
@@ -1950,7 +2073,7 @@ function renderResults(snaps, initial, p) {
   var html = '';
 
   html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">'
-    + '<span style="background:rgba(93,191,110,.15);color:var(--accent);font-size:.66rem;font-weight:700;padding:3px 10px;border-radius:20px;">🔬 Gelecek60 v4.18 · Aylık Sim · 60 Ay</span>'
+    + '<span style="background:rgba(93,191,110,.15);color:var(--accent);font-size:.66rem;font-weight:700;padding:3px 10px;border-radius:20px;">🔬 Gelecek60 v4.19 · Aylık Sim · 60 Ay</span>'
     + '<button class="btn-excel" onclick="exportExcel()">📥 Excele Aktar (.xlsx)</button></div>';
 
   // [FIX-9] Startup notu
@@ -2050,10 +2173,10 @@ function renderResults(snaps, initial, p) {
   html += '<strong>Doz hesabi:</strong> Konv. sperma = gebe olan inek/duve x doz/gebelik parametresi. ';
   html += 'Sexed sperma = gebe olan x sexed doz + tohumlanan x gebelik oncesi doz. ';
   html += '<strong>&#9888; 1. Ay:</strong> Baslangicta mevcut acik inek stogununun tamami ilk ayda tohumlanir. Bu biyolojik olarak dogrudur ancak sonraki aylara gore yuksek gorunur. Karsilastirma icin 2. aydan itibaren degerlere bakin.</div>';
-  html += '<div class="table-scroll"><table class="snap-table"><thead><tr><th>Gosterge</th><th>Bas.</th>';
+  html += '<div class="table-scroll"><table class="snap-table"><thead><tr><th>Gösterge</th><th>Baş.</th>';
   for(var m=1;m<=60;m++) html += '<th><span class="ay-badge '+(m<=12?"ay-y1":m<=24?"ay-y2":m<=48?"ay-y3":"ay-y4")+'">'+m+'</span></th>';
   html += '</tr></thead><tbody>';
-  var spermaLabels=["Tohum. Inek (adet)","Sperma Inek (doz)","Tohum. Duve (adet)","Sperma Duve (doz)","TOPLAM SPERMA (doz)"];
+  var spermaLabels=["Tohum. İnek (adet)","Sperma İnek (doz)","Tohum. Düve (adet)","Sperma Düve (doz)","TOPLAM SPERMA (doz)"];
   var spermaFns=[
     function(s){return Math.round((s.konvTohumInek||0)+(s.sexedTohumInek||0));},
     function(s){return Math.round(s.toplamInekDoz||0);},
@@ -2073,6 +2196,8 @@ function renderResults(snaps, initial, p) {
 
   html += generateReport(snaps, initial, p);
   document.getElementById('resultsBody').innerHTML = html;
+  // A2: Claude.ai ozet kutusunu guncelle
+  setTimeout(function(){ guncelleClaAiOzet(); }, 100);
 }
 
 function generateReport(snaps, initial, p) {
@@ -2101,29 +2226,40 @@ function generateReport(snaps, initial, p) {
   else if(farkAcik>15) items.push({cls:"warn",text:"Açık gün ("+p.acikGunInek+") beklenenin "+farkAcik.toFixed(0)+" gün üzerinde — üreme gecikmesi var."});
   else items.push({cls:"warn",text:"Açık gün ("+p.acikGunInek+") beklenenin "+Math.abs(farkAcik).toFixed(0)+" gün altında — VWP veya kayıt kontrolü gerekli."});
 
-  // VWP strateji yorumu: ırk bazlı verim eşiği ile birlikte değerlendir
+  // VWP strateji yorumu: finansal veri girilmisse irk bazli verim esigi, girilmemisse gun bazli yorum
   var irkVwpEsik={holstein:32,simental:22,montofon:17,karma:22};
   var secilenIrk=(irkKey||'holstein').toLowerCase();
   var vwpVEsik=irkVwpEsik[secilenIrk]||28;
-  var milkLsVwp=[]; for(var vi=0;vi<6;vi++) milkLsVwp.push(gfv('milkL'+vi)||28);
-  var mevcutVwpVerim=milkLsVwp.reduce(function(a,b){return a+b;})/6;
-  var yuksekVerim=mevcutVwpVerim>=vwpVEsik;
+  var milkLsVwp=[]; for(var vi=0;vi<6;vi++) milkLsVwp.push(gfv('milkL'+vi)||0);
+  var milkLsTopla=milkLsVwp.reduce(function(a,b){return a+b;},0);
+  var finansalVeriVar = milkLsTopla > 0;
+  var mevcutVwpVerim = finansalVeriVar ? (milkLsTopla/6) : 0;
+  var yuksekVerim = finansalVeriVar && (mevcutVwpVerim >= vwpVEsik);
   var vwpYorumMetni;
-  if(vwp<=50){
-    vwpYorumMetni=yuksekVerim
-      ? "VWP "+vwp+" gün (kısa) — yüksek verimli "+bm.label+" sürüsünde pik süt dönemi kısalabilir. Uzun VWP stratejisi değerlendirilebilir."
-      : "VWP "+vwp+" gün — düşük/orta verimli sürü için uygun. Erken gebe kalma sürü verimliliğini destekler.";
-    items.push({cls:yuksekVerim?"warn":"ok", text:vwpYorumMetni});
-  } else if(vwp<=80){
-    vwpYorumMetni=yuksekVerim
-      ? "VWP "+vwp+" gün — yüksek verimli "+bm.label+" sürüsü için bilinçli strateji. Pik süt döneminden tam verim alınıyor."
-      : "VWP "+vwp+" gün — orta verimli sürü için uzun sayılır. VWP kısaltılması daha kısa buzağılama aralığı sağlayabilir.";
-    items.push({cls:yuksekVerim?"ok":"warn", text:vwpYorumMetni});
+  if(!finansalVeriVar){
+    // Finansal veri girilmemis — sadece gun bazli yorum
+    if(vwp<=50)       items.push({cls:"ok",   text:"VWP "+vwp+" gün — kısa strateji. Erken tohumlama, daha sık buzağılama."});
+    else if(vwp<=70)  items.push({cls:"ok",   text:"VWP "+vwp+" gün — orta strateji. Standart yönetim aralığında."});
+    else if(vwp<=90)  items.push({cls:"warn",  text:"VWP "+vwp+" gün — uzun strateji. Pik süt dönemi hedefleniyorsa bilinçli tercih olabilir."});
+    else              items.push({cls:"warn",  text:"VWP "+vwp+" gün — çok uzun. Buzağılama aralığı uzayacak, gözden geçirin."});
   } else {
-    vwpYorumMetni=yuksekVerim
-      ? "VWP "+vwp+" gün — yüksek verimli "+bm.label+" sürüsünde uzun VWP bilinçli strateji. Buzağılama aralığı uzayacağı hesaba katılmalı."
-      : "VWP "+vwp+" gün — düşük/orta verimli sürü için çok uzun. Buzağılama aralığı olumsuz etkilenecek, VWP kısaltılması önerilir.";
-    items.push({cls:yuksekVerim?"warn":"bad", text:vwpYorumMetni});
+    // Finansal veri var — irk bazli verim esigi ile degerlendir
+    if(vwp<=50){
+      vwpYorumMetni=yuksekVerim
+        ? "VWP "+vwp+" gün (kısa) — yüksek verimli "+bm.label+" sürüsünde pik süt dönemi kısalabilir. Uzun VWP stratejisi değerlendirilebilir."
+        : "VWP "+vwp+" gün — düşük/orta verimli sürü için uygun. Erken gebe kalma sürü verimliliğini destekler.";
+      items.push({cls:yuksekVerim?"warn":"ok", text:vwpYorumMetni});
+    } else if(vwp<=80){
+      vwpYorumMetni=yuksekVerim
+        ? "VWP "+vwp+" gün — yüksek verimli "+bm.label+" sürüsü için bilinçli strateji. Pik süt döneminden tam verim alınıyor."
+        : "VWP "+vwp+" gün — orta verimli sürü için uzun sayılır. VWP kısaltılması daha kısa buzağılama aralığı sağlayabilir.";
+      items.push({cls:yuksekVerim?"ok":"warn", text:vwpYorumMetni});
+    } else {
+      vwpYorumMetni=yuksekVerim
+        ? "VWP "+vwp+" gün — yüksek verimli "+bm.label+" sürüsünde uzun VWP bilinçli strateji. Buzağılama aralığı uzayacağı hesaba katılmalı."
+        : "VWP "+vwp+" gün — düşük/orta verimli sürü için çok uzun. Buzağılama aralığı olumsuz etkilenecek, VWP kısaltılması önerilir.";
+      items.push({cls:yuksekVerim?"warn":"bad", text:vwpYorumMetni});
+    }
   }
 
   // CR İnek — ırk bazlı eşik
@@ -2172,9 +2308,15 @@ function generateReport(snaps, initial, p) {
   else if(buyume24>0) items.push({cls:"warn",text:"60 aylık büyüme: %"+buyume24.toFixed(1)+" — Yavaş."});
   else items.push({cls:"bad",text:"60 aylık büyüme: %"+buyume24.toFixed(1)+" — Sürü küçülüyor!"});
 
-  var okC=0,wC=0,bC=0;
-  for(var i=0;i<items.length;i++){if(items[i].cls==="ok")okC++;else if(items[i].cls==="warn")wC++;else if(items[i].cls==="bad")bC++;}
-  var score=Math.round((okC/items.length)*100);
+  var okC=0,wC=0,bC=0,neuC=0;
+  for(var i=0;i<items.length;i++){
+    if(items[i].cls==="ok") okC++;
+    else if(items[i].cls==="warn") wC++;
+    else if(items[i].cls==="bad") bC++;
+    else neuC++;
+  }
+  var scorableCount = items.length - neuC;
+  var score = scorableCount > 0 ? Math.round((okC/scorableCount)*100) : 0;
   var sc=score>=70?"var(--accent)":score>=45?"var(--gold)":"var(--danger)";
   var sl=score>=70?"İyi Yönetim":score>=45?"Orta Düzey":"Kritik";
   var html='<div class="report-box"><h3>🧠 Sürdürülebilirlik Raporu — 60 Ay <span style="font-size:.7rem;font-weight:400;color:var(--muted);">('+bm.label+')</span></h3>';
@@ -2200,24 +2342,24 @@ function exportExcel() {
   for(var ci=0;ci<CATS.length;ci++){var row=[CATS[ci].name,ini[CATS[ci].key]||0];for(var m=0;m<60;m++)row.push(snaps[m][CATS[ci].key]||0);d1.push(row);}
   var tr=["TOPLAM",iTotal];for(var m=0;m<60;m++)tr.push(getTotal(snaps[m]));d1.push(tr);
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(d1),"Hayvan Varligi");
-  var hdr2=["Gosterge","Baslangic"];for(var m=0;m<60;m++)hdr2.push((m+1)+". Ay");
+  var hdr2=["Gösterge","Başlangıç"];for(var m=0;m<60;m++)hdr2.push((m+1)+". Ay");
   var d2=[hdr2];
-  var rL=["Buzagi","Gebe Inek","Acik Inek","Kuru Inek","Ort. Laktasyon","Reform Inek","Reform Duve","Inek Olum","Buzagilama Araligi (gün)"];
+  var rL=["Buzağı","Gebe İnek","Açık İnek","Kuru İnek","Ort. Laktasyon","Reform İnek","Reform Düve","İnek Ölüm","Buzağılama Aralığı (gün)"];
   var rF=[function(s){return Math.round(s.buzagiSayisi||0);},function(s){return s.gebeInekProj||0;},function(s){return s.acikInekProj||0;},function(s){return s.kuru||0;},function(s){return (s.ortLaktasyon||0).toFixed(2);},function(s){return Math.round((s.reformInek||0)+(s.reformMaksLak||0)+(s.reformMaksTohum||0));},function(s){return Math.round(s.reformDuve||0);},function(s){return Math.round(s.inekOlum||0);},function(s){return s.buzAraligiGun||0;}];
   for(var ri=0;ri<rL.length;ri++){var row=[rL[ri],"—"];for(var m=0;m<60;m++)row.push(rF[ri](snaps[m]));d2.push(row);}
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(d2),"Ureme");
-  var hdr3=["Gosterge","Baslangic"];for(var m=0;m<60;m++)hdr3.push((m+1)+". Ay");
+  var hdr3=["Gösterge","Başlangıç"];for(var m=0;m<60;m++)hdr3.push((m+1)+". Ay");
   var d3=[hdr3,
-    ["Tohum. Inek","—"].concat(snaps.map(function(s){return Math.round((s.konvTohumInek||0)+(s.sexedTohumInek||0));})),
-    ["Konv. Sperma Inek (doz)","—"].concat(snaps.map(function(s){return Math.round(s.konvDozInek||0);})),
-    ["Toplam Inek Doz","—"].concat(snaps.map(function(s){return Math.round(s.toplamInekDoz||0);})),
-    ["Tohum. Duve","—"].concat(snaps.map(function(s){return Math.round((s.konvTohumDuve||0)+(s.sexedTohumDuve||0));})),
-    ["Konv. Sperma Duve (doz)","—"].concat(snaps.map(function(s){return Math.round(s.konvDozDuve||0);})),
-    ["Toplam Duve Doz","—"].concat(snaps.map(function(s){return Math.round(s.toplamDuveDoz||0);})),
+    ["Tohum. İnek","—"].concat(snaps.map(function(s){return Math.round((s.konvTohumInek||0)+(s.sexedTohumInek||0));})),
+    ["Konv. Sperma İnek (doz)","—"].concat(snaps.map(function(s){return Math.round(s.konvDozInek||0);})),
+    ["Toplam İnek Doz","—"].concat(snaps.map(function(s){return Math.round(s.toplamInekDoz||0);})),
+    ["Tohum. Düve","—"].concat(snaps.map(function(s){return Math.round((s.konvTohumDuve||0)+(s.sexedTohumDuve||0));})),
+    ["Konv. Sperma Düve (doz)","—"].concat(snaps.map(function(s){return Math.round(s.konvDozDuve||0);})),
+    ["Toplam Düve Doz","—"].concat(snaps.map(function(s){return Math.round(s.toplamDuveDoz||0);})),
     ["TOPLAM SPERMA","—"].concat(snaps.map(function(s){return Math.round((s.toplamInekDoz||0)+(s.toplamDuveDoz||0));}))
   ];
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(d3),"Sperma");
-  XLSX.writeFile(wb,"Gelecek60_v4.12.xlsx");
+  XLSX.writeFile(wb,"Gelecek60_v4.19.xlsx");
 }
 
 // SIFIRLA
@@ -2576,20 +2718,20 @@ function calcFinans(snaps, params){
 
 // ── SONUÇ RENDER ─────────────────────────────────────────
 function fmtM(v){
-  var sym=currentCurrency==="TL"?"₺":"$";
+  var sym=currentCurrency==="TL"?"\u20BA":"$";
   var neg = v < 0;
   var abs = Math.abs(v);
   var formatted;
   if(abs>=1000000) formatted = (abs/1000000).toFixed(2)+"M";
   else if(abs>=1000) formatted = Math.round(abs).toLocaleString(currentCurrency==="TL"?"tr-TR":"en-US");
   else formatted = Math.round(abs).toLocaleString(currentCurrency==="TL"?"tr-TR":"en-US");
-  return (neg?"-":"")+sym+formatted;
+  return (neg?"-":"")+'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:.85em;">'+sym+'</span>'+formatted;
 }
 function fmtFull(v){
-  var sym=currentCurrency==="TL"?"₺":"$";
+  var sym=currentCurrency==="TL"?"\u20BA":"$";
   var neg = v < 0;
   var formatted = Math.round(Math.abs(v)).toLocaleString(currentCurrency==="TL"?"tr-TR":"en-US");
-  return (neg?"-":"")+sym+formatted;
+  return (neg?"-":"")+'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:.85em;">'+sym+'</span>'+formatted;
 }
 
 function renderFinansResults(finObj){
@@ -4251,6 +4393,7 @@ window.addEventListener("load",function(){
   setCurrency(currentCurrency);
   initFirebase();
   loadApiKey();
+  fiyatlariYukle();
   // Tab başlangıç
   document.querySelectorAll('.tab-content').forEach(function(el){
     el.style.display = el.classList.contains('active') ? 'block' : 'none';
@@ -4259,6 +4402,10 @@ window.addEventListener("load",function(){
   setTimeout(function(){
     if(typeof applyAllLang==="function") applyAllLang(currentLang);
   }, 100);
+  // Fiyat popup — her açılışta
+  setTimeout(function(){
+    openFiyatPopup(false);
+  }, 400);
 });
 
 
@@ -4493,7 +4640,10 @@ function getIrk() {
   return el ? (el.value || 'holstein') : 'holstein';
 }
 function onIrkDegis() {
-  if(projData.snaps && projData.snaps.length) renderRapor();
+  if(projData.snaps && projData.snaps.length) {
+    renderRapor();
+    showToast('Irk degisti \u2014 simulasyonu ve finansal analizi yeniden hesaplayin.', true);
+  }
 }
 
 function renderRapor() {
@@ -4715,17 +4865,15 @@ function _runSensitivityAsync(svgWrap) {
 
   var params6 = [
     {key:'crInek',   label:'CR İnek (%)',    iyiYon:1,  deltas:[-0.15,-0.10,-0.05,0,0.05,0.10,0.15], fmt:function(v){return '%'+Math.round(v*100);},
-     aciklama:'Konsepsiyon oranı (CR) — tohumlamada gebe kalan inek yüzdesi. En kritik üreme parametresi.'},
+     aciklama:'Konsepsiyon oranı (CR) — tohumlamada gebe kalan inek yüzdesi. En kritik üreme parametresi. Delta aralığı: ±%5, ±%10, ±%15.'},
     {key:'reform',   label:'Reform (%)',      iyiYon:-1, deltas:[-0.05,-0.03,-0.01,0,0.01,0.03,0.05], fmt:function(v){return '%'+Math.round(v*100);},
-     aciklama:'Reform (iskarta) oranı — yıllık sürüden çıkan inek yüzdesi. Azalması sürüyü büyütür.'},
+     aciklama:'Reform (iskarta) oranı — yıllık sürüden çıkan inek yüzdesi. Azalması sürüyü büyütür. Delta aralığı: ±%1, ±%3, ±%5.'},
     {key:'olumInek', label:'İnek Ölüm (%)',   iyiYon:-1, deltas:[-0.02,-0.01,-0.005,0,0.005,0.01,0.02], fmt:function(v){return '%'+Math.round(v*100);},
-     aciklama:'Yetişkin inek ölüm oranı. Azalması doğrudan sürü büyümesine katkı sağlar.'},
+     aciklama:'Yetişkin inek ölüm oranı. Azalması doğrudan sürü büyümesine katkı sağlar. Delta aralığı: ±%0.5, ±%1, ±%2.'},
     {key:'olumBuz',  label:'Buzağı Ölüm (%)', iyiYon:-1, deltas:[-0.05,-0.03,-0.01,0,0.01,0.03,0.05], fmt:function(v){return '%'+Math.round(v*100);},
-     aciklama:'Buzağı ölüm oranı — uzun vadede düve stoğunu ve sürü büyümesini etkiler. Azalması iyidir.'},
-    {key:'kuruGun',  label:'Kuru Gün',        iyiYon:0,  deltas:[-20,-10,-5,0,5,10,20], fmt:function(v){return Math.round(v)+' gün';},
-     aciklama:'Kuru dönem uzunluğu. Çok kısa veya çok uzun olması verimliliği düşürür. Strateji bazlı değişkendir.'},
+     aciklama:'Buzağı ölüm oranı — uzun vadede düve stoğunu ve sürü büyümesini etkiler. Delta aralığı: ±%1, ±%3, ±%5.'},
     {key:'vwpInek',  label:'VWP (gün)',       iyiYon:0,  deltas:[-15,-10,-5,0,5,10,15], fmt:function(v){return Math.round(v)+' gün';},
-     aciklama:'Gönüllü bekleme periyodu — doğum sonrası tohumlamaya başlama süresi. Strateji bazlı değişkendir.'}
+     aciklama:'Gönüllü bekleme periyodu — doğum sonrası tohumlamaya başlama süresi. Strateji bazlı değişkendir. Delta aralığı: ±5, ±10, ±15 gün.'}
   ];
 
   var results = [];
@@ -4813,30 +4961,69 @@ function _sensRenderSonuc(svgWrap, results, base, p0, ini, fin) {
     }
     svg+='<line x1="'+midX+'" y1="'+y+'" x2="'+midX+'" y2="'+(y+BAR_H)+'" stroke="#b8860b" stroke-width="2"/>';
     var minPt=pts[0], maxPt=pts[pts.length-1];
-    if(minPt.diff!==0){var lx=midX+(minPt.diff/maxAbs)*(barW/2);svg+='<text x="'+(Math.min(lx,midX)-3).toFixed(0)+'" y="'+(y+BAR_H/2)+'" text-anchor="end" dominant-baseline="middle" font-size="8.5" fill="'+(minPt.diff>=0?'#2d7a3a':'#c0392b')+'">'+(minPt.diff>0?'+':'')+minPt.diff+'</text>';}
-    if(maxPt.diff!==0){var rx2=midX+(maxPt.diff/maxAbs)*(barW/2);svg+='<text x="'+(Math.max(rx2,midX)+3).toFixed(0)+'" y="'+(y+BAR_H/2)+'" text-anchor="start" dominant-baseline="middle" font-size="8.5" fill="'+(maxPt.diff>=0?'#2d7a3a':'#c0392b')+'">'+(maxPt.diff>0?'+':'')+maxPt.diff+'</text>';}
+    // D6: Birim ayrımı — parametre bazlı etki birimi
+    var birimMap = {crInek:'baş buzağı', reform:'baş inek', olumInek:'baş inek', olumBuz:'baş buzağı', vwpInek:'baş buzağı'};
+    // D7: Süre tahmini — parametre bazlı
+    var sureMap = {crInek:'12–18 ayda', reform:'6–12 ayda', olumInek:'3–6 ayda', olumBuz:'6–12 ayda', vwpInek:'3–6 ayda'};
+
+    // D2: Tornado SVG — bold etiketler
+    if(minPt.diff!==0){
+      var lx=midX+(minPt.diff/maxAbs)*(barW/2);
+      // D1: Sol etiket — barın soluna taşacaksa sağa yerleştir
+      var leftX = Math.min(lx,midX)-3;
+      var leftAnchor = 'end';
+      if(leftX < PAD_L) { leftX = Math.max(lx,midX)+3; leftAnchor = 'start'; }
+      svg+='<text x="'+leftX.toFixed(0)+'" y="'+(y+BAR_H/2)+'" text-anchor="'+leftAnchor+'" dominant-baseline="middle" font-size="8.5" font-weight="700" fill="'+(minPt.diff>=0?'#2d7a3a':'#c0392b')+'">'+(minPt.diff>0?'+':'')+minPt.diff+'</text>';
+    }
+    if(maxPt.diff!==0){
+      var rx2=midX+(maxPt.diff/maxAbs)*(barW/2);
+      svg+='<text x="'+(Math.max(rx2,midX)+3).toFixed(0)+'" y="'+(y+BAR_H/2)+'" text-anchor="start" dominant-baseline="middle" font-size="8.5" font-weight="700" fill="'+(maxPt.diff>=0?'#2d7a3a':'#c0392b')+'">'+(maxPt.diff>0?'+':'')+maxPt.diff+'</text>';
+    }
   }
   svg+='</svg>';
 
-  // ── PARAMETRE YORUMLARI ──
+  // ── PARAMETRE YORUMLARI — TRAFİK IŞIĞI ──
+  var birimMapK = {crInek:'baş buzağı', reform:'baş inek', olumInek:'baş inek', olumBuz:'baş buzağı', vwpInek:'baş buzağı'};
+  var sureMapK  = {crInek:'12–18 ayda', reform:'6–12 ayda', olumInek:'3–6 ayda', olumBuz:'6–12 ayda', vwpInek:'3–6 ayda'};
+  var hedefMapK = {
+    crInek:  function(v){ return Math.min(0.99, v+0.15); },
+    reform:  function(v){ return Math.max(0.01, v-0.05); },
+    olumInek:function(v){ return Math.max(0,    v-0.02); },
+    olumBuz: function(v){ return Math.max(0,    v-0.05); },
+    vwpInek: function(v){ return Math.max(20,   v-15);   }
+  };
   var yorumHtml='<div style="margin-top:20px;">';
   yorumHtml+='<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:12px;">Parametre Analizi — Öncelik Sırasına Göre</div>';
   for(var ri3=0;ri3<results.length;ri3++){
     var row3=results[ri3];
     var maxDiff3=Math.max.apply(null,row3.points.map(function(p){return Math.abs(p.diff);}));
-    var oncelik=ri3===0?'🔴 Kritik':ri3===1?'🟡 Yüksek':ri3===2?'🟡 Orta':'🟢 İzleme';
-    var mevcutStr=row3.fmt?row3.fmt(p0[row3.key]):String(p0[row3.key]);
+    var oncelikRenk3 = ri3===0?'var(--danger)':ri3<=2?'var(--gold)':'var(--accent)';
+    var oncelikTxt   = ri3===0?'🔴 Kritik':ri3===1?'🟡 Yüksek':ri3===2?'🟡 Orta':'🟢 İzleme';
+    var mevcutStr3 = row3.fmt ? row3.fmt(p0[row3.key]) : String(p0[row3.key]);
+    var birim3 = birimMapK[row3.key] || 'baş';
+    var sure3  = sureMapK[row3.key]  || '6–12 ayda';
+    var hedefFn3 = hedefMapK[row3.key];
+    var hedefVal3 = hedefFn3 ? hedefFn3(p0[row3.key]) : null;
+    var hedefStr3 = (hedefVal3!==null && row3.fmt) ? row3.fmt(hedefVal3) : null;
+
+    // En iyi / en kötü diff
+    var enIyiDiff3  = Math.max.apply(null, row3.points.map(function(p){return p.diff;}));
+    var enKotuDiff3 = Math.min.apply(null, row3.points.map(function(p){return p.diff;}));
+
     yorumHtml+='<div style="background:#fafaf6;border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;">';
     yorumHtml+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;flex-wrap:wrap;gap:6px;">';
     yorumHtml+='<span style="font-weight:700;font-size:.78rem;">'+row3.label+'</span>';
-    yorumHtml+='<span style="font-size:.68rem;font-weight:700;color:var('+(ri3===0?'--danger':ri3<=2?'--gold':'--accent')+');">'+oncelik+'</span>';
+    yorumHtml+='<span style="font-size:.68rem;font-weight:700;color:'+oncelikRenk3+';">'+oncelikTxt+'</span>';
     yorumHtml+='</div>';
-    yorumHtml+='<div style="font-size:.73rem;color:var(--muted);margin-bottom:6px;">Mevcut: <strong style="color:var(--text);">'+mevcutStr+'</strong> &nbsp;|&nbsp; Max etki: <strong style="color:var(--blue);">±'+maxDiff3+' baş</strong></div>';
-    yorumHtml+='<div style="font-size:.74rem;color:var(--text);line-height:1.7;">'+row3.aciklama+'</div>';
-    var enIyiDiff=Math.max.apply(null,row3.points.map(function(p){return p.diff;}));
-    var enKotuDiff=Math.min.apply(null,row3.points.map(function(p){return p.diff;}));
-    if(enIyiDiff>0) yorumHtml+='<div style="font-size:.72rem;color:var(--accent);margin-top:4px;">↑ En iyi senaryoda 60. ayda +'+enIyiDiff+' baş fazla.</div>';
-    if(enKotuDiff<0) yorumHtml+='<div style="font-size:.72rem;color:var(--danger);margin-top:2px;">↓ En kötü senaryoda 60. ayda '+enKotuDiff+' baş az.</div>';
+    yorumHtml+='<div style="font-size:.73rem;color:var(--muted);margin-bottom:6px;">Mevcut: <strong style="color:var(--text);">'+mevcutStr3+'</strong> &nbsp;|&nbsp; Max etki: <strong style="color:var(--blue);">±'+maxDiff3+' '+birim3+'</strong></div>';
+    yorumHtml+='<div style="font-size:.74rem;color:var(--text);line-height:1.7;margin-bottom:6px;">'+row3.aciklama+'</div>';
+    // Zengin açıklama: mevcut → hedef → etki → süre
+    if(hedefStr3 && enIyiDiff3>0){
+      yorumHtml+='<div style="font-size:.72rem;color:var(--accent);margin-top:2px;">↑ '+mevcutStr3+' → <strong>'+hedefStr3+'</strong> yapılırsa 60. ayda <strong>+'+enIyiDiff3+' '+birim3+'</strong> ('+sure3+' görülür)</div>';
+    }
+    if(enKotuDiff3<0){
+      yorumHtml+='<div style="font-size:.72rem;color:var(--danger);margin-top:2px;">↓ Kötüleşirse 60. ayda <strong>'+enKotuDiff3+' '+birim3+'</strong> kaybedilebilir</div>';
+    }
     yorumHtml+='</div>';
   }
   yorumHtml+='</div>';
@@ -4865,26 +5052,23 @@ function _sensRenderSonuc(svgWrap, results, base, p0, ini, fin) {
   for(var ri4=0;ri4<results.length;ri4++){
     var row4=results[ri4];
     var mevcutStr4=row4.fmt?row4.fmt(p0[row4.key]):String(p0[row4.key]);
+    var birim4 = birimMapK[row4.key] || 'baş';
     var iy4=row4.iyiYon||0;
-    // iyiYon=1: artmak iyi → points[son]=En İyi, points[0]=En Kötü
-    // iyiYon=-1: azalmak iyi → points[0]=En İyi, points[son]=En Kötü
-    // iyiYon=0: nötr → diff büyüklüğüne göre
     var enIyi4, enKotu4;
     if(iy4===1){ enIyi4=row4.points[row4.points.length-1]; enKotu4=row4.points[0]; }
     else if(iy4===-1){ enIyi4=row4.points[0]; enKotu4=row4.points[row4.points.length-1]; }
     else {
-      // nötr: en büyük diff hangisi
       enIyi4=row4.points[row4.points.length-1];
       enKotu4=row4.points[0];
     }
     var ktTL=basTlEtkisi(enKotu4.diff);
     var iyTL=basTlEtkisi(enIyi4.diff);
     neHtml+='<tr><td><strong>'+row4.label+'</strong></td><td>'+mevcutStr4+'</td>';
-    neHtml+='<td style="color:var(--danger);">'+enKotu4.label+' → '+(enKotu4.diff>0?'+':'')+enKotu4.diff+' baş';
+    neHtml+='<td style="color:var(--danger);">'+enKotu4.label+' → '+(enKotu4.diff>0?'+':'')+enKotu4.diff+' '+birim4;
     if(ktTL!==null) neHtml+='<br><small>'+fmtTLk(ktTL)+'</small>';
     else neHtml+='<br><span class="neolursa-chip hesapla" onclick="switchMainTab(\'finans\')">💰 Hesapla</span>';
     neHtml+='</td>';
-    neHtml+='<td style="color:var(--accent);">'+enIyi4.label+' → '+(enIyi4.diff>0?'+':'')+enIyi4.diff+' baş';
+    neHtml+='<td style="color:var(--accent);">'+enIyi4.label+' → '+(enIyi4.diff>0?'+':'')+enIyi4.diff+' '+birim4;
     if(iyTL!==null) neHtml+='<br><small>'+fmtTLk(iyTL)+'</small>';
     else neHtml+='<br><span class="neolursa-chip hesapla" onclick="switchMainTab(\'finans\')">💰 Hesapla</span>';
     neHtml+='</td></tr>';
@@ -5610,6 +5794,171 @@ function pdfYazdir(){
       gizlilenler.forEach(function(el){el.style.display='';});
     },1000);
   },300);
+}
+
+function kopyalaClaudeAiOzet() {
+  var box = document.getElementById('claudeAiOzetBox');
+  if(!box || !projData.snaps || !projData.snaps.length) {
+    showToast('Once simulasyonu hesaplayin.', true); return;
+  }
+  var text = box.innerText || box.textContent;
+  if(navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(function(){
+      showToast('Ozet kopyalandi — claude.ai\'ye yapistirin.');
+    });
+  } else {
+    var ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    showToast('Ozet kopyalandi — claude.ai\'ye yapistirin.');
+  }
+}
+
+function guncelleClaAiOzet() {
+  var box = document.getElementById('claudeAiOzetBox');
+  if(!box || !projData.snaps || !projData.snaps.length) return;
+  var p = projData.params || {};
+  var ini = projData.initial || {};
+  var snaps = projData.snaps;
+  var snap60 = snaps[snaps.length-1] || {};
+  var fin = projData.finObj;
+  var net60 = 0, gelir60 = 0;
+  if(fin && fin.rows) { for(var j=0; j<fin.rows.length; j++) { net60+=fin.rows[j].netKar||0; gelir60+=fin.rows[j].toplamGelir||0; } }
+  var initTotal = (ini.laktasyon||0)+(ini.kuru||0);
+  var son60 = Math.round((snap60.laktasyon||0)+(snap60.kuru||0));
+  var buyume = initTotal>0 ? Math.round((son60-initTotal)/initTotal*100) : 0;
+  var buzAralik = Math.round(262 + (p.vwpInek||50) + 21/(p.crInek||0.6));
+  var ozet = 'Gelecek60 Suru Simulasyonu — 60 Ay Ozeti\n\n'
+    + 'Irk: ' + (typeof getIrk==='function' ? getIrk() : 'holstein') + '\n'
+    + 'Senaryo: ' + (ini._startup ? 'Sifirdan Kurulus' : 'Mevcut Isletme') + '\n'
+    + 'Baslangic inek: ' + initTotal + ' bas\n'
+    + '60. ay inek: ' + son60 + ' bas\n'
+    + '60 aylik buyume: %' + buyume + '\n'
+    + 'CR (inek): %' + Math.round((p.crInek||0)*100) + '\n'
+    + 'VWP: ' + (p.vwpInek||50) + ' gun\n'
+    + 'Buzagilama araligi: ' + buzAralik + ' gun\n'
+    + 'Reform orani: %' + Math.round((p.reform||0)*100) + '\n'
+    + 'Olum (inek): %' + Math.round((p.olumInek||0)*100) + '\n'
+    + 'Olum (buzagi): %' + Math.round((p.olumBuz||0)*100) + '\n'
+    + (gelir60>0 ? '60 ay toplam gelir: ' + Math.round(gelir60).toLocaleString('tr-TR') + ' TL\n' : '')
+    + (gelir60>0 ? '60 ay net K/Z: ' + Math.round(net60).toLocaleString('tr-TR') + ' TL\n' : '')
+    + '\nBu verileri analiz ederek: suru buyumesi, ureme performansi, risk faktorleri ve oncelikli iyilestirme onerileri hakkinda uzman yorum yazar misin?';
+  box.textContent = ozet;
+}
+
+// ── FİYAT POPUP ──────────────────────────────────────────────────────────────
+var FIYAT_KEYS = ['fp_sut','fp_erkekBuz','fp_disiBuz','fp_besiKarkas','fp_inekKarkas','fp_duveKarkas','fp_gebeDuve','fp_bosDuve'];
+var gFiyat = {}; // Global fiyat objesi — tüm modüllere açık
+
+function openFiyatPopup(guncellemeModu) {
+  var overlay = document.getElementById('fiyatOverlay');
+  var btnTamam = document.getElementById('btnFiyatTamam');
+  var btnGuncelle = document.getElementById('btnFiyatGuncelle');
+  var sub = document.getElementById('fiyatPopupSub');
+  if(!overlay) return;
+  // Kayıtlı fiyatları yükle
+  var kayitli = localStorage.getItem('g60fiyatlar');
+  var varMi = false;
+  if(kayitli) {
+    try {
+      var obj = JSON.parse(kayitli);
+      varMi = true;
+      FIYAT_KEYS.forEach(function(k) {
+        var el = document.getElementById(k);
+        if(el && obj[k]) el.value = obj[k];
+      });
+    } catch(e) {}
+  }
+  // Buton görünümü
+  if(guncellemeModu || varMi) {
+    btnTamam.style.display = varMi && !guncellemeModu ? 'block' : 'none';
+    btnGuncelle.style.display = 'block';
+    if(varMi && !guncellemeModu) {
+      btnTamam.style.display = 'block';
+      btnGuncelle.style.display = 'block';
+    }
+    sub.textContent = 'Kayıtlı fiyatlarınız yüklendi. Güncellemek istiyorsanız değiştirip "Güncelle" butonuna basın. Değişiklik yapmayacaksanız "Tamam" ile devam edin.';
+  } else {
+    btnTamam.style.display = 'block';
+    btnGuncelle.style.display = 'none';
+    sub.textContent = 'Simülasyon, finansal analiz ve kapasite raporları için güncel fiyatları girin. Tüm alanlar zorunludur.';
+  }
+  overlay.classList.add('open');
+}
+
+function fiyatInputTemizle(el) {
+  el.classList.remove('hata');
+}
+
+function fiyatKaydet(guncelle) {
+  // Validasyon
+  var hatali = false;
+  FIYAT_KEYS.forEach(function(k) {
+    var el = document.getElementById(k);
+    if(!el) return;
+    var val = el.value.replace(',','.').trim();
+    var num = parseFloat(val);
+    if(!val || isNaN(num) || num <= 0) {
+      el.classList.add('hata');
+      hatali = true;
+    }
+  });
+  if(hatali) {
+    showToast('Lütfen tüm fiyat alanlarını doldurun.', true);
+    return;
+  }
+  // Kaydet
+  var obj = {};
+  FIYAT_KEYS.forEach(function(k) {
+    var el = document.getElementById(k);
+    obj[k] = parseFloat(el.value.replace(',','.').trim());
+  });
+  localStorage.setItem('g60fiyatlar', JSON.stringify(obj));
+  gFiyat = obj;
+  // Finansal modüle aktar
+  fiyatlariFinansaAktar();
+  document.getElementById('fiyatOverlay').classList.remove('open');
+  showToast(guncelle ? 'Fiyatlar güncellendi.' : 'Fiyatlar kaydedildi.');
+}
+
+function fiyatlariYukle() {
+  var kayitli = localStorage.getItem('g60fiyatlar');
+  if(kayitli) {
+    try {
+      gFiyat = JSON.parse(kayitli);
+      fiyatlariFinansaAktar();
+    } catch(e) {}
+  }
+}
+
+function fiyatlariFinansaAktar() {
+  // Süt fiyatı → finansal analiz milkPrice alanlarına
+  if(gFiyat.fp_sut) {
+    for(var m=0;m<6;m++) {
+      var el = document.getElementById('milkP'+m);
+      if(el && !el.dataset.userModified) el.value = gFiyat.fp_sut;
+    }
+  }
+  // İnek karkas → finKarkasKg
+  if(gFiyat.fp_inekKarkas) {
+    var kark = document.getElementById('finKarkasKg');
+    if(kark && !kark.dataset.userModified) {
+      kark.value = gFiyat.fp_inekKarkas;
+      if(typeof updateMoneyDisplay==='function') updateMoneyDisplay(kark);
+    }
+  }
+  // Düve fiyatı → finDuveFiyat
+  if(gFiyat.fp_gebeDuve) {
+    var duve = document.getElementById('finDuveFiyat');
+    if(duve && !duve.dataset.userModified) {
+      duve.value = gFiyat.fp_gebeDuve;
+      if(typeof updateMoneyDisplay==='function') updateMoneyDisplay(duve);
+    }
+  }
+}
+
+function fiyatGetir(key) {
+  return gFiyat[key] || null;
 }
 
 function saveApiKey() {
